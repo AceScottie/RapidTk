@@ -1,19 +1,26 @@
 from tkinter import Tk
 from .errors import *
 from .utils import coord, _UniqueIdentifiers
-from .manage import _ScrollManager, _WindowManager, _PopupManager, _TabManager, _TheamManager
+from .manage import _ScrollManager, _WindowManager, _PopupManager, _TabManager, _ThemeManager
 
 class rapidTk(Tk):
-	def __init__(self):
+	def __init__(self, with_managers=True):
 		self.origin = [coord(0, 0), coord(0, 0)]
 		self._schedule_tasks = {}
 		self._tasks = []
 		self.uid = _UniqueIdentifiers()
-		self.sm = _ScrollManager(self)
-		self.thm = _TheamManager(self)
-		self.pop = _PopupManager(self)
-		self.tm = _TabManager(self)
-		self.wm = _WindowManager(self)
+		if with_managers:
+			self.sm = _ScrollManager(self)	
+			self.thm = _ThemeManager(self)
+			self.pop = _PopupManager(self)
+			self.tm = _TabManager(self)
+			self.wm = _WindowManager(self)
+		else:
+			self.sm = None
+			self.thm = None
+			self.pop = None
+			self.tm = None
+			self.wm = None
 		Tk.__init__(self)
 		self.after(1, self._schedule)
 		self.bind('<F12>',self._fullscreen)

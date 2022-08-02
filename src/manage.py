@@ -1,8 +1,11 @@
 from tkinter import Event, TOP, LEFT, RIGHT, CENTER, BOTTOM, BOTH
 from .errors import *
 from .objects import cCanvas
-class _ScrollManager(object):
+from .utils import SingletonMeta
+from rTk import flags
+class _ScrollManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
+		flags.__scroll_manager__ = True
 		self.root = root
 		self.collections = {}
 		self.scrolls = {"0":None} #{id:scroll}
@@ -62,13 +65,44 @@ class _ScrollManager(object):
 			self.scrolls[self.active_id].update()
 			self.root.update()
 			self.root.update_idletasks()
-class _WindowManager(object):
+class _WindowManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
+		flags.__window_manager__ = True
 		self.root = root
-	def create_window(self, **kwargs):
-		pass
-class _PopupManager(object):
+		self.pids = {}
+		self.active_window = None
+		self.inactive_windows = [None]*10
+	def add_pid(self, pid, window):
+		self.pids[pid] = {'widget':window, 'active':1}
+		print(self.pids)
+	def _set_active(self, pid):
+		self.pids[pid]['active'] = 0
+		if pid in self.inactive_windows:
+			idx = self.inactive_windows.index(pid)
+			self.inactive_windows[idx] = None
+
+	def _set_inactive(self, pid):
+		self.pids[pid]['active'] = 0
+		idx = self.inactive_windows.index(None)
+		self.inactive_windows[idx] = pid
+
+	def _set_main(self, pid):
+		self.active_window = pid
+
+	def _get_deactive_space(self):
+		print("\n".join([str(x) for x in self.inactive_windows]))
+		return self.inactive_windows.index(None)
+
+	def remove(self, pid): # removes object from manager
+		del self.pids[pid]
+
+	def destroy(self, pids):#delets object and removes from manager
+		for pid in pids:
+			self.pids[pid]._close()
+
+class _PopupManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
+		flags.__popup_manager__ = True
 		self.root = root
 	def simple_popup(self, text):
 		pass #use ctype popup
@@ -76,8 +110,9 @@ class _PopupManager(object):
 		pass # use movable window
 	def _manage_overlay(self):
 		pass #handel closing and opening overlays
-class _TabManager(object):
+class _TabManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
+		flags.__tab_manager__ = True
 		self.root = root
 		self.tabs = {}
 		self.active_tab = None
@@ -97,6 +132,9 @@ class _TabManager(object):
 			return self.tabs[uid]
 		else:
 			raise TabNotFoundError
-class _TheamManager(object):
+class _ThemeManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
+		flags.__theme_manager__ = True
 		self.root = root
+
+

@@ -1,4 +1,4 @@
-from tkinter import StringVar, IntVar, Event, INSERT, END 
+from tkinter import StringVar, IntVar, Event, INSERT, END, Misc
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH
 from tkinter import N, E, S, W, NW, NE, SE, SW
 from tkinter import Scrollbar, VERTICAL, HORIZONTAL 
@@ -7,10 +7,12 @@ from tkinter import Scrollbar, VERTICAL, HORIZONTAL
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps
 import re
 
+from rTk import flags
 from .rapidTk import PackProcess
 from .objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cDateEntry
 from .errors import *
 from .utils import coord
+from .manage import _WindowManager
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
 	kw_wid = {}
@@ -255,12 +257,14 @@ class scrollArea(cFrame):
 			self.sCanvas.itemconfig(self.cw, height=event.height)
 
 class movableWindow(cCanvas):
-	def __init__(self, master,  **kwargs):
+	def __init__(self, master, **kwargs):
+		self.wm = False
+		if flags.__window_manager__: ##checks if flag is set and uses manager
+			self.wm = _WindowManager()
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak = pack_opts(**kwargs)
 		self.master = master
 		self.motion = False
-		
 		if 'width' not in kw_wid:
 			kw_wid['width'] = 400
 		if 'height' not in kw_wid:
@@ -286,7 +290,15 @@ class movableWindow(cCanvas):
 		kw_wid['relief'] = "groove"
 		cCanvas.__init__(*(self, master), **kw_wid)
 		self.root = self.winfo_toplevel()
-	def create(self):
+		self.pid = self.root.uid.new()
+		self.posx=0
+		self.posy=0
+		print(self.pid)
+		if self.wm:
+			self.wm.add_pid(self.pid, self)
+		self._create()
+		
+	def _create(self):
 		self.pack_propagate(False)
 		self.place(x=self.root.winfo_width()/2-(self.width/2), y=(self.root.winfo_height()/2)-(self.height/4))
 		self.top = cFrame(self, borderwidth=1, relief="raised", side=TOP, fill=X)
@@ -295,28 +307,73 @@ class movableWindow(cCanvas):
 			move = cLabel(self.top, text=self.title_text, fg=self.fg, justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		else:
 			move = cLabel(self.top, text="", justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
-			#move = cFrame(self.top, cursor="fleur", fill=X, expand=1)
-		close = cButton(self.top, text="X", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
+		
+		self.close = cButton(self.top, text="X", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
+		self.minimize = cButton(self.top, text="🗕", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
+		popout = cButton(self.top, text="⇱", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
+		move.bind("<Button-1>", self._click)
 		move.bind("<B1-Motion>", self._move)
 		move.bind("<ButtonRelease-1>", self._drop)
 		self.root.bind("<Configure>", self._drop)
+	def _click(self, event):
+		#if self.wm:
+			#self.wm._set_active(self.pid)
+		Misc.lift(self)
 	def _move(self, event):
+		#if self.wm:
+			#self.wm._set_active(self.pid)
+		Misc.lift(self)
 		if not self.motion:
 			self.motion = True
 			if(self.root.winfo_pointerx() != "??" and self.root.winfo_pointery() != "??"):
 				self.place(x=(self.root.winfo_pointerx() - self.root.winfo_rootx()) - self.winfo_width()/2, y=self.root.winfo_pointery() - self.root.winfo_rooty()-10)
+				self.posx=(self.root.winfo_pointerx() - self.root.winfo_rootx()) - self.winfo_width()/2
+				self.posy=self.root.winfo_pointery() - self.root.winfo_rooty()-10
 			self.update()
 			self.motion = False
 	def _drop(self, event):
 		if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
 			self.place(x=self.root.winfo_width()-self.winfo_width())
+			self.posx = self.root.winfo_width()-self.winfo_width()
 		elif self.winfo_x() < 0:
 			self.place(x=0)
+			self.posx = 0
 		if self.winfo_y() + self.winfo_height() > self.root.winfo_height():
 			self.place(y=self.root.winfo_height()-self.winfo_height())
+			self.posy = self.root.winfo_height()-self.winfo_height()
 		elif self.winfo_y() < 0:
 			self.place(y=10)
+			self.posy = 10
+
+	def _popout(self): ##pop out to a new toplevel window
+		pass
+
+	def _minimize(self):
+		if self.wm:
+			pos = self.wm._get_deactive_space()+1
+			self.wm._set_inactive(self.pid)
+		else:
+			pos = 0
+		self.body.pack_forget()
+		self.configure(height=25)
+		##place in bottom corner stacking with others
+		##TODO: add object width to wm and offset for other windows
+		print()
+		self.place(x=0, y=self.root.winfo_height()-(pos*25))
+		self.minimize.configure(text="🗖", command=self._maximize)
+	def _maximize(self):
+		if self.wm:
+			self.wm._set_active(self.pid)
+			Misc.lift(self)
+		self.body.pack(side=TOP, fill=BOTH, expand=1)
+		self.configure(height=self.height)
+		self.place(x=self.posx, y=self.posy)
+		self.minimize.configure(text="🗕", command=self._minimize)
+
 	def _close(self):
+		if self.wm:
+			self.wm._set_active(self.pid)
+			self.wm.remove(self.pid)
 		self.destroy()
 class qForm:
 	def __init__(self):

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyrTk"
+version = "0.0.1"
+authors = [
+  { name="Scott Paterson", email="scott_j_paterson@hotmail.co.uk" },
+]
+description = "A wrapper for quickly creating Tkinter code"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Windows",
+]
