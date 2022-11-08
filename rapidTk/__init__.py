@@ -2,6 +2,7 @@ from .__main__ import *
 from .utils import coord, clipboard
 from .objects import *
 from .objects_ext import *
+from .validated_objects import *
 from .matchart import Chart
 from .flags import *
 try:

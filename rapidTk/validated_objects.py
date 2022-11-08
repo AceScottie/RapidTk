@@ -1,5 +1,8 @@
-from objects import cEntry, cOptionMenu
-from utils import master
+from .objects import cEntry, cOptionMenu
+from .utils import master
+from .flags import __ttk_enabled__
+
+from tkinter import StringVar
 import re
 
 
@@ -84,6 +87,41 @@ class MaxLengthEntry(ValidatingEntry, master): ##entry with a max length flag
 			else:
 				return None
 		return None # new value too long
+
+def pack_opts(**kwargs):
+	pak = ["side", "expand", "fill"]
+	if __ttk_enabled__:
+		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
+	else:
+		style = []
+	kw_wid = {}
+	kw_pak = {}
+	kw_style = {}
+	for k, v in kwargs.items():
+		if k in pak:
+			kw_pak[k] = v
+		elif k in style:
+			if k == "bg":
+				kw_style["background"] = v
+			elif k == "fg":
+				kw_style["foreground"] = v
+			elif k == "width": ##fix for picture lable width only
+				if "text" in kwargs.keys():
+					kw_style[k] = v
+				else:
+					kw_style[k] = int(v/10)
+			else:
+				kw_style[k] = v
+		else:
+			kw_wid[k] = v
+	return kw_wid, kw_pak, kw_style
+def style_widget(wd, st, t):
+	if st != {}:
+		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)
+		wd.configure(style=f"{str(wd.__repr__())}.{t}")
+		return style
+	else:
+		return None
 
 class reEntry(cEntry, master):
 	def __init__(self, master, **kwargs):
