@@ -6,28 +6,39 @@ from tkinter import Scrollbar, VERTICAL, HORIZONTAL
 
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps
 import re
+from itertools import count
+from datetime import datetime, date
 
-from rTk import flags
-from .rapidTk import PackProcess
-from .objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cDateEntry
-from .errors import *
-from .utils import coord
-from .manage import _WindowManager
+import flags
+from rTk.src.__main__ import PackProcess
+from objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
+from errors import *
+from utils import coord, master
+from manage import _WindowManager
+from theme import _ThemeManager
+
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
+	if flags.__ttk_enabled__:
+		style = ['bg', 'height', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
+	else:
+		style = []
 	kw_wid = {}
 	kw_pak = {}
+	kw_style = {}
 	for k, v in kwargs.items():
 		if k in pak:
 			kw_pak[k] = v
+		elif k in style:
+			kw_style[k] = v
 		else:
 			kw_wid[k] = v
-	return kw_wid, kw_pak
-class autoEntry(cEntry):
+	return kw_wid, kw_pak, kw_style
+class autoEntry(cEntry, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)	
 		self.bt = None
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.options = kw_wid['auto']
 		if 'len' in kwargs:
 			self.len = kwargs['len']
@@ -135,7 +146,7 @@ class autoEntry(cEntry):
 		self.aw.configure(width=self.winfo_width(), height=100)
 		self.aw.pack_propagate(False)
 		self.aw.place(x=pos.x, y=pos.y)
-		self.bt = cTreeview(self.aw, width=self.winfo_width()-15, bg=self.autobg, fg=self.autofg, side=LEFT)
+		self.bt = cTreeview(self.aw, bg=self.autobg, fg=self.autofg, side=LEFT)
 		vsb = Scrollbar(self.aw, orient="vertical",command=self.bt.yview)
 		self.bt.configure(yscrollcommand=vsb.set)
 		self.bt['show'] = ''
@@ -177,10 +188,10 @@ class autoEntry(cEntry):
 	def __del__(self):
 		self._close_overlay()
 		super().destroy()
-class iButton(cButton):
+class iButton(cButton, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		image = kw_wid['image']
 		width = kw_wid['width']
 		hm = kw_wid['hovermode']
@@ -213,10 +224,10 @@ class iButton(cButton):
 			left -= middle.size[0]
 		self.image = ImageTk.PhotoImage(output)
 		return self.image ##TODO: complete image button for layouts
-class scrollArea(cFrame):
+class scrollArea(cFrame, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.h = 0
 		self.v = 0
 		self.scroll_v = None
@@ -255,14 +266,13 @@ class scrollArea(cFrame):
 			self.sCanvas.itemconfig(self.cw, height=event.height-4)
 		elif self.h == 0:
 			self.sCanvas.itemconfig(self.cw, height=event.height)
-
-class movableWindow(cCanvas):
+class movableWindow(cCanvas, master):
 	def __init__(self, master, **kwargs):
 		self.wm = False
 		if flags.__window_manager__: ##checks if flag is set and uses manager
 			self.wm = _WindowManager()
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.master = master
 		self.motion = False
 		if 'width' not in kw_wid:
@@ -293,7 +303,6 @@ class movableWindow(cCanvas):
 		self.pid = self.root.uid.new()
 		self.posx=0
 		self.posy=0
-		print(self.pid)
 		if self.wm:
 			self.wm.add_pid(self.pid, self)
 		self._create()
@@ -358,7 +367,6 @@ class movableWindow(cCanvas):
 		self.configure(height=25)
 		##place in bottom corner stacking with others
 		##TODO: add object width to wm and offset for other windows
-		print()
 		self.place(x=0, y=self.root.winfo_height()-(pos*25))
 		self.minimize.configure(text="🗖", command=self._maximize)
 	def _maximize(self):
@@ -438,18 +446,13 @@ class qForm:
 			try:
 				results[k] = v['object'].get()
 			except:
-				print(k, v['object'])
 				raise
 		return results
 	def validate(self):
 		validation_valid = True
 		for k, v in self.questions.items():
 			value = v['object'].get()
-			print(value)
-			print(type(value))
-			print(type(v['object']))
 			if v['validation'] is not None and str(type(v['object'])) != "<class 'rTk.objects.autoEntry'>":
-				print(k, v['validation'])
 				pattern = re.compile(v['validation'], re.IGNORECASE)
 				valid = pattern.match(str(value))
 				if not valid:
@@ -461,11 +464,7 @@ class qForm:
 							v['object'].configure(bg=v['object'].winfo_toplevel().option_get('background', '.'), fg=v['object'].winfo_toplevel().option_get('foreground', '.'))
 						else:
 							v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
-					print(type(v['object']))
 			elif str(type(v['object'])) == "<class 'rTk.objects_ext.autoEntry'>":
-				print("testing autocomplete")
-				print(value)
-				print(v['object'].auto)
 				if value not in v['object'].auto:
 					v['object'].configure(bg="red")
 					validation_valid = False
@@ -474,3 +473,102 @@ class qForm:
 		return validation_valid
 	def update(self, question, value):
 		self.questions[question]['object'].set(value)
+class ImageLabel(cLabel, master):
+	def load(self, im, bg):
+		if isinstance(im, str):
+			im = Image.open(im)
+		self.loc = 0
+		self.frames = []
+		try:
+			for i in count(1):
+				self.frames.append(ImageTk.PhotoImage(im.copy()))
+				im.seek(i)
+		except EOFError:
+			pass
+
+		try:
+			self.delay = im.info['duration']
+		except:
+			self.delay = 100
+		if len(self.frames) == 1:
+			self.config(image=self.frames[0], bg=bg)
+		else:
+			self.next_frame()
+	def unload(self):
+		self.config(image=None)
+		self.frames = None
+	def next_frame(self):
+		if self.frames:
+			self.loc += 1
+			self.loc %= len(self.frames)
+			self.config(image=self.frames[self.loc])
+			self.after(self.delay, self.next_frame)
+class Tooltip:
+    def __init__(self, widget,*,bg='#FFFFEA',pad=(5, 3, 5, 3),text='widget info',waittime=400,wraplength=250):
+        self.waittime = waittime
+        self.wraplength = wraplength
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.onEnter)
+        self.widget.bind("<Leave>", self.onLeave)
+        self.widget.bind("<ButtonPress>", self.onLeave)
+        self.bg = bg
+        self.pad = pad
+        self.id = None
+        self.tw = None
+    def onEnter(self, event=None):
+        self.schedule()
+        pass
+    def onLeave(self, event=None):
+        self.unschedule()
+        self.hide()
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.show)
+    def unschedule(self):
+        id_ = self.id
+        self.id = None
+        if id_:
+            self.widget.after_cancel(id_)
+    def show(self):
+        def tip_pos_calculator(widget, label,*,tip_delta=(10, 5), pad=(5, 3, 5, 3)):
+            w = widget
+            s_width, s_height = w.winfo_screenwidth(), w.winfo_screenheight()
+            width, height = (pad[0] + label.winfo_reqwidth() + pad[2],pad[1] + label.winfo_reqheight() + pad[3])
+            mouse_x, mouse_y = w.winfo_pointerxy()
+            x1, y1 = mouse_x + tip_delta[0], mouse_y + tip_delta[1]
+            x2, y2 = x1 + width, y1 + height
+            x_delta = x2 - s_width
+            if x_delta < 0:
+                x_delta = 0
+            y_delta = y2 - s_height
+            if y_delta < 0:
+                y_delta = 0
+            offscreen = (x_delta, y_delta) != (0, 0)
+            if offscreen:
+                if x_delta:
+                    x1 = mouse_x - tip_delta[0] - width
+                if y_delta:
+                    y1 = mouse_y - tip_delta[1] - height
+            offscreen_again = y1 < 0
+            if offscreen_again:
+                y1 = 0
+            return x1, y1
+        bg = self.bg
+        pad = self.pad
+        widget = self.widget
+        self.tw = Toplevel(widget)
+        self.tw.wm_overrideredirect(True)
+        win = Frame(self.tw,background=bg,borderwidth=0)
+        label = ttk.Label(win,text=self.text,justify=LEFT,background=bg,relief=SOLID,borderwidth=0,wraplength=self.wraplength)
+        label.grid(padx=(pad[0], pad[2]),pady=(pad[1], pad[3]),sticky=NSEW)
+        win.grid()
+        x, y = tip_pos_calculator(widget, label)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+    def hide(self):
+        tw = self.tw
+        if tw:
+            tw.destroy()
+        self.tw = None
+
+			

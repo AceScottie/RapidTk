@@ -1,5 +1,5 @@
 import sys
-from .errors import *
+from errors import *
 from uuid import uuid4
 if sys.platform == 'win32':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard
@@ -87,3 +87,13 @@ class SingletonMeta(type):
 			instance = super().__call__(*args, **kwargs)
 			cls._instances[cls] = instance
 		return cls._instances[cls]
+
+class master:
+	def __init__(self, master):
+		self.master = master
+	def get_root(self):
+		return self.master.get_root()
+	def get_master(self):
+		return self.master
+	def get_self(self):
+		return self

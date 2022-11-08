@@ -19,3 +19,7 @@ class PlatformError(TemplateException):
 	def __init__(self):
 		message = "This module does not work on this platform"
 		super().__init__(message)
+class DateEntryNotFoundException(TemplateException):
+	def __init__(self):
+		message = "tkcalendar module not found.\nPlease install tkcalendar module to use DateEntry widgets."
+		super().__init__(message)

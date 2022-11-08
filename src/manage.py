@@ -1,8 +1,8 @@
 from tkinter import Event, TOP, LEFT, RIGHT, CENTER, BOTTOM, BOTH
-from .errors import *
-from .objects import cCanvas
-from .utils import SingletonMeta
-from rTk import flags
+from errors import *
+from objects import cCanvas
+from utils import SingletonMeta
+import flags
 class _ScrollManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
 		flags.__scroll_manager__ = True
@@ -74,7 +74,6 @@ class _WindowManager(object, metaclass=SingletonMeta):
 		self.inactive_windows = [None]*10
 	def add_pid(self, pid, window):
 		self.pids[pid] = {'widget':window, 'active':1}
-		print(self.pids)
 	def _set_active(self, pid):
 		self.pids[pid]['active'] = 0
 		if pid in self.inactive_windows:
@@ -132,9 +131,4 @@ class _TabManager(object, metaclass=SingletonMeta):
 			return self.tabs[uid]
 		else:
 			raise TabNotFoundError
-class _ThemeManager(object, metaclass=SingletonMeta):
-	def __init__(self, root):
-		flags.__theme_manager__ = True
-		self.root = root
-
 

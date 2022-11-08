@@ -1,4 +1,4 @@
-from .errors import *
+from errors import *
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -9,8 +9,6 @@ class Chart:
 		self.master = master
 		self.labels = labels
 		self.data = data
-		print("data")
-		print(data)
 		self.ticks = ticks
 		self.fig = None
 		self.ax = None

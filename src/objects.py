@@ -1,51 +1,96 @@
-from tkinter import Frame, Label, Button, Entry, Canvas, Checkbutton, OptionMenu, Menu, END, INSERT, StringVar, IntVar
-from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH
-from tkinter.ttk import Treeview, Style
+from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu
+from tkinter import Canvas, Menu
+from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
+from tkinter.ttk import Treeview
 from tkinter.scrolledtext import ScrolledText
-from tkcalendar import DateEntry
-from .errors import *
-from .utils import clipboard
+import flags
+if flags.__ttk_enabled__:
+	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
+else:
+	from tkinter.ttk import Style
+
+
+
+from errors import *
+from utils import clipboard, master
+from theme import _ThemeManager
+
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
+	if flags.__ttk_enabled__:
+		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
+	else:
+		style = []
 	kw_wid = {}
 	kw_pak = {}
+	kw_style = {}
 	for k, v in kwargs.items():
 		if k in pak:
 			kw_pak[k] = v
+		elif k in style:
+			if k == "bg":
+				kw_style["background"] = v
+			elif k == "fg":
+				kw_style["foreground"] = v
+			elif k == "width": ##fix for picture lable width only
+				if "text" in kwargs.keys():
+					kw_style[k] = v
+				else:
+					kw_style[k] = int(v/10)
+			else:
+				kw_style[k] = v
 		else:
 			kw_wid[k] = v
-	return kw_wid, kw_pak
+	return kw_wid, kw_pak, kw_style
+def style_widget(wd, st, t):
+	if st != {}:
+		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)
+		wd.configure(style=f"{str(wd.__repr__())}.{t}")
+		return style
+	else:
+		return None
 ## Default Widgits override
-class cFrame(Frame):
+class cFrame(Frame, master):
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		Frame.__init__(*(self, master), kw_wid)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cFrame, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TFrame")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-class cLabel(Label):
+
+class cLabel(Label, master):
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		Label.__init__(*(self, master), kw_wid)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cLabel, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TLabel")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 	def get(self):
 		return self.cget('text')
 	def set(self, value):
 		self.configure(text=value)
-class cButton(Button):
+
+class cButton(Button, master):
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		Button.__init__(*(self, master), kw_wid)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cButton, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TButton")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-class cEntry(Entry):
+
+class cEntry(Entry, master):
 	def __init__(self, master, value="", **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		Entry.__init__(*(self, master), kw_wid)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cEntry, self).__init__( master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TEntry")
 		self.__menu = Menu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
 		self.__menu.add_command(label="Copy", command=self._copy)
@@ -78,31 +123,42 @@ class cEntry(Entry):
 			self.insert(self.index(INSERT), clipboard.paste())
 	def _select_all(self):
 		self.select_range(0,END)
-	#def get(self, **args):
-	#	return super().get()
-class cCanvas(Canvas):
+
+class cCanvas(Canvas, master):
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		if 'bd' not in kw_wid or 'boarder' not in kw_wid:
 			kw_wid['bd'] = -2
-		Canvas.__init__(*(self, master), kw_wid)
+		super(cCanvas, self).__init__(master)
+		self.configure({**kw_wid, **kw_style})
+		#style_widget(self, kw_style, "TCanvas")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-class cTreeview(Treeview):
+
+class cTreeview(Treeview, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		self.i = 0
+		self.detached_data = []
 		bg="#FFFFFF"
 		fg="#000000"
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		
-		style = Style()
-		if "bg" not in kw_wid.keys():
-			kw_wid['bg'] = bg
-		if "fg" not in kw_wid.keys():
-			kw_wid['fg'] = fg
-		rgb = [int(kw_wid['bg'].replace("#","")[i:i+2], 16) for i in (0, 2, 4)]
+		bgp = False
+		fgp = False
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		if 'bg' in kw_wid.keys():
+			bbg = kw_wid['bg']
+			bgp = True
+			del kw_wid['bg']
+		else:
+			bbg = bg
+		if 'fg' in kw_wid.keys():
+			ffg = kw_wid['fg']
+			fgp = True
+			del kw_wid['fg']
+		else:
+			ffg = fg
+		rgb = [int(bbg.replace("#","")[i:i+2], 16) for i in (0, 2, 4)]
 		rgbt1 = []
 		rgbt2 = []
 		colours = ["black", "white"]
@@ -118,28 +174,37 @@ class cTreeview(Treeview):
 		colour1 = '#%02x%02x%02x'%(rgb[0], rgb[1], rgb[2])
 		colour2 = '#%02x%02x%02x'%(rgbt1[0], rgbt1[1], rgbt1[2])
 		colour3 = '#%02x%02x%02x'%(rgbt2[0], rgbt2[1], rgbt2[2])
-		
-		style.theme_use("clam")
-		style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", style), background=self._fixed_map("background", style))
-		style.configure(f"{str(self.__repr__())}.Treeview", background=kw_wid['bg'], fieldbackground=kw_wid['bg'], foreground=kw_wid['fg'])
-		style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=kw_wid['fg'])
-		
-		Treeview.__init__(*(self, master))
+		self.style = None
+		if flags.__ttk_enabled__:
+			self.style = _ThemeManager.mystyle
+			self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
+			self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
+			self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
+		else:
+			self.style = Style()
+			self.style.theme_use("clam")
+			self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
+			self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
+			self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
+		super(cTreeview, self).__init__(master)
+		self.configure(kw_wid)
+		if flags.__ttk_enabled__:
+			style_widget(self, kw_style, "Treeview")
 		self.tag_configure('highlight', background='lightblue', foreground="black")
-		if "bg" in kw_wid.keys() and "fg" in kw_wid.keys():
-			self.tag_configure("t1", background=colour2, foreground=kw_wid['fg'])
-			self.tag_configure("t2", background=colour3, foreground=kw_wid['fg'])
+		if bgp and fgp:
+			self.tag_configure("t1", background=colour2, foreground=ffg)
+			self.tag_configure("t2", background=colour3, foreground=ffg)
 		self.configure(style=f"{str(self.__repr__())}.Treeview")
 		self['show'] = 'headings'
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 	def _fixed_map(self, option, style):
 		return [elm for elm in style.map(f"{str(self.__repr__())}.Treeview", query_opt=option) if elm[:2] != ("!disabled", "!selected")]
-	def set_cols(self, cols):
+	def set_cols(self, cols): ##sets list of colum names
 		self['columns'] = tuple(cols)
 		for col in cols:
 			self.heading(col, text=col, command=lambda _col=col: self._treeview_sort_column(_col, 0))
-	def _dir(self, dir):
+	def _dir(self, dir): ##changes sort directeion between forward, backward and unsorted
 		if dir == 1:
 			return 2
 		elif dir == 2:
@@ -162,30 +227,38 @@ class cTreeview(Treeview):
 		for index, (val, k) in enumerate(l):
 			self.move(k, '', index)
 		self.heading(col, text=col, command=lambda _col=col:self._treeview_sort_column(_col, self._dir(rv)))
-	def hide(self, a, b, c, event, ivar, data):
+	def hide(self, a, b, c, event, ivar): # hides data based on input
 		if ivar.get() == 1:
-			for a in data:
+			for a in self.detached_data:
 				self.reattach(a,'',a)
 		else:
-			for a in data:
+			for a in self.detached_data:
 				self.detach(a)
-	def insert(self, parent='', index='end', iid=None, tags=(), text="", values=[]):
+	def insert(self, parent='', index='end', iid=None, tags=(), text="", values=[]):##adds new row 
 		self.i += 1
 		if iid == None:
 			iid = self.i
 		super().insert(parent=parent, index=index, iid=iid, tags=tags+(self.i,), text=text, values=values)
-		self.tag_bind(self.i, '<Motion>', self._highlight_row)
-	def _highlight_row(self, event):
+		self.tag_bind(self.i, '<Motion>', self._highlight_row) 
+	def _highlight_row(self, event): #hover event to hightlight the row under the cursor 
 		self.tk.call(self, "tag", "remove", "highlight")
-		self.tk.call(self, "tag", "add", "highlight", self.identify_row(event.y))
+		self.tk.call(self, "tag", "add", "highlight", self.identify_row(event.y)) 
 	def __repr__(self):
-		 return "<%s instance at %s>" % (self.__class__.__name__, id(self))
-class cScrolledText(ScrolledText):
+		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
+		pass
+	def __del__(self):
+		if flags.__ttk_enabled__:
+			_ThemeManager.mystyle.configure(f"{str(self.__repr__())}.Treeview", background=None, fieldbackground=None, foreground=None)
+
+class cScrolledText(ScrolledText, master):
 	def __init__(self, master, value="", **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		ScrolledText.__init__(*(self, master), **kw_wid)
-		print("colour:%s"%self['background'])
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cScrolledText, self).__init__(master)
+		self.configure(kw_wid)
+		if kw_style != {}:
+			self.configure(kw_style)
+		#style_widget(self, kw_style, "TScrolledText")
 		self.__menu = Menu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
 		self.__menu.add_command(label="Copy", command=self._copy)
@@ -224,40 +297,55 @@ class cScrolledText(ScrolledText):
 		self.select_range(0,END)
 	def get(self, **args):
 		return super().get('1.0', END)
-class cCheckbutton(Checkbutton):
+
+class cCheckbutton(Checkbutton, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.var = IntVar()
 		kw_wid['variable'] = self.var
-		Checkbutton.__init__(*(self, master), **kw_wid)
+		#if 'selectcolor' not in kw_style.keys() or kw_style['selectcolor'] is None:
+		#	kw_style['selectcolor'] = "#AAFFAA"
+		super(cCheckbutton, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TCheckbutton")
 	def get(self, **kwargs):
 		return self.var.get()
 	def set(self, value):
 		self.var.set(value)
-class cOptionMenu(OptionMenu):
+
+class cOptionMenu(OptionMenu, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
+		self.options = []
+		if 'options' in kwargs.keys():
+			self.options = kwargs['options']
+			del kwargs['options']
 		self.var = StringVar()
-		OptionMenu.__init__(*(self, master), **kw_wid)
-	def get(self, **kwargs):
-		return self.var.get()
-class cDateEntry(DateEntry):
-	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak = pack_opts(**kwargs)
-		if 'date_pattern' not in kw_wid.keys():
-			kw_wid['date_pattern'] = "dd/mm/yyyy"
-		DateEntry.__init__(*(self, master), **kw_wid)
+		if 'default' in kwargs.keys():
+			self.__value = kwargs['default']
+			selectable_options = [str(x) for x in self.options]
+			del selectable_options[selectable_options.index(str(kwargs['default']))]
+			del kwargs['default']
+		else:
+			self.__value = self.options[0] if len(self.options) > 0 else None
+			if len(self.options) > 0:
+				selectable_options = [str(x) for x in self.options[1:]]
+			else:
+				selectable_options = [str(x) for x in self.options]
+		if 'non_valid' in kwargs.keys():
+			for item in kwargs['non_valid']:
+				if item in self.options:
+					del self.options[self.options.index(item)]
+			del kwargs['non_valid']
+
+		super(cOptionMenu, self).__init__(master, self.var, self.__value, *selectable_options)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TOptionMenu")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-	def insert(self, data):
-		try:
-			if isinstance(data, datetime.datetime) or isinstance(data, datetime.date):
-				super().insert(data.strftime("%d/%m/%Y"))
-			else:
-				super().insert(data)
-		except:
-			super().insert(data)
+	def get(self, **kwargs):
+		return self.var.get()
+
 
