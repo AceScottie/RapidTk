@@ -1,16 +1,15 @@
 from .__main__ import *
-from utils import coord, clipboard
-from objects import *
-from objects_ext import *
-from matchart import Chart
-from flags import *
+from .utils import coord, clipboard
+from .objects import *
+from .objects_ext import *
+from .matchart import Chart
+from .flags import *
 try:
 	import tkcalendar
-	from . import tkCalendar_ext
-	from rTk.src.tkCalendar_ext import calendar_ext
-	from rTk.src.tkCalendar_ext.calendar_ext import DateEntry, cDateEntry, reDateEntry
+	from .tkCalendar_ext.calendar_ext import DateEntry, cDateEntry, reDateEntry
 except:
 	print("tkcalendar missing")
+	raise
 	class DateEntry:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException

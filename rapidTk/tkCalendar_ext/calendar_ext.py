@@ -1,11 +1,12 @@
 from overrides import override
 from tkcalendar import DateEntry
 from tkinter import StringVar
-import flags
 import re
-from utils import master
 from datetime import datetime, date
-from theme import _ThemeManager
+
+from ..flags import __ttk_enabled__
+from ..theme import _ThemeManager
+from ..utils import master
 
 class DateEntry(DateEntry, master):
 	@override
@@ -60,7 +61,7 @@ class DateEntry(DateEntry, master):
 
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
-	if flags.__ttk_enabled__:
+	if __ttk_enabled__:
 		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
 	else:
 		style = []

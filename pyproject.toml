@@ -1,9 +1,18 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = [
+"setuptools>=61.0",
+"build>=0.8.0",
+"matplotlib>=3.5.1",
+"numpy>=1.21.2",
+"Pillow>=9.2.0",
+"pywin32>=304",
+"tkcalendar>=1.6.1",
+"overrides>=7.3.1"
+]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyrTk"
+name = "rapidTk"
 version = "0.0.1"
 authors = [
   { name="Scott Paterson", email="scott_j_paterson@hotmail.co.uk" },
@@ -14,5 +23,8 @@ license = { file="LICENSE" }
 requires-python = ">=3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Operating System :: Windows",
+	"License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
 ]
+[project.urls]
+"Homepage" = "https://github.com/AceScottie/RapidTk"

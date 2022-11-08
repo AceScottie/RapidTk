@@ -1,11 +1,11 @@
 from tkinter import Event, TOP, LEFT, RIGHT, CENTER, BOTTOM, BOTH
-from errors import *
-from objects import cCanvas
-from utils import SingletonMeta
-import flags
+from .errors import *
+from .objects import cCanvas
+from .utils import SingletonMeta
+from .flags import __scroll_manager__, __window_manager__, __popup_manager__, __tab_manager__
 class _ScrollManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		flags.__scroll_manager__ = True
+		__scroll_manager__ = True
 		self.root = root
 		self.collections = {}
 		self.scrolls = {"0":None} #{id:scroll}
@@ -67,7 +67,7 @@ class _ScrollManager(object, metaclass=SingletonMeta):
 			self.root.update_idletasks()
 class _WindowManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		flags.__window_manager__ = True
+		__window_manager__ = True
 		self.root = root
 		self.pids = {}
 		self.active_window = None
@@ -101,7 +101,7 @@ class _WindowManager(object, metaclass=SingletonMeta):
 
 class _PopupManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		flags.__popup_manager__ = True
+		__popup_manager__ = True
 		self.root = root
 	def simple_popup(self, text):
 		pass #use ctype popup
@@ -111,7 +111,7 @@ class _PopupManager(object, metaclass=SingletonMeta):
 		pass #handel closing and opening overlays
 class _TabManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		flags.__tab_manager__ = True
+		__tab_manager__ = True
 		self.root = root
 		self.tabs = {}
 		self.active_tab = None

@@ -1,5 +1,5 @@
 import sys
-from errors import *
+from .errors import *
 from uuid import uuid4
 if sys.platform == 'win32':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard

@@ -1,6 +1,6 @@
 
-from utils import SingletonMeta
-import flags
+from .utils import SingletonMeta
+from .flags import __theme_manager__
 #from tkinter.ttk import Style
 #from ttk import Style
 from ttkthemes import ThemedStyle
@@ -8,7 +8,7 @@ from ttkthemes import ThemedStyle
 
 class _ThemeManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		flags.__theme_manager__ = True
+		__theme_manager__ = True
 		self.root = root
 		#self.mystyle = style
 		self.mystyle = ThemedStyle(root)

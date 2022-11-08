@@ -9,13 +9,13 @@ import re
 from itertools import count
 from datetime import datetime, date
 
-import flags
-from rTk.src.__main__ import PackProcess
-from objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
-from errors import *
-from utils import coord, master
-from manage import _WindowManager
-from theme import _ThemeManager
+from .flags import __ttk_enabled__
+from .__main__ import PackProcess
+from .objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
+from .errors import *
+from .utils import coord, master
+from .manage import _WindowManager
+from .theme import _ThemeManager
 
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]

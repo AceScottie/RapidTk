@@ -3,21 +3,21 @@ from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
 from tkinter.ttk import Treeview
 from tkinter.scrolledtext import ScrolledText
-import flags
-if flags.__ttk_enabled__:
+from .flags import __ttk_enabled__
+if __ttk_enabled__:
 	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
 else:
 	from tkinter.ttk import Style
 
 
 
-from errors import *
-from utils import clipboard, master
-from theme import _ThemeManager
+from .errors import *
+from .utils import clipboard, master
+from .theme import _ThemeManager
 
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
-	if flags.__ttk_enabled__:
+	if __ttk_enabled__:
 		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
 	else:
 		style = []
