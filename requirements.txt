@@ -1,6 +1,7 @@
-build==0.8.0
-matplotlib==3.5.1
-numpy==1.21.2
-Pillow==9.2.0
-pywin32==304
-tkcalendar==1.6.1
+build>=0.8.0
+matplotlib>=3.5.1
+numpy>=1.21.2
+Pillow>=9.2.0
+pywin32>=304
+tkcalendar>=1.6.1
+overrides>=7.3.1
