@@ -1,12 +1,6 @@
 import sys
 from tkinter import Scrollbar, Event
-
-##Testing
-sys.path.append('..\\rapidTk')
-from rTk.rapidTk import *
-
-##Live
-#from rapidTk import *
+from rapidTk import *
 
 def example_basic_objects():
 	"""
