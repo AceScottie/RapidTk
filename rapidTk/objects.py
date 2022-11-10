@@ -87,8 +87,17 @@ class cButton(Button, master):
 class cEntry(Entry, master):
 	def __init__(self, master, value="", **kwargs):
 		self.__dict__.update(kwargs)
+		
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		super(cEntry, self).__init__( master)
+		if 'textvariable' not in kwargs.keys():
+			self.var = StringVar()
+			if value != "":
+				self.var.set(value)
+			kw_wid['textvariable'] = self.var
+		else:
+			self.var = kw_wid['textvariable']
+			self.var.set(value)
 		self.configure(kw_wid)
 		style_widget(self, kw_style, "TEntry")
 		self.__menu = Menu(self, tearoff=0)
@@ -175,7 +184,7 @@ class cTreeview(Treeview, master):
 		colour2 = '#%02x%02x%02x'%(rgbt1[0], rgbt1[1], rgbt1[2])
 		colour3 = '#%02x%02x%02x'%(rgbt2[0], rgbt2[1], rgbt2[2])
 		self.style = None
-		if flags.__ttk_enabled__:
+		if __ttk_enabled__:
 			self.style = _ThemeManager.mystyle
 			self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
 			self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
@@ -188,7 +197,7 @@ class cTreeview(Treeview, master):
 			self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
 		super(cTreeview, self).__init__(master)
 		self.configure(kw_wid)
-		if flags.__ttk_enabled__:
+		if __ttk_enabled__:
 			style_widget(self, kw_style, "Treeview")
 		self.tag_configure('highlight', background='lightblue', foreground="black")
 		if bgp and fgp:
@@ -239,7 +248,8 @@ class cTreeview(Treeview, master):
 		if iid == None:
 			iid = self.i
 		super().insert(parent=parent, index=index, iid=iid, tags=tags+(self.i,), text=text, values=values)
-		self.tag_bind(self.i, '<Motion>', self._highlight_row) 
+		self.tag_bind(self.i, '<Motion>', self._highlight_row)
+		return iid
 	def _highlight_row(self, event): #hover event to hightlight the row under the cursor 
 		self.tk.call(self, "tag", "remove", "highlight")
 		self.tk.call(self, "tag", "add", "highlight", self.identify_row(event.y)) 
@@ -247,7 +257,7 @@ class cTreeview(Treeview, master):
 		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
 		pass
 	def __del__(self):
-		if flags.__ttk_enabled__:
+		if __ttk_enabled__:
 			_ThemeManager.mystyle.configure(f"{str(self.__repr__())}.Treeview", background=None, fieldbackground=None, foreground=None)
 
 class cScrolledText(ScrolledText, master):
@@ -256,6 +266,8 @@ class cScrolledText(ScrolledText, master):
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		super(cScrolledText, self).__init__(master)
 		self.configure(kw_wid)
+		if value != "":
+			self.insert(1.0, value)
 		if kw_style != {}:
 			self.configure(kw_style)
 		#style_widget(self, kw_style, "TScrolledText")
@@ -264,8 +276,6 @@ class cScrolledText(ScrolledText, master):
 		self.__menu.add_command(label="Copy", command=self._copy)
 		self.__menu.add_command(label="Paste", command=self._paste)
 		self.__menu.add_command(label="Select All", command=self._select_all)
-		if value != "":
-			self.insert(0, value)
 		self.bind("<Button-3>", self._do_popup)
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
@@ -302,8 +312,11 @@ class cCheckbutton(Checkbutton, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		self.var = IntVar()
-		kw_wid['variable'] = self.var
+		if 'variable' not in kw_wid.keys():
+			self.var = IntVar()
+			kw_wid['variable'] = self.var
+		else:
+			self.var = kw_wid['variable']
 		#if 'selectcolor' not in kw_style.keys() or kw_style['selectcolor'] is None:
 		#	kw_style['selectcolor'] = "#AAFFAA"
 		super(cCheckbutton, self).__init__(master)
@@ -338,7 +351,7 @@ class cOptionMenu(OptionMenu, master):
 				if item in self.options:
 					del self.options[self.options.index(item)]
 			del kwargs['non_valid']
-
+		self.var.set(self.__value)
 		super(cOptionMenu, self).__init__(master, self.var, self.__value, *selectable_options)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.configure(kw_wid)
