@@ -338,7 +338,8 @@ class cOptionMenu(OptionMenu, master):
 		if 'default' in kwargs.keys():
 			self.__value = kwargs['default']
 			selectable_options = [str(x) for x in self.options]
-			del selectable_options[selectable_options.index(str(kwargs['default']))]
+			if kwargs['default'] in selectable_options:
+				del selectable_options[selectable_options.index(str(kwargs['default']))]
 			del kwargs['default']
 		else:
 			self.__value = self.options[0] if len(self.options) > 0 else None
@@ -354,11 +355,21 @@ class cOptionMenu(OptionMenu, master):
 		self.var.set(self.__value)
 		super(cOptionMenu, self).__init__(master, self.var, self.__value, *selectable_options)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		if 'takefocus' not in kw_wid.keys():
+			kw_wid['takefocus'] = 1
+		#if 'activebackground' not in kw_wid.keys():
+		#	kw_wid['activebackground'] = 'blue'
+		self['menu'].configure(activebackground="blue", activeforeground="white")
 		self.configure(kw_wid)
 		style_widget(self, kw_style, "TOptionMenu")
+		self.bind("<Configure>", lambda:self.tkfocus)
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 	def get(self, **kwargs):
 		return self.var.get()
+	def tkfocus(self):
+		self.configure(takefocus=0)
+		self.configure(takefocus=1)
+		self.update()
 
 

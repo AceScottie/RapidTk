@@ -9,7 +9,7 @@ import re
 from itertools import count
 from datetime import datetime, date
 
-from .flags import __ttk_enabled__
+from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess
 from .objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
 from .errors import *
@@ -19,7 +19,7 @@ from .theme import _ThemeManager
 
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
-	if flags.__ttk_enabled__:
+	if __ttk_enabled__:
 		style = ['bg', 'height', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
 	else:
 		style = []
@@ -105,7 +105,7 @@ class autoEntry(cEntry, master):
 		if self.winfo_toplevel().focus_get() != self:
 			return
 		self.aw.update()
-		intxt = self.get()
+		intxt = self.get()[0]
 		valid = []
 		if len(intxt) >= self.len:
 			for opt in self.options:
@@ -183,8 +183,10 @@ class autoEntry(cEntry, master):
 	def destroy(self):
 		self._close_overlay()
 		super().destroy()
+	def isvalid(self):
+		return self.sv.get() in self.options
 	def get(self):
-		return self.sv.get()
+		return self.sv.get(), self.isvalid()
 	def __del__(self):
 		self._close_overlay()
 		super().destroy()
@@ -269,7 +271,7 @@ class scrollArea(cFrame, master):
 class movableWindow(cCanvas, master):
 	def __init__(self, master, **kwargs):
 		self.wm = False
-		if flags.__window_manager__: ##checks if flag is set and uses manager
+		if __window_manager__: ##checks if flag is set and uses manager
 			self.wm = _WindowManager()
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)

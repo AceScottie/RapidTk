@@ -1,4 +1,5 @@
 from .objects import cEntry, cOptionMenu
+from .objects_ext import autoEntry
 from .utils import master
 from .flags import __ttk_enabled__
 
@@ -177,4 +178,15 @@ class reOptionMenu(cOptionMenu):
 			self.configure(bg="red", fg="white")
 			return False
 	def get(self):
-		return self.get(), self._isvalid()
+		return self.var.get(), self._isvalid()
+		
+class reautoEntry(autoEntry):
+	def isvalid(self):
+		if self.sv.get() in self.options:
+			self.configure(bg=self.bg, fg=self.fg)
+			return True
+		else:
+			self.configure(bg="red", fg="white")
+			return False
+	def get(self):
+		return self.sv.get(), self.isvalid()
