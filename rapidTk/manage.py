@@ -89,15 +89,15 @@ class _WindowManager(object, metaclass=SingletonMeta):
 		self.active_window = pid
 
 	def _get_deactive_space(self):
-		print("\n".join([str(x) for x in self.inactive_windows]))
 		return self.inactive_windows.index(None)
 
 	def remove(self, pid): # removes object from manager
 		del self.pids[pid]
 
-	def destroy(self, pids):#delets object and removes from manager
+	def destroy(self):#delets object and removes from manager
+		pids = list(self.pids.keys())
 		for pid in pids:
-			self.pids[pid]._close()
+			self.pids[pid]['widget']._close()
 
 class _PopupManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):

@@ -1,4 +1,4 @@
-from .objects import cEntry, cOptionMenu
+from .objects import cEntry, cOptionMenu, cCombobox
 from .objects_ext import autoEntry
 from .utils import master
 from .flags import __ttk_enabled__
@@ -145,8 +145,8 @@ class reEntry(cEntry, master):
 		self.fg = self.cget('foreground')
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-	def insert(self, pos, end, text=""):
-		super().insert(pos, end, text)
+	def insert(self, pos, text=""):
+		super().insert(pos, text)
 		self._isvalid()
 	def get(self):
 		return super().get(), self._isvalid()
@@ -176,6 +176,23 @@ class reOptionMenu(cOptionMenu):
 			return True
 		else:
 			self.configure(bg="red", fg="white")
+			return False
+	def get(self):
+		return self.var.get(), self._isvalid()
+class reCombobox(cCombobox, master):
+	def __init__(self, master, **kwargs):
+		super(reCombobox, self).__init__(master, **kwargs)
+		#self.style.configure('Fail.TCombobox', fieldbackground='red', background='red', foreground='white')
+		self.var.trace('w', self._isvalid)
+
+	def _isvalid(self, a=None, b=None, c=None, e=None):
+		#self.get_master().focus_set()
+		self.selection_clear()
+		if self.var.get() in [str(x) for x in self.values]:
+			self.configure(style=f'{str(self.__repr__())}.Main.TCombobox')
+			return True
+		else:
+			self.configure(style=f'{str(self.__repr__())}.Fail.TCombobox')
 			return False
 	def get(self):
 		return self.var.get(), self._isvalid()

@@ -9,8 +9,7 @@ try:
 	import tkcalendar
 	from .tkCalendar_ext.calendar_ext import DateEntry, cDateEntry, reDateEntry
 except:
-	print("tkcalendar missing")
-	raise
+	raise DateEntryNotFoundException
 	class DateEntry:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException

@@ -58,6 +58,7 @@ class autoEntry(cEntry, master):
 		self.autofg = '#000000'
 		self.hovertext = '#BBBBBB'
 		self.hovercolor = '#000000'
+		self.cursor_colour = "#000000"
 		if 'strict' in kwargs:
 			if kwargs['strict'] in [1, '1', True]:
 				self.strict = True
@@ -87,6 +88,11 @@ class autoEntry(cEntry, master):
 		if 'autofg' in kwargs:
 			self.autofg = kwargs['autofg']
 			del kwargs['autofg']
+		if 'insertbackground' in kwargs:
+			self.cursor_colour = kwargs['insertbackground']
+		else:
+			kwargs['insertbackground'] = self.cursor_colour
+
 		self.sv = StringVar()
 		kwargs['textvariable'] = self.sv
 		cEntry.__init__(*(self, master), **kwargs)
@@ -270,12 +276,9 @@ class scrollArea(cFrame, master):
 			self.sCanvas.itemconfig(self.cw, height=event.height)
 class movableWindow(cCanvas, master):
 	def __init__(self, master, **kwargs):
-		self.wm = False
-		if __window_manager__: ##checks if flag is set and uses manager
-			self.wm = _WindowManager()
+		
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		self.master = master
 		self.motion = False
 		if 'width' not in kw_wid:
 			kw_wid['width'] = 400
@@ -301,6 +304,7 @@ class movableWindow(cCanvas, master):
 		kw_wid['borderwidth'] = 1
 		kw_wid['relief'] = "groove"
 		cCanvas.__init__(*(self, master), **kw_wid)
+		self.wm = self.get_root().wm
 		self.root = self.winfo_toplevel()
 		self.pid = self.root.uid.new()
 		self.posx=0
@@ -308,7 +312,6 @@ class movableWindow(cCanvas, master):
 		if self.wm:
 			self.wm.add_pid(self.pid, self)
 		self._create()
-		
 	def _create(self):
 		self.pack_propagate(False)
 		self.place(x=self.root.winfo_width()/2-(self.width/2), y=(self.root.winfo_height()/2)-(self.height/4))
@@ -355,10 +358,8 @@ class movableWindow(cCanvas, master):
 		elif self.winfo_y() < 0:
 			self.place(y=10)
 			self.posy = 10
-
 	def _popout(self): ##pop out to a new toplevel window
 		pass
-
 	def _minimize(self):
 		if self.wm:
 			pos = self.wm._get_deactive_space()+1
@@ -379,7 +380,6 @@ class movableWindow(cCanvas, master):
 		self.configure(height=self.height)
 		self.place(x=self.posx, y=self.posy)
 		self.minimize.configure(text="🗕", command=self._minimize)
-
 	def _close(self):
 		if self.wm:
 			self.wm._set_active(self.pid)
@@ -476,6 +476,8 @@ class qForm:
 	def update(self, question, value):
 		self.questions[question]['object'].set(value)
 class ImageLabel(cLabel, master):
+	def __init__(self, master, **kwargs):
+		super(ImageLabel, self).__init__(master)
 	def load(self, im, bg):
 		if isinstance(im, str):
 			im = Image.open(im)
@@ -487,7 +489,6 @@ class ImageLabel(cLabel, master):
 				im.seek(i)
 		except EOFError:
 			pass
-
 		try:
 			self.delay = im.info['duration']
 		except:
@@ -495,7 +496,10 @@ class ImageLabel(cLabel, master):
 		if len(self.frames) == 1:
 			self.config(image=self.frames[0], bg=bg)
 		else:
-			self.next_frame()
+			try:
+				self.next_frame()
+			except:
+				pass
 	def unload(self):
 		self.config(image=None)
 		self.frames = None
@@ -503,8 +507,11 @@ class ImageLabel(cLabel, master):
 		if self.frames:
 			self.loc += 1
 			self.loc %= len(self.frames)
-			self.config(image=self.frames[self.loc])
-			self.after(self.delay, self.next_frame)
+			try:
+				self.config(image=self.frames[self.loc])
+				self.get_root().after(self.delay, self.next_frame)
+			except:
+				pass
 class Tooltip:
     def __init__(self, widget,*,bg='#FFFFEA',pad=(5, 3, 5, 3),text='widget info',waittime=400,wraplength=250):
         self.waittime = waittime

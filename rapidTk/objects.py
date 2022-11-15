@@ -1,7 +1,7 @@
 from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu
 from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
-from tkinter.ttk import Treeview
+from tkinter.ttk import Treeview, Combobox, Spinbox
 from tkinter.scrolledtext import ScrolledText
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
@@ -147,6 +147,7 @@ class cCanvas(Canvas, master):
 
 class cTreeview(Treeview, master):
 	def __init__(self, master, **kwargs):
+		self.master = master
 		self.__dict__.update(kwargs)
 		self.i = 0
 		self.detached_data = []
@@ -183,18 +184,12 @@ class cTreeview(Treeview, master):
 		colour1 = '#%02x%02x%02x'%(rgb[0], rgb[1], rgb[2])
 		colour2 = '#%02x%02x%02x'%(rgbt1[0], rgbt1[1], rgbt1[2])
 		colour3 = '#%02x%02x%02x'%(rgbt2[0], rgbt2[1], rgbt2[2])
-		self.style = None
-		if __ttk_enabled__:
-			self.style = _ThemeManager.mystyle
-			self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
-			self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
-			self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
-		else:
-			self.style = Style()
-			self.style.theme_use("clam")
-			self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
-			self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
-			self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
+		self.style = self.get_root().thm.style
+		#self.style = Style()
+		
+		self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
+		self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
+		self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
 		super(cTreeview, self).__init__(master)
 		self.configure(kw_wid)
 		if __ttk_enabled__:
@@ -372,4 +367,53 @@ class cOptionMenu(OptionMenu, master):
 		self.configure(takefocus=1)
 		self.update()
 
+class cCombobox(Combobox, master):
+	def __init__(self, master, **kwargs):
+		self.__dict__.update(kwargs)
+		if 'textvariable' in kwargs:
+			raise KeywordError('textvariable')
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		self.var = StringVar()
+		super(cCombobox, self).__init__(master)
 
+		if 'state' not in kw_wid:
+			kw_wid['state'] = 'readonly'
+		if 'default' in kw_wid:
+			self.var.set(kw_wid['default'])
+			del kw_wid['default']
+		kw_wid['textvariable'] = self.var
+		self.configure(kw_wid)
+		if 'background' in kw_wid:
+			bg = kw_wid['background']
+		else:
+			bg = 'white'
+
+		if 'foreground' in kw_wid:
+			fg = kw_wid['foreground']
+		else:
+			fg = 'black'
+		self.style = self.get_root().thm.style
+		self.style.map(f'{str(self.__repr__())}.Main.TCombobox', selectbackground=[('readonly', 'blue')])
+		self.style.map(f'{str(self.__repr__())}.Main.TCombobox',fieldbackground=[('readonly', bg)])
+		self.style.map(f'{str(self.__repr__())}.Main.TCombobox',background=[('readonly', bg)])
+		self.style.map(f'{str(self.__repr__())}.Main.TCombobox',foreground=[('readonly', fg)])
+		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', selectbackground=[('readonly', 'blue')])
+		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', fieldbackground=[('readonly', 'red')])
+		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', background=[('readonly', 'red')])
+		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', foreground=[('readonly', 'white')])
+		self.configure(style=f'{str(self.__repr__())}.Main.TCombobox')
+		self.bind("<FocusIn>", self.unselect)
+		if len(kw_pak) != 0:
+			self.pack(kw_pak)
+		self.var.trace("w", self.unselect)
+	def get(self):
+		return self.var.get()
+	def unselect(self, a=None, b=None, c=None, e=None):
+		self.selection_clear()
+	def __repr__(self):
+		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
+
+
+class cSpinbox(Spinbox): ##incremental box
+	def __init__(self, master, **kwargs):
+		pass

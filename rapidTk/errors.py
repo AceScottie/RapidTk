@@ -23,3 +23,7 @@ class DateEntryNotFoundException(TemplateException):
 	def __init__(self):
 		message = "tkcalendar module not found.\nPlease install tkcalendar module to use DateEntry widgets."
 		super().__init__(message)
+class KeywordError(TemplateException):
+	def __init__(self, keyword):
+		message = f"There was an unexpected keyword presented {keyword}"
+		super().__init__(message)

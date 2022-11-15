@@ -4,34 +4,29 @@ from .errors import *
 from .utils import coord, _UniqueIdentifiers
 from .manage import _ScrollManager, _WindowManager, _PopupManager, _TabManager
 from .theme import _ThemeManager
-from .flags import __ttk_enabled__
+
 class rapidTk(Tk):
 	def __init__(self, with_managers=True, with_ttk=False):
-		#if with_ttk:
-		#	flags.__ttk_enabled__ = True
+		self.afters = {}
+		self.quitter = False
 		self.origin = [coord(0, 0), coord(0, 0)]
 		self._schedule_tasks = {}
 		self._tasks = []
 		self.uid = _UniqueIdentifiers()
 		Tk.__init__(self)
-		if with_managers:
-			self.sm = _ScrollManager(self)	
-			self.thm = _ThemeManager(self)
-			self.thm.set_style("breeze")
-			self.pop = _PopupManager(self)
-			self.tm = _TabManager(self)
-			self.wm = _WindowManager(self)
-		else:
-			self.sm = None
-			self.thm = None
-			self.pop = None
-			self.tm = None
-			self.wm = None
+		self.sm = _ScrollManager(self)	
+		self.thm = _ThemeManager(self)
+		self.thm.set_theme("clam")
+		self.pop = _PopupManager(self)
+		self.tm = _TabManager(self)
+		self.wm = _WindowManager(self)
 		self.after(1, self._schedule)
 		self.bind('<F12>',self._fullscreen)
 	def _schedule(self):
-		for s in self._schedule_tasks.items():
-			s['task']()
+		if not self.quitter:
+			for s in self._schedule_tasks.items():
+				if not self.quitter:
+					s['task']()
 	def add_schedule_taks(self, tid, task):
 		if tid not in self._schedule_tasks.keys(): 
 			self._schedule_tasks.append({'id':tid, 'task':task})
@@ -71,8 +66,25 @@ class rapidTk(Tk):
 		self.overrideredirect(False)
 		self.geometry("%sx%s+%s+%s"%(self.origin[0].x, self.origin[0].y, self.origin[1].x, self.origin[1].y))
 		self.origin = [coord(0, 0),coord(0, 0)]
+
+	def destroy(self):
+		for af in self.afters.keys():
+			self.after_cancel(af)
+		self.quitter = True
+		self.wm.destroy()
+		for af in self.afters.keys():
+			self.after_cancel(af)
+		self.update()
+		self.update_idletasks()
+		super().destroy()
+
+
+	def after(self, time, func):
+		if not self.quitter:
+			uid = self.uid.new()
+			self.afters[uid] = super().after(time, func)
+
 	def get_root(self):
-		print('this is root')
 		return self
 
 class PackProcess:
