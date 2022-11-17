@@ -66,7 +66,6 @@ class rapidTk(Tk):
 		self.overrideredirect(False)
 		self.geometry("%sx%s+%s+%s"%(self.origin[0].x, self.origin[0].y, self.origin[1].x, self.origin[1].y))
 		self.origin = [coord(0, 0),coord(0, 0)]
-
 	def destroy(self):
 		for af in self.afters.keys():
 			self.after_cancel(af)
@@ -77,13 +76,10 @@ class rapidTk(Tk):
 		self.update()
 		self.update_idletasks()
 		super().destroy()
-
-
 	def after(self, time, func):
 		if not self.quitter:
 			uid = self.uid.new()
 			self.afters[uid] = super().after(time, func)
-
 	def get_root(self):
 		return self
 

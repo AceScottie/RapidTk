@@ -1,6 +1,6 @@
-from tkinter import StringVar, IntVar, Event, INSERT, END, Misc
-from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH
-from tkinter import N, E, S, W, NW, NE, SE, SW
+from tkinter import StringVar, IntVar, Event, INSERT, END, Misc, Toplevel
+from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, SOLID
+from tkinter import N, E, S, W, NW, NE, SE, SW, NSEW
 from tkinter import Scrollbar, VERTICAL, HORIZONTAL 
 
 
@@ -247,9 +247,9 @@ class scrollArea(cFrame, master):
 			self.v = kw_wid['v']
 			del kw_wid['v']
 		cFrame.__init__(*(self, master), **kw_wid)
+		
 		self.sCanvas = cCanvas(self, side=TOP, fill=BOTH, expand=1)
-		self.sFrame = cFrame(self.sCanvas)
-		#self.vspacer = cCanvas(self.sFrame, width=1000, height=0, side=TOP)
+		self.sFrame = cFrame(self.sCanvas, side=LEFT, fill=BOTH, expand=1)
 		self.cw = self.sCanvas.create_window((0, 0), window=self.sFrame, anchor=NW)
 		if self.h in [1, "1", True]:
 			self.scroll_h = Scrollbar(master, orient=VERTICAL, command=self.sCanvas.yview)
@@ -261,6 +261,7 @@ class scrollArea(cFrame, master):
 			self.scroll_v.pack(side=BOTTOM, fill=X)
 		self.sFrame.bind("<Configure>", self._update_scrollregion)
 		self.sCanvas.bind('<Configure>', self._FrameWidth)
+		
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 	def _update_scrollregion(self, event):
@@ -276,7 +277,6 @@ class scrollArea(cFrame, master):
 			self.sCanvas.itemconfig(self.cw, height=event.height)
 class movableWindow(cCanvas, master):
 	def __init__(self, master, **kwargs):
-		
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.motion = False
@@ -513,71 +513,69 @@ class ImageLabel(cLabel, master):
 			except:
 				pass
 class Tooltip:
-    def __init__(self, widget,*,bg='#FFFFEA',pad=(5, 3, 5, 3),text='widget info',waittime=400,wraplength=250):
-        self.waittime = waittime
-        self.wraplength = wraplength
-        self.widget = widget
-        self.text = text
-        self.widget.bind("<Enter>", self.onEnter)
-        self.widget.bind("<Leave>", self.onLeave)
-        self.widget.bind("<ButtonPress>", self.onLeave)
-        self.bg = bg
-        self.pad = pad
-        self.id = None
-        self.tw = None
-    def onEnter(self, event=None):
-        self.schedule()
-        pass
-    def onLeave(self, event=None):
-        self.unschedule()
-        self.hide()
-    def schedule(self):
-        self.unschedule()
-        self.id = self.widget.after(self.waittime, self.show)
-    def unschedule(self):
-        id_ = self.id
-        self.id = None
-        if id_:
-            self.widget.after_cancel(id_)
-    def show(self):
-        def tip_pos_calculator(widget, label,*,tip_delta=(10, 5), pad=(5, 3, 5, 3)):
-            w = widget
-            s_width, s_height = w.winfo_screenwidth(), w.winfo_screenheight()
-            width, height = (pad[0] + label.winfo_reqwidth() + pad[2],pad[1] + label.winfo_reqheight() + pad[3])
-            mouse_x, mouse_y = w.winfo_pointerxy()
-            x1, y1 = mouse_x + tip_delta[0], mouse_y + tip_delta[1]
-            x2, y2 = x1 + width, y1 + height
-            x_delta = x2 - s_width
-            if x_delta < 0:
-                x_delta = 0
-            y_delta = y2 - s_height
-            if y_delta < 0:
-                y_delta = 0
-            offscreen = (x_delta, y_delta) != (0, 0)
-            if offscreen:
-                if x_delta:
-                    x1 = mouse_x - tip_delta[0] - width
-                if y_delta:
-                    y1 = mouse_y - tip_delta[1] - height
-            offscreen_again = y1 < 0
-            if offscreen_again:
-                y1 = 0
-            return x1, y1
-        bg = self.bg
-        pad = self.pad
-        widget = self.widget
-        self.tw = Toplevel(widget)
-        self.tw.wm_overrideredirect(True)
-        win = Frame(self.tw,background=bg,borderwidth=0)
-        label = ttk.Label(win,text=self.text,justify=LEFT,background=bg,relief=SOLID,borderwidth=0,wraplength=self.wraplength)
-        label.grid(padx=(pad[0], pad[2]),pady=(pad[1], pad[3]),sticky=NSEW)
-        win.grid()
-        x, y = tip_pos_calculator(widget, label)
-        self.tw.wm_geometry("+%d+%d" % (x, y))
-    def hide(self):
-        tw = self.tw
-        if tw:
-            tw.destroy()
-        self.tw = None
-
-			
+	def __init__(self, widget,*,bg='#FFFFEA',fg='#000000',pad=(5, 3, 5, 3),text='widget info',waittime=400,wraplength=250):
+		self.waittime = waittime
+		self.wraplength = wraplength
+		self.widget = widget
+		self.text = text
+		self.widget.bind("<Enter>", self.onEnter)
+		self.widget.bind("<Leave>", self.onLeave)
+		self.widget.bind("<ButtonPress>", self.onLeave)
+		self.bg = bg
+		self.fg = fg 
+		self.pad = pad
+		self.id = None
+		self.tw = None
+	def onEnter(self, event=None):
+		self.schedule()
+		pass
+	def onLeave(self, event=None):
+		self.unschedule()
+		self.hide()
+	def schedule(self):
+		self.unschedule()
+		self.id = self.widget.after(self.waittime, self.show)
+	def unschedule(self):
+		id_ = self.id
+		self.id = None
+		if id_:
+			self.widget.after_cancel(id_)
+	def show(self):
+		def tip_pos_calculator(widget, label,*,tip_delta=(10, 5), pad=(5, 3, 5, 3)):
+			w = widget
+			s_width, s_height = w.winfo_screenwidth(), w.winfo_screenheight()
+			width, height = (pad[0] + label.winfo_reqwidth() + pad[2],pad[1] + label.winfo_reqheight() + pad[3])
+			mouse_x, mouse_y = w.winfo_pointerxy()
+			x1, y1 = mouse_x + tip_delta[0], mouse_y + tip_delta[1]
+			x2, y2 = x1 + width, y1 + height
+			x_delta = x2 - s_width
+			if x_delta < 0:
+				x_delta = 0
+			y_delta = y2 - s_height
+			if y_delta < 0:
+				y_delta = 0
+			offscreen = (x_delta, y_delta) != (0, 0)
+			if offscreen:
+				if x_delta:
+					x1 = mouse_x - tip_delta[0] - width
+				if y_delta:
+					y1 = mouse_y - tip_delta[1] - height
+			offscreen_again = y1 < 0
+			if offscreen_again:
+				y1 = 0
+			return x1, y1
+		pad = self.pad
+		widget = self.widget
+		self.tw = Toplevel(widget)
+		self.tw.wm_overrideredirect(True)
+		win = cFrame(self.tw,background=self.bg,borderwidth=0)
+		label = cLabel(win,text=self.text,justify=LEFT,background=self.bg, foreground=self.fg, relief=SOLID,borderwidth=0,wraplength=self.wraplength)
+		label.grid(padx=(pad[0], pad[2]),pady=(pad[1], pad[3]),sticky=NSEW)
+		win.grid()
+		x, y = tip_pos_calculator(widget, label)
+		self.tw.wm_geometry("+%d+%d" % (x, y))
+	def hide(self):
+		tw = self.tw
+		if tw:
+			tw.destroy()
+		self.tw = None
