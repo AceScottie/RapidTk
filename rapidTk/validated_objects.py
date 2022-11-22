@@ -125,14 +125,13 @@ def style_widget(wd, st, t):
 		return None
 
 class reEntry(cEntry, master):
-	def __init__(self, master, **kwargs):
+	def __init__(self, master, value="", **kwargs):
 		super(reEntry, self).__init__(master)
 		self.stvar = StringVar()
 		self.regex = ""
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'text' in kw_wid.keys():
-			self.stvar.set(kw_wid['text'])
-			del kw_wid['text']
+		if 'value' in kw_wid:
+			del kw_wid['value']
 		if 're' in kw_wid.keys():
 			self.regex = kw_wid['re']
 			del kw_wid['re']

@@ -97,18 +97,31 @@ def style_widget(wd, st, t):
 class cDateEntry(DateEntry, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
+		if 'textvariable' in kwargs.keys():
+			self.stvar = kwargs['textvariable']
+			del kw_wid['text']
+		else:
+			self.stvar = StringVar()
+			kwargs['textvariable'] = self.stvar
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		if 'date_pattern' not in kw_wid.keys():
 			kw_wid['date_pattern'] = "dd/mm/yyyy"
+		if 'text' in kw_wid.keys():
+			self.stvar.set(kw_wid['text'])
+			del kw_wid['text']
+		else:
+			self.stvar.set('01/01/1970')
 		super(cDateEntry, self).__init__(master)
 		self.configure(kw_wid)
 		style_widget(self, kw_style, "TDateEntry")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+	def detele(ind=0, end='end'):
+		super().insert(0, '')
 	def insert(self, ind=0, data=''):
 		try:
-			if isinstance(data, datetime.datetime) or isinstance(data, datetime.date):
-				super().insert(data.strftime("%d/%m/%Y"))
+			if isinstance(data, datetime) or isinstance(data, date):
+				super().insert(ind, data.strftime("%d/%m/%Y"))
 			else:
 				super().insert(ind, data)
 		except:
@@ -116,7 +129,6 @@ class cDateEntry(DateEntry, master):
 
 class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateEntry for autoStyle and stuff
 	def __init__(self, master, **kwargs):
-		self.stvar = StringVar()
 		self.regex = ""
 		self.bg = ""
 		self.fg = ""
@@ -146,7 +158,6 @@ class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateE
 			del kw_wid['re']
 		else:
 			self.regex = '.*'
-
 		if 'min' in kw_wid.keys():
 			self.min = kw_wid['min']
 			del kw_wid['min']
@@ -161,8 +172,8 @@ class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateE
 		self.update_idletasks()
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-	def insert(self, pos, end, date="01/01/1970"):
-		super().insert(date)
+	def insert(self, pos, date="01/01/1970"):
+		super().insert(pos, date)
 		self._isvalid()
 	def get(self):
 		return self.stvar.get(), self._isvalid()

@@ -309,6 +309,7 @@ class movableWindow(cCanvas, master):
 		self.pid = self.root.uid.new()
 		self.posx=0
 		self.posy=0
+		self.binds = []
 		if self.wm:
 			self.wm.add_pid(self.pid, self)
 		self._create()
@@ -325,10 +326,10 @@ class movableWindow(cCanvas, master):
 		self.close = cButton(self.top, text="X", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
 		self.minimize = cButton(self.top, text="🗕", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
 		popout = cButton(self.top, text="⇱", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
-		move.bind("<Button-1>", self._click)
-		move.bind("<B1-Motion>", self._move)
-		move.bind("<ButtonRelease-1>", self._drop)
-		self.root.bind("<Configure>", self._drop)
+		self.binds.append(move.bind("<Button-1>", self._click))
+		self.binds.append(move.bind("<B1-Motion>", self._move))
+		self.binds.append(move.bind("<ButtonRelease-1>", self._drop))
+		self.rootbind = self.root.bind("<Configure>", self._drop)
 	def _click(self, event):
 		#if self.wm:
 			#self.wm._set_active(self.pid)
@@ -346,18 +347,21 @@ class movableWindow(cCanvas, master):
 			self.update()
 			self.motion = False
 	def _drop(self, event):
-		if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
-			self.place(x=self.root.winfo_width()-self.winfo_width())
-			self.posx = self.root.winfo_width()-self.winfo_width()
-		elif self.winfo_x() < 0:
-			self.place(x=0)
-			self.posx = 0
-		if self.winfo_y() + self.winfo_height() > self.root.winfo_height():
-			self.place(y=self.root.winfo_height()-self.winfo_height())
-			self.posy = self.root.winfo_height()-self.winfo_height()
-		elif self.winfo_y() < 0:
-			self.place(y=10)
-			self.posy = 10
+		try:
+			if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
+				self.place(x=self.root.winfo_width()-self.winfo_width())
+				self.posx = self.root.winfo_width()-self.winfo_width()
+			elif self.winfo_x() < 0:
+				self.place(x=0)
+				self.posx = 0
+			if self.winfo_y() + self.winfo_height() > self.root.winfo_height():
+				self.place(y=self.root.winfo_height()-self.winfo_height())
+				self.posy = self.root.winfo_height()-self.winfo_height()
+			elif self.winfo_y() < 0:
+				self.place(y=10)
+				self.posy = 10
+		except:
+			self._close()
 	def _popout(self): ##pop out to a new toplevel window
 		pass
 	def _minimize(self):
@@ -384,6 +388,14 @@ class movableWindow(cCanvas, master):
 		if self.wm:
 			self.wm._set_active(self.pid)
 			self.wm.remove(self.pid)
+		for b in self.binds:
+			self.unbind(b)
+		self.root.unbind(self.rootbind)
+		self.destroy()
+	def __del__(self):
+		for b in self.binds:
+			self.unbind(b)
+		self.root.unbind(self.rootbind)
 		self.destroy()
 class qForm:
 	def __init__(self):

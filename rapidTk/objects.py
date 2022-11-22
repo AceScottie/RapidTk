@@ -89,7 +89,9 @@ class cEntry(Entry, master):
 		self.__dict__.update(kwargs)
 		
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cEntry, self).__init__( master)
+		if 'value' in kw_wid:
+			del kw_wid['value']
+		super(cEntry, self).__init__(master)
 		if 'textvariable' not in kwargs.keys():
 			self.var = StringVar()
 			if value != "":
@@ -108,6 +110,8 @@ class cEntry(Entry, master):
 		self.bind("<Button-3>", self._do_popup)
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+	def get(self):
+		return self.var.get()
 	def _do_popup(self, event):
 		try:
 			self.__menu.tk_popup(event.x_root, event.y_root)
@@ -357,15 +361,20 @@ class cOptionMenu(OptionMenu, master):
 		self['menu'].configure(activebackground="blue", activeforeground="white")
 		self.configure(kw_wid)
 		style_widget(self, kw_style, "TOptionMenu")
-		self.bind("<Configure>", lambda:self.tkfocus)
+		self.bind("<space>", self.open_option_menu)
+
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+	def set(self, value):
+		self.var.set(value)
 	def get(self, **kwargs):
 		return self.var.get()
-	def tkfocus(self):
-		self.configure(takefocus=0)
-		self.configure(takefocus=1)
-		self.update()
+	def open_option_menu(self, event):
+		obj = event.widget
+		x = obj.winfo_rootx()
+		y = obj.winfo_rooty() + obj.winfo_height()
+		obj["menu"].post(x, y)
+		return "break"
 
 class cCombobox(Combobox, master):
 	def __init__(self, master, **kwargs):
@@ -412,7 +421,6 @@ class cCombobox(Combobox, master):
 		self.selection_clear()
 	def __repr__(self):
 		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
-
 
 class cSpinbox(Spinbox): ##incremental box
 	def __init__(self, master, **kwargs):
