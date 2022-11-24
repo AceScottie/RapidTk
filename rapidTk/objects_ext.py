@@ -17,6 +17,17 @@ from .utils import coord, master
 from .manage import _WindowManager
 from .theme import _ThemeManager
 
+from functools import wraps
+def memoize(func):
+	cache = {}
+
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		key = str(args) + str(kwargs)
+		if key not in cache:
+			cache[key] = func(*args, **kwargs)
+		return cache[key]
+	return wrapper
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
 	if __ttk_enabled__:
@@ -309,7 +320,8 @@ class movableWindow(cCanvas, master):
 		self.pid = self.root.uid.new()
 		self.posx=0
 		self.posy=0
-		self.binds = []
+		self.binds = {}
+		self.rootbind = None
 		if self.wm:
 			self.wm.add_pid(self.pid, self)
 		self._create()
@@ -322,46 +334,39 @@ class movableWindow(cCanvas, master):
 			move = cLabel(self.top, text=self.title_text, fg=self.fg, justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		else:
 			move = cLabel(self.top, text="", justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
-		
 		self.close = cButton(self.top, text="X", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
 		self.minimize = cButton(self.top, text="🗕", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
 		popout = cButton(self.top, text="⇱", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
-		self.binds.append(move.bind("<Button-1>", self._click))
-		self.binds.append(move.bind("<B1-Motion>", self._move))
-		self.binds.append(move.bind("<ButtonRelease-1>", self._drop))
+		self.binds["<Button-1>"] = move.bind("<Button-1>", self._click)
+		self.binds["<B1-Motion>"] = move.bind("<B1-Motion>", self._move)
+		self.binds["<ButtonRelease-1>"] = move.bind("<ButtonRelease-1>", self._drop)
 		self.rootbind = self.root.bind("<Configure>", self._drop)
 	def _click(self, event):
-		#if self.wm:
-			#self.wm._set_active(self.pid)
 		Misc.lift(self)
 	def _move(self, event):
-		#if self.wm:
-			#self.wm._set_active(self.pid)
-		Misc.lift(self)
-		if not self.motion:
-			self.motion = True
-			if(self.root.winfo_pointerx() != "??" and self.root.winfo_pointery() != "??"):
-				self.place(x=(self.root.winfo_pointerx() - self.root.winfo_rootx()) - self.winfo_width()/2, y=self.root.winfo_pointery() - self.root.winfo_rooty()-10)
-				self.posx=(self.root.winfo_pointerx() - self.root.winfo_rootx()) - self.winfo_width()/2
-				self.posy=self.root.winfo_pointery() - self.root.winfo_rooty()-10
-			self.update()
-			self.motion = False
+		if(self.root.winfo_pointerx() != "??" and self.root.winfo_pointery() != "??"):
+			self.posx, self.posy = self._calc_move(self.root.winfo_pointerx(), self.root.winfo_rootx(), self.winfo_width(), self.root.winfo_pointery(), self.root.winfo_rooty())
+			self.place(x=self.posx, y=self.posy)
+			#self.update()
+	@memoize
+	def _calc_move(self, rx, rrx, w, ry, rry):
+		x=(rx-rrx-w/2)
+		y=ry-rry-10
+		return x, y
+
 	def _drop(self, event):
-		try:
-			if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
-				self.place(x=self.root.winfo_width()-self.winfo_width())
-				self.posx = self.root.winfo_width()-self.winfo_width()
-			elif self.winfo_x() < 0:
-				self.place(x=0)
-				self.posx = 0
-			if self.winfo_y() + self.winfo_height() > self.root.winfo_height():
-				self.place(y=self.root.winfo_height()-self.winfo_height())
-				self.posy = self.root.winfo_height()-self.winfo_height()
-			elif self.winfo_y() < 0:
-				self.place(y=10)
-				self.posy = 10
-		except:
-			self._close()
+		if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
+			self.place(x=self.root.winfo_width()-self.winfo_width())
+			self.posx = self.root.winfo_width()-self.winfo_width()
+		elif self.winfo_x() < 0:
+			self.place(x=0)
+			self.posx = 0
+		if self.winfo_y() + self.winfo_height() > self.root.winfo_height():
+			self.place(y=self.root.winfo_height()-self.winfo_height())
+			self.posy = self.root.winfo_height()-self.winfo_height()
+		elif self.winfo_y() < 0:
+			self.place(y=10)
+			self.posy = 10
 	def _popout(self): ##pop out to a new toplevel window
 		pass
 	def _minimize(self):
@@ -385,18 +390,14 @@ class movableWindow(cCanvas, master):
 		self.place(x=self.posx, y=self.posy)
 		self.minimize.configure(text="🗕", command=self._minimize)
 	def _close(self):
-		if self.wm:
-			self.wm._set_active(self.pid)
+		if self.wm and self.pid in self.wm.pids:
 			self.wm.remove(self.pid)
-		for b in self.binds:
-			self.unbind(b)
-		self.root.unbind(self.rootbind)
+		#for k, v in self.binds.items(): ##this causes an error. Something with the way unbind doesnt delete the tcl entry so it is attempted to be removed twice
+		#	self.unbind(k, v)
+		self.root.unbind('<Configure>', self.rootbind)
 		self.destroy()
 	def __del__(self):
-		for b in self.binds:
-			self.unbind(b)
-		self.root.unbind(self.rootbind)
-		self.destroy()
+		self._close()
 class qForm:
 	def __init__(self):
 		self.questions = {}

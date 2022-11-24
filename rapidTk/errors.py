@@ -27,3 +27,7 @@ class KeywordError(TemplateException):
 	def __init__(self, keyword):
 		message = f"There was an unexpected keyword presented {keyword}"
 		super().__init__(message)
+class MenuContexError(TemplateException):
+	def __init__(self):
+		message = "context should be a {type}|{name}:command dictionary pair"
+		super().__init__(message)

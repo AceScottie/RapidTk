@@ -74,6 +74,7 @@ class _WindowManager(object, metaclass=SingletonMeta):
 		self.inactive_windows = [None]*10
 	def add_pid(self, pid, window):
 		self.pids[pid] = {'widget':window, 'active':1}
+	
 	def _set_active(self, pid):
 		self.pids[pid]['active'] = 0
 		if pid in self.inactive_windows:
@@ -92,9 +93,12 @@ class _WindowManager(object, metaclass=SingletonMeta):
 		return self.inactive_windows.index(None)
 
 	def remove(self, pid): # removes object from manager
+		if pid in self.inactive_windows:
+			idx = self.inactive_windows.index(pid)
+			self.inactive_windows[idx] = None
 		del self.pids[pid]
 
-	def destroy(self):#delets object and removes from manager
+	def destroy(self):#delets objects and removes from manager
 		pids = list(self.pids.keys())
 		for pid in pids:
 			self.pids[pid]['widget']._close()

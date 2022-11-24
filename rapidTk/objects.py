@@ -425,3 +425,57 @@ class cCombobox(Combobox, master):
 class cSpinbox(Spinbox): ##incremental box
 	def __init__(self, master, **kwargs):
 		pass
+
+class cMenu(Menu, master):
+	def __init__(self, master, **kwargs):
+		self.__dict__.update(kwargs)
+		context = kwargs.pop('context', None) # get context builder or None
+		if not isinstance(context, dict):
+			raise MenuContexError 
+		super(cMenu, self).__init__(master, tearoff=0)
+		self.sub_menus = {}
+		self.options = {}
+		menu_context = []
+		if context:
+			for k, v in context.items():
+				sub_catagories = []
+				if "|" in k:
+					mtype = k.split("|")[0]
+					mname = k.split("|")[-1].split(".")[-1]
+				else:
+					mtype = "selection"
+					mname = k.split(".")[-1]
+				if "." in k:
+					for sub in k.split("|")[-1].split("."):
+						sub_catagories.append(sub)
+					del sub_catagories[-1]
+				menu_context.append({'type':mtype, 'name':mname, 'subcatagories':sub_catagories, 'command':v})
+		self._build_menu(master, menu_context)
+		for menu in menu_context:
+			if menu['subcatagories']:
+				self.options[f"{'.'.join(menu['subcatagories'])}.{menu['name']}"] = self.sub_menus['.'.join(menu['subcatagories'])].add_command(label=menu['name'], command=menu['command'])
+			else:
+				self.options[menu['name']] = self.add_command(label=menu['name'], command=menu['command'])
+
+	def _build_menu(self, master, context):
+		for item in context:
+			if item['subcatagories']:
+				if ".".join(item['subcatagories']) not in self.sub_menus: ##if the full sub_menu has been created skip.
+					sub_name = ""
+					for sub in item['subcatagories']:
+						old_name = sub_name
+						sub_name += f'.{sub}'
+						if sub not in self.sub_menus:
+							self.sub_menus[sub_name[1:]] = Menu(self.sub_menus[old_name] if old_name in self.sub_menus else self, tearoff=0)
+							if old_name[1:] in self.sub_menus:
+								self.sub_menus[old_name[1:]].add_cascade(label=sub, menu=self.sub_menus[sub_name[1:]])
+							else:
+								self.add_cascade(label=sub, menu=self.sub_menus[sub_name[1:]])
+
+
+
+	def _do_popup(self, event):
+		try:
+			self.tk_popup(event.x_root, event.y_root)
+		finally:
+			self.grab_release()

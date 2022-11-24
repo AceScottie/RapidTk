@@ -89,8 +89,43 @@ def example_no_PackProcess():
 	myEntry = cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
 	root.mainloop()
 
+def example_basic_menu():
+	"""
+	cMenu is a quick and efficent way to make simple menus.
+	The only thing you need to provide is context on creation.
+	context is a dictionary of {Menu(.submenu(s)).Label : command}
+	example:
+	context={"Menu.Submenu1.Submenu2.options":lambda m="test":print(m)}
+	will create a main menu called "Menu" with a submenu called Submenu1 with a submenu called "Submenu2" with an option called "options"
+	The "options" option will run the command when clicked.
 
+	Note: subtree paths do not stack.
+	"Menu.Submenu1.Submenu2" is not the same as "Submenu1.Submenu2".
+	This will create 2 menus called "Menu" and "Submenu1"
+
+	all submenus and options can be accessed though the cMenu.sub_menus and cMenu.options dictionarys.
+	"""
+	root = rapidTk()
+	root.geometry('320x150')
+	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
+	
+	menu_context = {
+	'File.Open': lambda m="Open":print(m),
+	'File.System.Advanced.Close': lambda m="Close":print(m),
+	'File.Quit': lambda m="Quit":print(m),
+	'System.Kill': lambda m="Kill":print(m),
+	'Exit': lambda m="Exit":print(m)
+	}
+	myMenu = cMenu(root, context=menu_context)
+	print(myMenu.sub_menus)
+	print(myMenu.options)
+
+	root.config(menu=myMenu) ##standard tkinter menu
+	root.bind("<Button-3>", myMenu._do_popup) #bind to right click when widget clicked.
+	
+
+	root.mainloop()
 
 
 if __name__ == "__main__":
-	example_basic_objects()
+	example_basic_menu()

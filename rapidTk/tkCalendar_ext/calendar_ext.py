@@ -6,7 +6,7 @@ from datetime import datetime, date
 
 from ..flags import __ttk_enabled__
 from ..theme import _ThemeManager
-from ..utils import master
+from ..utils import master, _UniqueIdentifiers
 
 class DateEntry(DateEntry, master):
 	@override
@@ -86,10 +86,10 @@ def pack_opts(**kwargs):
 		else:
 			kw_wid[k] = v
 	return kw_wid, kw_pak, kw_style
-def style_widget(wd, st, t):
-	if st != {}:
-		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)
-		wd.configure(style=f"{str(wd.__repr__())}.{t}")
+def style_widget(wd, st, uuid=None, t=''):
+	if st != {} or uuid is None or t == '':
+		style = _ThemeManager().add_style(f"{uuid}.{t}", st)
+		wd.configure(style=f"{uuid}.{t}")
 		return style
 	else:
 		return None
@@ -97,6 +97,8 @@ def style_widget(wd, st, t):
 class cDateEntry(DateEntry, master):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
+		self._myid = _UniqueIdentifiers().new()
+		self._mystyle_name = f'{self._myid}.DateEntry'
 		if 'textvariable' in kwargs.keys():
 			self.stvar = kwargs['textvariable']
 			del kw_wid['text']
@@ -111,9 +113,10 @@ class cDateEntry(DateEntry, master):
 			del kw_wid['text']
 		else:
 			self.stvar.set('01/01/1970')
-		super(cDateEntry, self).__init__(master)
+		super(cDateEntry, self).__init__(master, style=self._mystyle_name)
+		
 		self.configure(kw_wid)
-		style_widget(self, kw_style, "TDateEntry")
+		#self.style = style_widget(self, kw_style, self._myid, "TDateEntry")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 	def detele(ind=0, end='end'):
@@ -137,17 +140,17 @@ class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateE
 		super(reDateEntry, self).__init__(master)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		if 'fieldbackground' in kw_wid:
-			self.style.configure('DateEntry', fieldbackground=kw_wid['fieldbackground'])
+			self.style.configure(self._mystyle_name, fieldbackground=kw_wid['fieldbackground'])
 			self.bg = kw_wid['fieldbackground']
 			del kw_wid['fieldbackground']
 		else:
-			self.bg = self.style.lookup("DateEntry", "fieldbackground")
+			self.bg = self.style.lookup(self._mystyle_name, "fieldbackground")
 		if 'foreground' in kw_wid:
-			self.style.configure('DateEntry', fieldbackground=kw_wid['foreground'])
+			self.style.configure(self._mystyle_name, fieldbackground=kw_wid['foreground'])
 			self.fg = kw_wid['foreground']
 			del kw_wid['foreground']
 		else:
-			self.bg = self.style.lookup("DateEntry", "foreground")
+			self.bg = self.style.lookup(self._mystyle_name, "foreground")
 		if 'text' in kw_wid.keys():
 			self.stvar.set(kw_wid['text'])
 			del kw_wid['text']
@@ -167,7 +170,7 @@ class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateE
 
 		kw_wid['textvariable'] = self.stvar
 		self.configure(kw_wid)
-		self.style.configure('DateEntry', fieldbackground=self.bg, foreground=self.fg)
+		self.style.configure(self._mystyle_name, fieldbackground=self.bg, foreground=self.fg)
 		self.update()
 		self.update_idletasks()
 		if len(kw_pak) != 0:
@@ -182,10 +185,10 @@ class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateE
 			if self.stvar.get() not in ['', None]:
 				match = re.match(self.regex, self.stvar.get())
 				if not match or self.parse_date(self.stvar.get()) > datetime.now().date():
-					self.style.configure('DateEntry', fieldbackground="red", foreground="white")
+					self.style.configure(self._mystyle_name, fieldbackground="red", foreground="white")
 					return False
 				else:
-					self.style.configure('DateEntry', fieldbackground=self.bg, foreground=self.fg)
+					self.style.configure(self._mystyle_name, fieldbackground=self.bg, foreground=self.fg)
 					return True
 			else:
 				return False
