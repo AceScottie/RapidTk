@@ -66,12 +66,3 @@ class rapidTk(Tk):
 		self.overrideredirect(False)
 		self.geometry("%sx%s+%s+%s"%(self.origin[0].x, self.origin[0].y, self.origin[1].x, self.origin[1].y))
 		self.origin = [coord(0, 0),coord(0, 0)]
-class PackProcess:
-	def __init__(self):
-		self.widgets = []
-	def add(self, widget, side=None, expand=0, fill=None):
-		self.widgets.append({"widget":widget, "side":side, "expand":expand, "fill":fill})
-		return widget
-	def pack(self):
-		for element in self.widgets:
-			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])

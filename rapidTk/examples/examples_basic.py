@@ -126,6 +126,29 @@ def example_basic_menu():
 
 	root.mainloop()
 
+def example_basic_radiobutton():
+	"""
+	@docstring
+
+	"""
+	root = rapidTk()
+	root.geometry('320x150')
+	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
+
+	context = {'Hello':1, 'World':2, 'Apple':3, 'Banana':4}
+	myRadioButton = cRadiobutton(root, context=context, side=TOP)
+	myRadioButton.var.trace('w', lambda a,b,c, e=Event(), v=myRadioButton: __get__stuff(e, a, b, c, v))
+	
+	myRadioButton['Hello'].configure(bg='#FF0000')
+	myRadioButton.World.configure(bg='#00FF00')
+		
+
+
+
+	root.mainloop()
+
+def __get__stuff(e, a, b, c, v):
+	print(v.get())
 
 if __name__ == "__main__":
-	example_basic_menu()
+	example_basic_radiobutton()

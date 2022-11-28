@@ -97,3 +97,15 @@ class master:
 		return self.master
 	def get_self(self):
 		return self
+
+
+
+class PackProcess:
+	def __init__(self):
+		self.widgets = []
+	def add(self, widget, side=None, expand=0, fill=None):
+		self.widgets.append({"widget":widget, "side":side, "expand":expand, "fill":fill})
+		return widget
+	def pack(self):
+		for element in self.widgets:
+			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])
