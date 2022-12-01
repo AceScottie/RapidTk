@@ -1,7 +1,9 @@
 from tkinter import Tk
-from errors import *
-from utils import coord, _UniqueIdentifiers
-from manage import _ScrollManager, _WindowManager, _PopupManager, _TabManager, _ThemeManager
+from rTkErrors import *
+from rTkUtils import coord, _UniqueIdentifiers
+from rTkManagers import _ScrollManager, _WindowManager, _PopupManager, _TabManager, _ThemeManager
+
+
 
 class rapidTk(Tk):
 	def __init__(self, with_managers=True):
@@ -21,9 +23,11 @@ class rapidTk(Tk):
 			self.pop = None
 			self.tm = None
 			self.wm = None
+			self.logger = None
 		Tk.__init__(self)
 		self.after(1, self._schedule)
 		self.bind('<F12>',self._fullscreen)
+
 	def _schedule(self):
 		for s in self._schedule_tasks.items():
 			s['task']()
@@ -66,3 +70,12 @@ class rapidTk(Tk):
 		self.overrideredirect(False)
 		self.geometry("%sx%s+%s+%s"%(self.origin[0].x, self.origin[0].y, self.origin[1].x, self.origin[1].y))
 		self.origin = [coord(0, 0),coord(0, 0)]
+class PackProcess:
+	def __init__(self):
+		self.widgets = []
+	def add(self, widget, side=None, expand=0, fill=None):
+		self.widgets.append({"widget":widget, "side":side, "expand":expand, "fill":fill})
+		return widget
+	def pack(self):
+		for element in self.widgets:
+			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])

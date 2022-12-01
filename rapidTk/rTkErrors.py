@@ -31,8 +31,3 @@ class MenuContexError(TemplateException):
 	def __init__(self):
 		message = "context should be a {type}|{name}:command dictionary pair"
 		super().__init__(message)
-class RadioContexError(TemplateException):
-	def __init__(self):
-		message = "Contex should be a {label}:{value} dictionary pair"
-		super().__init__()
-		

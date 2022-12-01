@@ -5,8 +5,8 @@ import re
 from datetime import datetime, date
 
 from ..flags import __ttk_enabled__
-from ..theme import _ThemeManager
-from ..utils import master, _UniqueIdentifiers
+from ..rTkTheme import _ThemeManager
+from ..rTkUtils import master, _UniqueIdentifiers
 
 class DateEntry(DateEntry, master):
 	@override

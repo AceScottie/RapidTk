@@ -11,11 +11,11 @@ from datetime import datetime, date
 
 from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess
-from .objects import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
-from .errors import *
-from .utils import coord, master
-from .manage import _WindowManager
-from .theme import _ThemeManager
+from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
+from .rTkErrors import *
+from .rTkUtils import coord, master
+from .rTkManagers import _WindowManager
+from .rTkTheme import _ThemeManager
 
 from functools import wraps
 def memoize(func):

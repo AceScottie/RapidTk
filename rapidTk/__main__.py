@@ -1,9 +1,9 @@
 from tkinter import Tk
 import tkinter.ttk as ttk
-from .errors import *
-from .utils import coord, _UniqueIdentifiers
-from .manage import _ScrollManager, _WindowManager, _PopupManager, _TabManager
-from .theme import _ThemeManager
+from .rTkErrors import *
+from .rTkUtils import coord, _UniqueIdentifiers
+from .rTkManagers import _ScrollManager, _WindowManager, _PopupManager, _TabManager
+from .rTkTheme import _ThemeManager
 
 class rapidTk(Tk):
 	def __init__(self, with_managers=True, with_ttk=False):

@@ -1,6 +1,6 @@
-from .objects import cEntry, cOptionMenu, cCombobox
-from .objects_ext import autoEntry
-from .utils import master
+from .cWidgets import cEntry, cOptionMenu, cCombobox
+from .cWidgets_extended import autoEntry
+from .rTkUtils import master
 from .flags import __ttk_enabled__
 
 from tkinter import StringVar

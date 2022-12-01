@@ -1,9 +1,8 @@
-from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu, Radiobutton
+from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu
 from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
 from tkinter.ttk import Treeview, Combobox, Spinbox
 from tkinter.scrolledtext import ScrolledText
-from .utils import PackProcess
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
 	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
@@ -11,10 +10,9 @@ else:
 	from tkinter.ttk import Style
 
 
-
-from .errors import *
-from .utils import clipboard, master
-from .theme import _ThemeManager
+from .rTkErrors import *
+from .rTkUtils import clipboard, master
+from .rTkTheme import _ThemeManager
 
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
@@ -480,34 +478,3 @@ class cMenu(Menu, master):
 			self.tk_popup(event.x_root, event.y_root)
 		finally:
 			self.grab_release()
-
-class cRadiobutton(dict, master):
-	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-
-		if 'variable' in kw_wid:
-			self.var = kw_wid['variable']
-		else:
-			self.var = IntVar()
-			kw_wid['variable'] = self.var
-		
-		if 'context' in kw_wid: #{label:value, lable:value}
-			self.context = kw_wid['context']
-			del kw_wid['context']
-		else:
-			raise RadioContexError
-		print(self.context)
-		pp = PackProcess()
-		for k, v in self.context.items():
-			kw_wid['text'] = k
-			kw_wid['value'] = v
-			self[k] = pp.add(Radiobutton(master), **kw_pak)
-			self.__dict__[k] = self[k]
-			self[k].configure(kw_wid)
-
-
-		if len(kw_pak) != 0:
-			pp.pack()
-	def get(self):
-		return self.var.get()
