@@ -12,9 +12,9 @@ on:
   release:
     types: [published]
   push:
-    branches: [ "main" ]
+    branches: [ "Published" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "Published" ]
 
 permissions:
   contents: read
