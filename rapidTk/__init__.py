@@ -23,8 +23,6 @@ from .rTkLogging import rTkLogger
 
 import logging
 logging.setLoggerClass(rTkLogger)
-rtklog = logging.getLogger('rapidTk')
-rtklog.setLevel(0)
 
 #import types
 #class rTk(types.ModuleType):

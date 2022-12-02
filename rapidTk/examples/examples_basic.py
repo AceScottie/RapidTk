@@ -1,6 +1,22 @@
+import logging
+
 import sys
 from tkinter import Scrollbar, Event
+
 from rapidTk import *
+
+"""
+rapdTk Log Levels:
+|   1| Standard User Logging (meant for user code)
+|   9| Dedug Logging
+|  19| Information Logging
+|  29| Warning Logs
+|  39| Error Logs
+|  49| Critical Logs
+|  99| Verbose Logs (all logs, all timers, all function calls)
+| 100| Unit Logs (used for unit testing to assert True if test succees)
+"""
+
 
 def example_basic_objects():
 	"""
@@ -89,6 +105,45 @@ def example_no_PackProcess():
 	myEntry = cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
 	root.mainloop()
 
+
+@time_it
+def example_basic_logging_timed_widgets(pp, master, count): ##used as part of example_basic_logging()
+	widgets = []
+	for i in range(count):
+		widgets.append(pp.add(cLabel(master, text=f'{i} :: {__name__}'), side=TOP))
+	return widgets
+@time_it
+def example_basic_logging():
+	"""
+	rapidTk contains its own logging options.
+	To enable logging simply call logging.getLogger('rapidTk').setLevel(level) with level > 0
+	To disable logging set level to 0
+
+	most logging will be handled internally by rapidTk, however a custom log method has been included to replace normal print() statements.
+	to use simply get the logger and use the rtklog('message') method as shown in the below example.
+	rapidTk also implements a performance timer wrapper to easlily identify how long widget creating is taking.
+	add the @time_it wrapper to any function and set log level to 99 to start collecting timers.
+	"""
+
+	rtklogger = logging.getLogger('rapidTk') ##get the rapidTk logger
+	rtklogger.setLevel(99) # sets log level to 99 for verbose logging.
+	#rtklogger.setLevel(1) # sets log level to  1 for user logging
+
+	#Create a basic window
+	root = rapidTk()
+	root.geometry('320x150')
+	pp = PackProcess()
+	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
+
+	widgets = example_basic_logging_timed_widgets(pp, main, 100)
+	#rtklogger.rtklog(widgets)
+
+	rtklogger.rtklog('all widgets have been created, starting packing')
+	pp.pack()
+	rtklogger.rtklog('widgets have been packed | starting mainloop')
+	root.mainloop()
+	
+
 def example_basic_menu():
 	"""
 	cMenu is a quick and efficent way to make simple menus.
@@ -117,8 +172,9 @@ def example_basic_menu():
 	'Exit': lambda m="Exit":print(m)
 	}
 	myMenu = cMenu(root, context=menu_context)
-	print(myMenu.sub_menus) ## this retuns a dictionary of 'contextname':widget for each menu item created from context
-	print(myMenu.options) ## TODO: add value for options ## This returns a dictionary of 'contextname':value for each item created with context.
+	log = logging.getLogger('rapidTk')
+	log.rtklog(myMenu.sub_menus) ## this retuns a dictionary of 'contextname':widget for each menu item created from context
+	log.rtklog(myMenu.options) ## TODO: add value for options ## This returns a dictionary of 'contextname':value for each item created with context.
 
 	root.config(menu=myMenu) ##standard tkinter menu
 	root.bind("<Button-3>", myMenu._do_popup) #bind to right click when widget clicked.
@@ -128,4 +184,4 @@ def example_basic_menu():
 
 
 if __name__ == "__main__":
-	example_basic_menu()
+	example_basic_logging()

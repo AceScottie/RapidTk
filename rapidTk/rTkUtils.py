@@ -14,7 +14,7 @@ def time_it(func):
 		fn = func
 		rs = fn(*args, **kwargs)
 		t = perf_counter()-start
-		logging.getLogger('rapidTk').rtkdebug(f'{fn.__name__} finished in {t}')
+		logging.getLogger('rapidTk').rtkverbose(f'Timer for <{fn.__qualname__}.{fn.__name__}> finished in {t:0.9f}')
 		return rs
 	return wrapper
 

@@ -9,7 +9,6 @@ RTKVERBOSE = 99
 RTKUNITS = 100
 
 class rTkLogger(logging.Logger):
-    #logging.getLogger('rapidTk')
     logging.addLevelName(RTKLOG, 'rTk_Log')
     logging.addLevelName(RTKDEBUG, 'rTk_Debug')
     logging.addLevelName(RTKNFO, 'rTk_Info')
@@ -18,15 +17,30 @@ class rTkLogger(logging.Logger):
     logging.addLevelName(RTKCRITICAL, 'rTk_CRITICAL')
     logging.addLevelName(RTKVERBOSE, 'rapidTk')
     logging.addLevelName(RTKUNITS, 'unit')
-    
 
     def __init__(self, name):
         super(rTkLogger, self).__init__(name)
-        handler = logging.StreamHandler()
-        fmat = logging.Formatter('%(asctime)s %(levelname)s %(filename)s(%(lineno)d) - %(message)s')
-        handler.setFormatter(fmat)
-        hndlr = self.addHandler(handler)
-        self.setLevel(0)
+        self.handler = logging.NullHandler()
+        self.fmat = logging.Formatter('%(asctime)s %(levelname)s %(filename)s(%(lineno)d) - %(message)s')
+        self.handler.setFormatter(self.fmat)
+        self.hndlr = self.addHandler(self.handler)
+
+    def __state(self, s):
+        if s:
+            print('rapidTk Logging enabled')
+            self.handler = logging.StreamHandler()
+        else:
+            print('rapidTk Logging disabled')
+            self.handler = logging.NullHandler()
+        self.handler.setFormatter(self.fmat)
+        self.addHandler(self.handler)
+
+    def setLevel(self, level: int):
+        super().setLevel(level)
+        if level < 0:
+            self.__state(False)
+        else:
+            self.__state(True)
 
     def rtklog(self, msg, *args, **kwargs):
         if self.getEffectiveLevel() >= RTKLOG and self.isEnabledFor(self.getEffectiveLevel()):
