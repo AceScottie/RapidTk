@@ -3,7 +3,7 @@ from uuid import uuid4
 if sys.platform == 'win32':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard
 	from win32con import CF_TEXT, CF_UNICODETEXT
-from functools import wraps
+from functools import wraps, singledispatchmethod
 from time import perf_counter
 from .rTkErrors import *
 import logging
@@ -134,3 +134,23 @@ class widgetBase:
 			end = None
 		index = 0 if not index else index
 		return text[int(index):int(end) if end else None]
+	
+	@singledispatchmethod
+	def set(self, index=0, text=""):
+		raise Exception(f'set((index), text): index defaults to 0 if not set')
+	@set.register
+	def _(self, index:None, text:str):
+		print("got text with no index")
+		print(f'{index=}, {text=}')
+	@set.register
+	def _(self, index: str, text):
+		print("got index as a string")
+		print(f'{index=}, {text=}')
+	@set.register
+	def _(self, index: int, text):
+		print("got index as an int")#
+		print(f'{index=}, {text=}')
+	@set.register
+	def _(self, index:float, text):
+		print("got index as a float")
+		print(f'{index=}, {text=}')

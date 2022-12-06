@@ -28,7 +28,7 @@ logging.setLoggerClass(rTkLogger)
 #class rTk(types.ModuleType):
 #	@property
 #	def version(self):
-#		version_info = (0, 0, 1)
+#		version_info = (0, 0, 5)
 #		return ".".join([str(x) for x in version_info])
-#__all__ = ['.rapidTk.*', '.objects.*', '.utils.coord']
-__version__ = "0.3"
+#__all__ = ['.rapidTk.*', '.cWidgets.*', '.rtkUtils.*']
+__version__ = "0.5"

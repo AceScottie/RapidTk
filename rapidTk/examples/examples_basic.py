@@ -1,9 +1,11 @@
-import logging
+
 
 import sys
 from tkinter import Scrollbar, Event
 
 from rapidTk import *
+import logging
+
 
 """
 rapdTk Log Levels:
@@ -185,10 +187,9 @@ def example_get_runner(event, options, start, end, widgets):
 	print(widgets[options.get()].get(start.get(), end.get()))
 def example_get():
 	"""
-	
+	DOC STRING
 	"""
-
-	root = rapidTk()
+	root = rapidTk(log_level=0)
 	pp = PackProcess()
 	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
 
@@ -201,6 +202,7 @@ def example_get():
 
 	options = pp.add(cOptionMenu(config, options=['cLabel', 'cButton', 'cEntry']), side=LEFT, fill=X)
 	start = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	start.set(None, "Some Text")
 	end = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
 	pp.add(cButton(config, text="run", command=lambda e=Event, o=options, s=start, ed=end, w=w: example_get_runner(e, o, s, ed, w)), side=TOP)
 

@@ -8,7 +8,6 @@ if __ttk_enabled__:
 	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
 else:
 	from tkinter.ttk import Style
-from typing import overload
 
 from .rTkErrors import *
 from .rTkUtils import clipboard, widgetBase, time_it

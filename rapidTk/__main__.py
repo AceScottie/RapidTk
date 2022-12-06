@@ -1,16 +1,27 @@
+import logging
+
 from tkinter import Tk
-import tkinter.ttk as ttk
+
 from .rTkErrors import *
 from .rTkUtils import coord, _UniqueIdentifiers
 from .rTkManagers import _ScrollManager, _WindowManager, _PopupManager, _TabManager
 from .rTkTheme import _ThemeManager
 
-import logging
+
 
 from .rTkUtils import time_it
+
+
+
 class rapidTk(Tk):
 	@time_it
-	def __init__(self, with_managers=True, with_ttk=False):
+	def __init__(self, with_managers=True, with_ttk=False, log_level=0):
+		self.log = logging.getLogger('rapidTk')
+		if isinstance(log_level, int) and log_level > 0:
+			self.log.setLevel(log_level)
+		elif not isinstance(log_level, int):
+			raise Exception(f'log_level requires an interger value not type {type(log_level)}')
+		
 		self.afters = {}
 		self.quitter = False
 		self.origin = [coord(0, 0), coord(0, 0)]
