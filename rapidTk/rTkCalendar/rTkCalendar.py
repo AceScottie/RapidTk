@@ -6,9 +6,9 @@ from datetime import datetime, date
 
 from ..flags import __ttk_enabled__
 from ..rTkTheme import _ThemeManager
-from ..rTkUtils import master, _UniqueIdentifiers
+from ..rTkUtils import widgetBase, _UniqueIdentifiers
 
-class DateEntry(DateEntry, master):
+class DateEntry(DateEntry, widgetBase):
 	@override
 	def _validate_date(self):
 		"""Date entry validation: only dates in locale '%x' format are accepted."""
@@ -94,7 +94,7 @@ def style_widget(wd, st, uuid=None, t=''):
 	else:
 		return None
 
-class cDateEntry(DateEntry, master):
+class cDateEntry(DateEntry, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		self._myid = _UniqueIdentifiers().new()
@@ -130,7 +130,7 @@ class cDateEntry(DateEntry, master):
 		except:
 			super().insert(ind, data)
 
-class reDateEntry(cDateEntry, master): ## TODO: move most of this code to cDateEntry for autoStyle and stuff
+class reDateEntry(cDateEntry, widgetBase): ## TODO: move most of this code to cDateEntry for autoStyle and stuff
 	def __init__(self, master, **kwargs):
 		self.regex = ""
 		self.bg = ""

@@ -13,7 +13,7 @@ from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess
 from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
 from .rTkErrors import *
-from .rTkUtils import coord, master
+from .rTkUtils import coord, widgetBase
 from .rTkManagers import _WindowManager
 from .rTkTheme import _ThemeManager
 
@@ -45,7 +45,7 @@ def pack_opts(**kwargs):
 		else:
 			kw_wid[k] = v
 	return kw_wid, kw_pak, kw_style
-class autoEntry(cEntry, master):
+class autoEntry(cEntry, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)	
 		self.bt = None
@@ -207,7 +207,7 @@ class autoEntry(cEntry, master):
 	def __del__(self):
 		self._close_overlay()
 		super().destroy()
-class iButton(cButton, master):
+class iButton(cButton, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -243,7 +243,7 @@ class iButton(cButton, master):
 			left -= middle.size[0]
 		self.image = ImageTk.PhotoImage(output)
 		return self.image ##TODO: complete image button for layouts
-class scrollArea(cFrame, master):
+class scrollArea(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -286,7 +286,7 @@ class scrollArea(cFrame, master):
 			self.sCanvas.itemconfig(self.cw, height=event.height-4)
 		elif self.h == 0:
 			self.sCanvas.itemconfig(self.cw, height=event.height)
-class movableWindow(cCanvas, master):
+class movableWindow(cCanvas, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -488,7 +488,7 @@ class qForm:
 		return validation_valid
 	def update(self, question, value):
 		self.questions[question]['object'].set(value)
-class ImageLabel(cLabel, master):
+class ImageLabel(cLabel, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(ImageLabel, self).__init__(master)
 	def load(self, im, bg):

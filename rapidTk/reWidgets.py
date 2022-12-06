@@ -1,13 +1,13 @@
 from .cWidgets import cEntry, cOptionMenu, cCombobox
 from .cWidgets_extended import autoEntry
-from .rTkUtils import master
+from .rTkUtils import widgetBase
 from .flags import __ttk_enabled__
 
 from tkinter import StringVar
 import re
 
 
-class ValidatingEntry(cEntry, master): ##used for MaxLengthEntry
+class ValidatingEntry(cEntry, widgetBase): ##used for MaxLengthEntry
 	def __init__(self, master, value="", **kw):
 		#apply(Entry.__init__, (self, master), kw)
 		cEntry.__init__(*(self, master), **kw)
@@ -29,7 +29,7 @@ class ValidatingEntry(cEntry, master): ##used for MaxLengthEntry
 	def validate(self, value):
 		# override: return value, new value, or None if invalid
 		return value
-class MaxLengthEntry(ValidatingEntry, master): ##entry with a max length flag
+class MaxLengthEntry(ValidatingEntry, widgetBase): ##entry with a max length flag
 	def __init__(self, master, value="", maxlength=None, valtype=None, **kw):
 		self.maxlength = maxlength
 		self.valtype = valtype
@@ -124,7 +124,7 @@ def style_widget(wd, st, t):
 	else:
 		return None
 
-class reEntry(cEntry, master):
+class reEntry(cEntry, widgetBase):
 	def __init__(self, master, value="", **kwargs):
 		super(reEntry, self).__init__(master)
 		self.stvar = StringVar()
@@ -162,7 +162,7 @@ class reEntry(cEntry, master):
 			raise
 			return False
 
-class reOptionMenu(cOptionMenu):
+class reOptionMenu(cOptionMenu, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(reOptionMenu, self).__init__(master, **kwargs)
 		self.bg = self.cget('background')
@@ -178,7 +178,7 @@ class reOptionMenu(cOptionMenu):
 			return False
 	def get(self):
 		return self.var.get(), self._isvalid()
-class reCombobox(cCombobox, master):
+class reCombobox(cCombobox, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(reCombobox, self).__init__(master, **kwargs)
 		#self.style.configure('Fail.TCombobox', fieldbackground='red', background='red', foreground='white')
@@ -196,7 +196,7 @@ class reCombobox(cCombobox, master):
 	def get(self):
 		return self.var.get(), self._isvalid()
 		
-class reautoEntry(autoEntry):
+class reautoEntry(autoEntry, widgetBase):
 	def isvalid(self):
 		if self.sv.get() in self.options:
 			self.configure(bg=self.bg, fg=self.fg)

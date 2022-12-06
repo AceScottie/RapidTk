@@ -101,7 +101,8 @@ class SingletonMeta(type):
 			cls._instances[cls] = instance
 		return cls._instances[cls]
 
-class master:
+
+class widgetBase:
 	def __init__(self, master):
 		self.master = master
 	def get_root(self):
@@ -110,3 +111,26 @@ class master:
 		return self.master
 	def get_self(self):
 		return self
+	def get(self, index=None, end=None) -> str:
+		ctype = str(type(self))[25:-2]
+		if ctype in ["cLabel", "cButton"]:
+			if index in ['', None] and end in ['', None]:
+				return self.cget("text")
+			else:
+				return self.__getter(self.cget('text'), index, end)
+		elif ctype in ["cEntry", "cScrolledText"]:
+			if index in ['', None] and end in ['', None]:
+				return self.var.get()
+			else:
+				return self.__getter(self.var.get(), index, end)
+		elif ctype in ["cCheckbutton"]:
+			return self.var.get()
+		elif ctype in ["cTreeview"]:
+			return "This requires cusom get() method"
+		else:
+			raise Exception(f'{type(self)} has no get() method')
+	def __getter(self, text, index, end) -> str:
+		if end in ['end', '', None]:
+			end = None
+		index = 0 if not index else index
+		return text[int(index):int(end) if end else None]

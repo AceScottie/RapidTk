@@ -45,8 +45,8 @@ def example_basic_objects():
 	pp = PackProcess()
 	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
 	pp.add(cLabel(main, text="This is a basic rapidTk Label."), side=TOP, fill=X)
-	pp.add(cButton(main, text="cButton"), side=TOP)
-	myEntry = pp.add(cEntry(main, value="Some Default Text"), side=TOP, fill=X)
+	pp.add(cButton(main, text="This is an Example Button"), side=TOP)
+	pp.add(cEntry(main, value="Some Default Text"), side=TOP, fill=X)
 	pp.pack()
 	root.mainloop()
 
@@ -178,10 +178,36 @@ def example_basic_menu():
 
 	root.config(menu=myMenu) ##standard tkinter menu
 	root.bind("<Button-3>", myMenu._do_popup) #bind to right click when widget clicked.
-	
+	root.mainloop()
 
+
+def example_get_runner(event, options, start, end, widgets):
+	print(widgets[options.get()].get(start.get(), end.get()))
+def example_get():
+	"""
+	
+	"""
+
+	root = rapidTk()
+	pp = PackProcess()
+	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
+
+	config = pp.add(cFrame(main, borderwidth=3, relief='raised'), side=TOP, fill=BOTH, expand=1)
+	holder = pp.add(cFrame(main, borderwidth=3, relief='groove'), side=TOP, fill=BOTH, expand=1)
+	w={}
+	w['cLabel'] = pp.add(cLabel(holder, text="This is a basic rapidTk Label."), side=TOP, fill=X)
+	w['cButton'] = pp.add(cButton(holder, text="This is an Example Button"), side=TOP)
+	w['cEntry'] = pp.add(cEntry(holder, value="Some Default Text"), side=TOP, fill=X)
+
+	options = pp.add(cOptionMenu(config, options=['cLabel', 'cButton', 'cEntry']), side=LEFT, fill=X)
+	start = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	end = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	pp.add(cButton(config, text="run", command=lambda e=Event, o=options, s=start, ed=end, w=w: example_get_runner(e, o, s, ed, w)), side=TOP)
+
+	
+	pp.pack()
 	root.mainloop()
 
 
 if __name__ == "__main__":
-	example_basic_logging()
+	example_get()
