@@ -1,8 +1,9 @@
 from tkinter import Event, TOP, LEFT, RIGHT, CENTER, BOTTOM, BOTH
-from .errors import *
-from .objects import cCanvas
-from .utils import SingletonMeta
+from .rTkErrors import *
+from .cWidgets import cCanvas
+from .rTkUtils import SingletonMeta
 from .flags import __scroll_manager__, __window_manager__, __popup_manager__, __tab_manager__
+
 class _ScrollManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
 		__scroll_manager__ = True

@@ -1,13 +1,13 @@
 from .__main__ import *
-from .utils import coord, clipboard
-from .objects import *
-from .objects_ext import *
-from .validated_objects import *
+from .rTkUtils import coord, clipboard
+from .cWidgets import *
+from .cWidgets_extended import *
+from .reWidgets import *
 from .matchart import Chart
 from .flags import *
 try:
 	import tkcalendar
-	from .tkCalendar_ext.calendar_ext import DateEntry, cDateEntry, reDateEntry
+	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
 except:
 	raise DateEntryNotFoundException
 	class DateEntry:
@@ -19,6 +19,10 @@ except:
 	class reDateEntry:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException
+from .rTkLogging import rTkLogger
+
+import logging
+logging.setLoggerClass(rTkLogger)
 
 #import types
 #class rTk(types.ModuleType):
@@ -27,4 +31,4 @@ except:
 #		version_info = (0, 0, 1)
 #		return ".".join([str(x) for x in version_info])
 #__all__ = ['.rapidTk.*', '.objects.*', '.utils.coord']
-__version__ = "0.0.1"
+__version__ = "0.3"

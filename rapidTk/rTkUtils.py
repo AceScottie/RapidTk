@@ -1,9 +1,22 @@
 import sys
-from .errors import *
 from uuid import uuid4
 if sys.platform == 'win32':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard
 	from win32con import CF_TEXT, CF_UNICODETEXT
+from functools import wraps
+from time import perf_counter
+from .rTkErrors import *
+import logging
+
+def time_it(func):
+	def wrapper(*args, **kwargs):
+		start = perf_counter()
+		fn = func
+		rs = fn(*args, **kwargs)
+		t = perf_counter()-start
+		logging.getLogger('rapidTk').rtkverbose(f'Timer for <{fn.__qualname__}.{fn.__name__}> finished in {t:0.9f}')
+		return rs
+	return wrapper
 
 class _UniqueIdentifiers(list):
 	def __init__(self):
@@ -88,7 +101,8 @@ class SingletonMeta(type):
 			cls._instances[cls] = instance
 		return cls._instances[cls]
 
-class master:
+
+class widgetBase:
 	def __init__(self, master):
 		self.master = master
 	def get_root(self):
@@ -97,15 +111,26 @@ class master:
 		return self.master
 	def get_self(self):
 		return self
-
-
-
-class PackProcess:
-	def __init__(self):
-		self.widgets = []
-	def add(self, widget, side=None, expand=0, fill=None):
-		self.widgets.append({"widget":widget, "side":side, "expand":expand, "fill":fill})
-		return widget
-	def pack(self):
-		for element in self.widgets:
-			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])
+	def get(self, index=None, end=None) -> str:
+		ctype = str(type(self))[25:-2]
+		if ctype in ["cLabel", "cButton"]:
+			if index in ['', None] and end in ['', None]:
+				return self.cget("text")
+			else:
+				return self.__getter(self.cget('text'), index, end)
+		elif ctype in ["cEntry", "cScrolledText"]:
+			if index in ['', None] and end in ['', None]:
+				return self.var.get()
+			else:
+				return self.__getter(self.var.get(), index, end)
+		elif ctype in ["cCheckbutton"]:
+			return self.var.get()
+		elif ctype in ["cTreeview"]:
+			return "This requires cusom get() method"
+		else:
+			raise Exception(f'{type(self)} has no get() method')
+	def __getter(self, text, index, end) -> str:
+		if end in ['end', '', None]:
+			end = None
+		index = 0 if not index else index
+		return text[int(index):int(end) if end else None]

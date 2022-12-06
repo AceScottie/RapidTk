@@ -1,20 +1,18 @@
-from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu, Radiobutton
+from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu, Radiobutton, Listbox, Scale
 from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
 from tkinter.ttk import Treeview, Combobox, Spinbox
 from tkinter.scrolledtext import ScrolledText
-from .utils import PackProcess
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
 	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
 else:
 	from tkinter.ttk import Style
+from typing import overload
 
-
-
-from .errors import *
-from .utils import clipboard, master
-from .theme import _ThemeManager
+from .rTkErrors import *
+from .rTkUtils import clipboard, widgetBase, time_it
+from .rTkTheme import _ThemeManager
 
 def pack_opts(**kwargs):
 	pak = ["side", "expand", "fill"]
@@ -50,8 +48,9 @@ def style_widget(wd, st, t):
 		return style
 	else:
 		return None
-## Default Widgits override
-class cFrame(Frame, master):
+
+class cFrame(Frame, widgetBase):
+	@time_it
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -61,7 +60,8 @@ class cFrame(Frame, master):
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 
-class cLabel(Label, master):
+class cLabel(Label, widgetBase):
+	@time_it
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -70,12 +70,12 @@ class cLabel(Label, master):
 		style_widget(self, kw_style, "TLabel")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-	def get(self):
-		return self.cget('text')
+	@time_it
 	def set(self, value):
 		self.configure(text=value)
 
-class cButton(Button, master):
+class cButton(Button, widgetBase):
+	@time_it
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -85,10 +85,10 @@ class cButton(Button, master):
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 
-class cEntry(Entry, master):
+class cEntry(Entry, widgetBase):
+	@time_it
 	def __init__(self, master, value="", **kwargs):
 		self.__dict__.update(kwargs)
-		
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		if 'value' in kw_wid:
 			del kw_wid['value']
@@ -111,34 +111,40 @@ class cEntry(Entry, master):
 		self.bind("<Button-3>", self._do_popup)
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-	def get(self):
-		return self.var.get()
+	def get(self, *args):
+		return widgetBase.get(self, *args)
+	@time_it
 	def _do_popup(self, event):
 		try:
 			self.__menu.tk_popup(event.x_root, event.y_root)
 		finally:
 			self.__menu.grab_release()
+	@time_it
 	def _cut(self):
 		try:
 			clipboard.copy(self.selection_get())
 			self.delete(SEL_FIRST, SEL_LAST)
 		except:
 			raise
+	@time_it
 	def _copy(self):
 		try:
 			clipboard.copy(self.selection_get())
 		except:
 			raise
+	@time_it
 	def _paste(self):
 		try:
 			self.insert(SEL_LAST, clipboard.paste())
 			self.delete(SEL_FIRST, SEL_LAST)
 		except:
 			self.insert(self.index(INSERT), clipboard.paste())
+	@time_it
 	def _select_all(self):
 		self.select_range(0,END)
 
-class cCanvas(Canvas, master):
+class cCanvas(Canvas, widgetBase):
+	@time_it
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -150,7 +156,8 @@ class cCanvas(Canvas, master):
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 
-class cTreeview(Treeview, master):
+class cTreeview(Treeview, widgetBase):
+	@time_it
 	def __init__(self, master, **kwargs):
 		self.master = master
 		self.__dict__.update(kwargs)
@@ -207,12 +214,15 @@ class cTreeview(Treeview, master):
 		self['show'] = 'headings'
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+	@time_it
 	def _fixed_map(self, option, style):
 		return [elm for elm in style.map(f"{str(self.__repr__())}.Treeview", query_opt=option) if elm[:2] != ("!disabled", "!selected")]
+	@time_it
 	def set_cols(self, cols): ##sets list of colum names
 		self['columns'] = tuple(cols)
 		for col in cols:
 			self.heading(col, text=col, command=lambda _col=col: self._treeview_sort_column(_col, 0))
+	@time_it
 	def _dir(self, dir): ##changes sort directeion between forward, backward and unsorted
 		if dir == 1:
 			return 2
@@ -220,6 +230,7 @@ class cTreeview(Treeview, master):
 			return 0
 		else:
 			return 1
+	@time_it
 	def _treeview_sort_column(self, col, rv):
 		dirs = [True, False, None]
 		reverse = dirs[self._dir(rv)]
@@ -236,6 +247,7 @@ class cTreeview(Treeview, master):
 		for index, (val, k) in enumerate(l):
 			self.move(k, '', index)
 		self.heading(col, text=col, command=lambda _col=col:self._treeview_sort_column(_col, self._dir(rv)))
+	@time_it
 	def hide(self, a, b, c, event, ivar): # hides data based on input
 		if ivar.get() == 1:
 			for a in self.detached_data:
@@ -243,6 +255,7 @@ class cTreeview(Treeview, master):
 		else:
 			for a in self.detached_data:
 				self.detach(a)
+	@time_it
 	def insert(self, parent='', index='end', iid=None, tags=(), text="", values=[]):##adds new row 
 		self.i += 1
 		if iid == None:
@@ -250,17 +263,21 @@ class cTreeview(Treeview, master):
 		super().insert(parent=parent, index=index, iid=iid, tags=tags+(self.i,), text=text, values=values)
 		self.tag_bind(self.i, '<Motion>', self._highlight_row)
 		return iid
+	@time_it
 	def _highlight_row(self, event): #hover event to hightlight the row under the cursor 
 		self.tk.call(self, "tag", "remove", "highlight")
 		self.tk.call(self, "tag", "add", "highlight", self.identify_row(event.y)) 
+	@time_it
 	def __repr__(self):
 		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
 		pass
+	@time_it
 	def __del__(self):
 		if __ttk_enabled__:
 			_ThemeManager.mystyle.configure(f"{str(self.__repr__())}.Treeview", background=None, fieldbackground=None, foreground=None)
 
-class cScrolledText(ScrolledText, master):
+class cScrolledText(ScrolledText, widgetBase):
+	@time_it
 	def __init__(self, master, value="", **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -279,36 +296,44 @@ class cScrolledText(ScrolledText, master):
 		self.bind("<Button-3>", self._do_popup)
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+	@time_it
 	def _hightlight(self):
 		pass
+	@time_it
 	def _do_popup(self, event):
 		try:
 			self.__menu.tk_popup(event.x_root, event.y_root)
 		finally:
 			self.__menu.grab_release()
+	@time_it
 	def _cut(self):
 		try:
 			clipboard.copy(self.selection_get())
 			self.delete(SEL_FIRST, SEL_LAST)
 		except:
 			pass
+	@time_it
 	def _copy(self):
 		try:
 			clipboard.copy(self.selection_get())
 		except:
 			pass
+	@time_it
 	def _paste(self):
 		try:
 			self.insert(SEL_LAST, clipboard.paste())
 			self.delete(SEL_FIRST, SEL_LAST)
 		except:
 			self.insert(self.index(INSERT), clipboard.paste())
+	@time_it
 	def _select_all(self):
 		self.select_range(0,END)
+	@time_it
 	def get(self, **args):
 		return super().get('1.0', END)
 
-class cCheckbutton(Checkbutton, master):
+class cCheckbutton(Checkbutton, widgetBase):
+	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
@@ -322,12 +347,15 @@ class cCheckbutton(Checkbutton, master):
 		super(cCheckbutton, self).__init__(master)
 		self.configure(kw_wid)
 		style_widget(self, kw_style, "TCheckbutton")
+	@time_it
 	def get(self, **kwargs):
 		return self.var.get()
+	@time_it
 	def set(self, value):
 		self.var.set(value)
 
-class cOptionMenu(OptionMenu, master):
+class cOptionMenu(OptionMenu, widgetBase):
+	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		self.options = []
@@ -357,19 +385,19 @@ class cOptionMenu(OptionMenu, master):
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		if 'takefocus' not in kw_wid.keys():
 			kw_wid['takefocus'] = 1
-		#if 'activebackground' not in kw_wid.keys():
-		#	kw_wid['activebackground'] = 'blue'
 		self['menu'].configure(activebackground="blue", activeforeground="white")
 		self.configure(kw_wid)
 		style_widget(self, kw_style, "TOptionMenu")
 		self.bind("<space>", self.open_option_menu)
-
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+	@time_it
 	def set(self, value):
 		self.var.set(value)
+	@time_it
 	def get(self, **kwargs):
 		return self.var.get()
+	@time_it
 	def open_option_menu(self, event):
 		obj = event.widget
 		x = obj.winfo_rootx()
@@ -377,7 +405,8 @@ class cOptionMenu(OptionMenu, master):
 		obj["menu"].post(x, y)
 		return "break"
 
-class cCombobox(Combobox, master):
+class cCombobox(Combobox, widgetBase):
+	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		if 'textvariable' in kwargs:
@@ -416,18 +445,19 @@ class cCombobox(Combobox, master):
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 		self.var.trace("w", self.unselect)
+	@time_it
 	def get(self):
 		return self.var.get()
+	@time_it
 	def unselect(self, a=None, b=None, c=None, e=None):
 		self.selection_clear()
+	@time_it
 	def __repr__(self):
 		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
 
-class cSpinbox(Spinbox): ##incremental box
-	def __init__(self, master, **kwargs):
-		pass
-
-class cMenu(Menu, master):
+#TODO: add option for MenuButton
+class cMenu(Menu, widgetBase):
+	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		context = kwargs.pop('context', None) # get context builder or None
@@ -457,7 +487,7 @@ class cMenu(Menu, master):
 				self.options[f"{'.'.join(menu['subcatagories'])}.{menu['name']}"] = self.sub_menus['.'.join(menu['subcatagories'])].add_command(label=menu['name'], command=menu['command'])
 			else:
 				self.options[menu['name']] = self.add_command(label=menu['name'], command=menu['command'])
-
+	@time_it
 	def _build_menu(self, master, context):
 		for item in context:
 			if item['subcatagories']:
@@ -472,42 +502,53 @@ class cMenu(Menu, master):
 								self.sub_menus[old_name[1:]].add_cascade(label=sub, menu=self.sub_menus[sub_name[1:]])
 							else:
 								self.add_cascade(label=sub, menu=self.sub_menus[sub_name[1:]])
-
-
-
+	@time_it
 	def _do_popup(self, event):
 		try:
 			self.tk_popup(event.x_root, event.y_root)
 		finally:
 			self.grab_release()
 
-class cRadiobutton(dict, master):
+class cRadiobutton(Radiobutton, widgetBase):
+	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-
-		if 'variable' in kw_wid:
-			self.var = kw_wid['variable']
-		else:
-			self.var = IntVar()
-			kw_wid['variable'] = self.var
-		
-		if 'context' in kw_wid: #{label:value, lable:value}
-			self.context = kw_wid['context']
-			del kw_wid['context']
-		else:
-			raise RadioContexError
-		print(self.context)
-		pp = PackProcess()
-		for k, v in self.context.items():
-			kw_wid['text'] = k
-			kw_wid['value'] = v
-			self[k] = pp.add(Radiobutton(master), **kw_pak)
-			self.__dict__[k] = self[k]
-			self[k].configure(kw_wid)
-
-
+		super(cRadioButton, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TRadioButton")
 		if len(kw_pak) != 0:
-			pp.pack()
-	def get(self):
-		return self.var.get()
+			self.pack(kw_pak)
+
+class cListbox(Listbox, widgetBase):
+	@time_it
+	def __init__(self, master, **kwargs):
+		self.__dict__.update(kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cListBox, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TListBox")
+		if len(kw_pak) != 0:
+			self.pack(kw_pak)
+
+class cScale(Scale, widgetBase):
+	@time_it
+	def __init__(self, master, **kwargs):
+		self.__dict__.update(kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cScale, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TScale")
+		if len(kw_pak) != 0:
+			self.pack(kw_pak)
+
+class cSpinbox(Spinbox, widgetBase): ##incremental box
+	@time_it
+	def __init__(self, master, **kwargs):
+		self.__dict__.update(kwargs)
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		super(cSpinbox, self).__init__(master)
+		self.configure(kw_wid)
+		style_widget(self, kw_style, "TSpinbox")
+		if len(kw_pak) != 0:
+			self.pack(kw_pak)
