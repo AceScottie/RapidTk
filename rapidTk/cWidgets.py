@@ -1,4 +1,4 @@
-from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu
+from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu, Radiobutton, Listbox, Scale
 from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
 from tkinter.ttk import Treeview, Combobox, Spinbox
@@ -509,7 +509,7 @@ class cMenu(Menu, widgetBase):
 		finally:
 			self.grab_release()
 
-class cRadioButton(RadioButton, widgetBase):
+class cRadiobutton(Radiobutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
@@ -520,7 +520,7 @@ class cRadioButton(RadioButton, widgetBase):
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 
-class cListBox(ListBox, widgetBase):
+class cListbox(Listbox, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
