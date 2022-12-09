@@ -112,13 +112,13 @@ class widgetBase:
 	def get_self(self):
 		return self
 	def get(self, index=None, end=None) -> str:
-		ctype = str(type(self))[25:-2]
+		ctype = str(type(self))[:-2].split(".")[-1]
 		if ctype in ["cLabel", "cButton"]:
 			if index in ['', None] and end in ['', None]:
 				return self.cget("text")
 			else:
 				return self.__getter(self.cget('text'), index, end)
-		elif ctype in ["cEntry", "cScrolledText"]:
+		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry"]:
 			if index in ['', None] and end in ['', None]:
 				return self.var.get()
 			else:
@@ -128,7 +128,7 @@ class widgetBase:
 		elif ctype in ["cTreeview"]:
 			return "This requires cusom get() method"
 		else:
-			raise Exception(f'{type(self)} has no get() method')
+			raise Exception(f'{type(self)} : {ctype} has no get() method')
 	def __getter(self, text, index, end) -> str:
 		if end in ['end', '', None]:
 			end = None
