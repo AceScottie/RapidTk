@@ -2,20 +2,25 @@ from tkinter import StringVar, IntVar, Event, INSERT, END, Misc, Toplevel
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, SOLID
 from tkinter import N, E, S, W, NW, NE, SE, SW, NSEW
 from tkinter import Scrollbar, VERTICAL, HORIZONTAL 
-
+from tkinter.simpledialog import askstring, askinteger
 
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps
 import re
 from itertools import count
 from datetime import datetime, date
+from collections.abc import Callable
+from dateutil.relativedelta import relativedelta
 
 from .flags import __ttk_enabled__, __window_manager__
-from .__main__ import PackProcess
-from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText
+from .__main__ import PackProcess, GridProcess
+from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu
 from .rTkErrors import *
-from .rTkUtils import coord, widgetBase
+from .rTkUtils import coord, widgetBase, simpledate, cache
 from .rTkManagers import _WindowManager
 from .rTkTheme import _ThemeManager
+
+
+
 
 from functools import wraps
 def memoize(func):
@@ -49,63 +54,32 @@ class autoEntry(cEntry, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)	
 		self.bt = None
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		self.options = kw_wid['auto']
-		if 'len' in kwargs:
-			self.len = kwargs['len']
-			del kwargs['len']
-		else:
-			self.len = 3
-		if 'anchor' in kwargs:
-			self.anchor = kwargs['anchor']
-			del kwargs['anchor']
-		else:
-			self.anchor = "center"
-		self.strict = False
-		self.autoshow = False
-		self.bg = '#AAFFAA'
-		self.fg = '#000000'
-		self.autobg = '#DDDDDD'
-		self.autofg = '#000000'
-		self.hovertext = '#BBBBBB'
-		self.hovercolor = '#000000'
-		self.cursor_colour = "#000000"
-		if 'strict' in kwargs:
-			if kwargs['strict'] in [1, '1', True]:
-				self.strict = True
-			del kwargs['strict']
-		if 'autoshow' in kwargs:
-			if kwargs['autoshow'] in [1, '1', True]:
-				self.autoshow = True
-			del kwargs['autoshow']
-		del kwargs['auto']
-		if 'bg' not in kw_wid.keys() and 'background' not in kw_wid.keys():
-			kwargs['bg'] = self.bg
-		else:
-			self.bg = kwargs['bg']
-		if 'fg' not in kw_wid.keys() and 'foreground' not in kw_wid.keys():
-			kwargs['fg'] = self.fg
-		else:
-			self.fg = kwargs['fg']
-		if 'hovertext' in kwargs:
-			self.hovercolor = kwargs['hovertext']
-			del kwargs['hovertext']
-		if 'hovercolour' in kwargs:
-			self.hovercolor = kwargs['hovercolour']
-			del kwargs['hovercolour']
-		if 'autobg' in kwargs:
-			self.autobg = kwargs['autobg']
-			del kwargs['autobg']
-		if 'autofg' in kwargs:
-			self.autofg = kwargs['autofg']
-			del kwargs['autofg']
-		if 'insertbackground' in kwargs:
-			self.cursor_colour = kwargs['insertbackground']
-		else:
-			kwargs['insertbackground'] = self.cursor_colour
+		self.aw = None
 
-		self.sv = StringVar()
-		kwargs['textvariable'] = self.sv
+		##custom kwargs
+		self.options =  kwargs.pop('auto', [])
+		self.len = kwargs.pop('len', 3)
+		self.anchor = kwargs.pop('anchor', "center")
+		self.strict = False
+		self.autoshow = kwargs.pop('autoshow', False)
+		self.autobg = kwargs.pop('autobg', '#DDDDDD')
+		self.autofg = kwargs.pop('autofg', '#000000')
+		self.hovertext = kwargs.pop('hovertext', '#BBBBBB')
+		self.hovercolor = kwargs.pop('hovercolor', '#000000')
+		self.cursor_colour = kwargs.pop('cursor_colour', '#000000')
+		self.strict = kwargs.pop('strict', 0) in [1, '1', True]
+		self.autoshow = kwargs.pop('autoshow', 0) in [1, '1', True]
+
+
+		self.bg = kwargs.pop('bg', kwargs.pop('background', '#AAFFAA'))
+		self.fg = kwargs.pop('fg', kwargs.pop('foreground','#000000'))
+		kwargs['background'] = self.bg 
+		kwargs['foreground'] = self.fg
+		kwargs['insertbackground'] = kwargs.pop('insertbackground', self.cursor_colour)
+		kwargs['textvariable'] = kwargs.pop('textvariable', StringVar())
+		self.sv = kwargs['textvariable']
+
+		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		cEntry.__init__(*(self, master), **kwargs)
 		self.aw = cCanvas(self.winfo_toplevel(), bg="white", borderwidth=2, relief="raised")
 		self.bind('<Button-2>', self._full)
@@ -118,6 +92,7 @@ class autoEntry(cEntry, widgetBase):
 		self.sv.trace("w", lambda name, index, mode, e=Event(): self._autocomplete(e))
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
+
 	def _autocomplete(self, event):
 		if self.winfo_toplevel().focus_get() != self:
 			return
@@ -592,3 +567,124 @@ class Tooltip:
 		if tw:
 			tw.destroy()
 		self.tw = None
+		
+class Calendar(cFrame):
+	def __init__(self, master, **kwargs):
+		self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+		self.short_days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+		self.months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+		self.short_months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+		self.master = master
+		self.date = kwargs.pop('date', simpledate.now())
+		self.func = kwargs.pop('func', self.__ignore)
+		super(Calendar, self).__init__(self.master)
+		self.configure(**kwargs)
+		pp = PackProcess()
+		t_frame = pp.add(cFrame(self), side=TOP, fill=X)
+		self.c_frame = pp.add(cFrame(self), side=TOP, fill=X)
+		pp.add(cButton(t_frame, text="<", command=self.previous_month), side=LEFT)
+		self.month_l = pp.add(cLabel(t_frame, text=self.date.strftime("%B %Y"), borderwidth=1, relief='raised', height=2), side=LEFT, fill=X, expand=1)
+		pp.add(cButton(t_frame, text=">", command=self.next_month), side=RIGHT)
+		pp.pack()
+		self.create_month_view(self.get_month(self.date), self.func)
+		self.__buttons = {}
+		context = {
+		'Reset':self.reset,
+		'Select Year':self.select_year,
+		'Select Month':self.select_month,
+		}
+		self.menu = cMenu(self, context=context)
+		self.month_l.bind("<Button-3>", self.menu._do_popup)
+	def reset(self):
+		self.specific_date(simpledate.now())
+	def select_year(self):
+		x = askinteger('Year Selection', 'Please input the year')
+		self.specific_date(self.date.replace(year=x))
+	def select_month(self):
+		x = askstring('Month Selection', 'Please Enter the month').lower()
+		if x in self.months:
+			x = self.months.index(x)+1
+		elif x in self.short_months:
+			x = self.short_months.index(x)+1
+		else:
+			try:
+				x = int(x)
+			except:
+				return
+		self.specific_date(self.date.replace(month=int(x)))
+	@staticmethod
+	def pad(tx: str) -> str:
+		return f'{tx if int(tx)>=10 else "0"+tx}'
+	@cache
+	def get_month(self, mdate: datetime) -> list:
+		first = mdate.replace(day=1)
+		last = mdate.replace(day=1,
+								month=mdate.month+1 if mdate.month+1 < 13 else 1,
+								year=mdate.year if mdate.month+1 < 13 else mdate.year+1
+								) - relativedelta(days=1)
+		weeks = list(range(1, last.day+1))
+		for _ in range(first.weekday()): weeks.insert(0, 0) ##pad extra days at start of month
+		month = [weeks[s:s+7] for s in range(0,len(weeks),7)] ##create the basic output from splitting weeks into segments
+		for _ in range(7-len(month[-1])): month[-1].append(0) ##padd extra days at end of month
+		for index1, w in enumerate(month):
+			for index2, d in enumerate(w):
+				month[index1][index2] = self.pad(str(d)) ##makes sure all numbers are strings of 2 digits.
+		return month
+	@classmethod
+	def date(self) -> datetime:
+		return self.date
+	def set_date(self, d: datetime) -> datetime:
+		self.date = d
+		return self.date
+	def specific_date(self, mdate:datetime):
+		self.set_date(mdate)
+		self.month_l.configure(text=self.date.strftime("%B %Y"))
+		self.create_month_view(self.get_month(self.date), self.func)
+	def next_month(self):
+		self.set_date(
+			self.date.replace(
+				day=1,
+				month=self.date.month+1 if self.date.month+1 < 13 else 1,
+				year=self.date.year if self.date.month+1 < 13 else self.date.year+1,
+				hour=0
+				)
+		)
+		self.month_l.configure(text=self.date.strftime("%B %Y"))
+		self.create_month_view(self.get_month(self.date), self.func)
+	def previous_month(self):
+		self.set_date(
+			self.date.replace(
+				day=1,
+				month=self.date.month-1 if self.date.month > 1 else 12,
+				year=self.date.year if self.date.month > 1 else self.date.year-1,
+			)
+		)
+		self.month_l.configure(text=self.date.strftime("%B %Y"))
+		self.create_month_view(self.get_month(self.date), self.func)
+	def create_month_view(self, dates: list, func:Callable[[Event, str], None]):
+		if len(dates) < 6:
+			dates.append(['00']*7)
+		dates = [item for sublist in dates for item in sublist]
+		for child in self.c_frame.winfo_children():
+			child.grid_forget()
+			child.destroy()
+		row = 1
+		self.__buttons = {}
+		
+		gp = GridProcess()
+		for index, day in enumerate(self.short_days):
+			gp.add(cLabel(self.c_frame, text=day, width=5, height=2, borderwidth=1, relief='ridge'), row=0, column=index)
+		for index, mdate in enumerate(dates):
+			if index != 0 and index%7 == 0:
+				row +=1
+			self.__buttons[mdate] = gp.add(cButton(self.c_frame, 
+												text=mdate if mdate != '00' else '',
+												state='disabled' if mdate == '00' else 'normal',
+												cursor='' if mdate == '00' else 'hand2',
+												width=4,
+												command=lambda e=Event(), d=mdate: func(e, d)
+												), row=row, column=index%7)
+		del self.__buttons['00']
+		gp.grid()
+	def __ignore(self, event, day):
+		pass

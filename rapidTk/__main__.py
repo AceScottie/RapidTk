@@ -124,3 +124,16 @@ class PackProcess:
 		for element in self.widgets:
 			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])
 
+class GridProcess:
+	@time_it
+	def __init__(self):
+		self.widgets = []
+	@time_it
+	def add(self, widget, column=None, row=0):
+		self.widgets.append({"widget":widget, "column":column, "row":row})
+		return widget
+	@time_it
+	def grid(self):
+		for element in self.widgets:
+			element['widget'].grid(column=element['column'], row=element['row'])
+

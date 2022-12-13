@@ -4,6 +4,7 @@ if sys.platform == 'win32':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard
 	from win32con import CF_TEXT, CF_UNICODETEXT
 from functools import wraps, singledispatchmethod
+from datetime import datetime
 from time import perf_counter
 from .rTkErrors import *
 import logging
@@ -154,3 +155,26 @@ class widgetBase:
 	def _(self, index:float, text):
 		print("got index as a float")
 		print(f'{index=}, {text=}')
+
+
+def cache(func):
+	cached = {}
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		key = str(args) + str(kwargs)
+		if key not in cached:
+			cached[key] = func(*args, **kwargs)
+			logging.getLogger('rapidTk').rtkverbose(f'Adding to cache {args}, {kwargs}')
+		else:
+			logging.getLogger('rapidTk').rtkverbose(f'Using cache {args}, {kwargs}')
+		return cached[key]
+	return wrapper
+class simpledate(datetime):
+	def simplify(self, **kwargs):
+		[kwargs.pop(key, None) for key in ['hour', 'minute', 'second', 'microsecond']]
+		return super().replace(**kwargs, hour=0, minute=0, second=0, microsecond=0)
+	def replace(self, **kwargs):
+		return self.simplify(**kwargs)		
+	@classmethod
+	def now(cls, tz=None):
+		return super().now(tz=tz).simplify()

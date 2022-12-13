@@ -77,6 +77,7 @@ class cButton(Button, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
 		self.__dict__.update(kwargs)
+		kwargs['cursor'] = kwargs.pop('cursor', 'hand2')
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		super(cButton, self).__init__(master)
 		self.configure(kw_wid)
@@ -357,10 +358,8 @@ class cOptionMenu(OptionMenu, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		self.options = []
-		if 'options' in kwargs.keys():
-			self.options = kwargs['options']
-			del kwargs['options']
+		self.options = kwargs.pop('options', [])
+		
 		self.var = StringVar()
 		if 'default' in kwargs.keys():
 			self.__value = kwargs['default']
