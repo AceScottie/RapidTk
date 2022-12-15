@@ -4,16 +4,19 @@ from tkinter import N, E, S, W, NW, NE, SE, SW, NSEW
 from tkinter import Scrollbar, VERTICAL, HORIZONTAL 
 from tkinter.simpledialog import askstring, askinteger
 
+
+
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps
 import re
 from itertools import count
 from datetime import datetime, date
 from collections.abc import Callable
 from dateutil.relativedelta import relativedelta
+from math import sin, cos, pi
 
 from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess, GridProcess
-from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu
+from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox
 from .rTkErrors import *
 from .rTkUtils import coord, widgetBase, simpledate, cache
 from .rTkManagers import _WindowManager
@@ -71,10 +74,9 @@ class autoEntry(cEntry, widgetBase):
 		self.autoshow = kwargs.pop('autoshow', 0) in [1, '1', True]
 
 
-		self.bg = kwargs.pop('bg', kwargs.pop('background', '#AAFFAA'))
-		self.fg = kwargs.pop('fg', kwargs.pop('foreground','#000000'))
-		kwargs['background'] = self.bg 
-		kwargs['foreground'] = self.fg
+		self.bg, kwargs['background'], kwargs['bg'] = (kwargs.get('bg', kwargs.get('background', '#AAFFAA')),)*3
+		self.fg, kwargs['foreground'], kwargs['fg'] = (kwargs.pop('fg', kwargs.pop('foreground','#000000')),)*3
+
 		kwargs['insertbackground'] = kwargs.pop('insertbackground', self.cursor_colour)
 		kwargs['textvariable'] = kwargs.pop('textvariable', StringVar())
 		self.sv = kwargs['textvariable']
@@ -688,3 +690,149 @@ class Calendar(cFrame):
 		gp.grid()
 	def __ignore(self, event, day):
 		pass
+		
+class TimePicker(cCanvas, widgetBase):
+	def __init__(self, master, **kwargs):
+		pp = PackProcess()
+		self.split = "am"
+		self.master = master
+		self.tformat = kwargs.pop('format', 24)
+		self.hours, self.minutes = StringVar(), StringVar()
+		self.hours.set('00')
+		self.minutes.set('00')
+		holder_frame= pp.add(cFrame(master),side=TOP)
+		self.hourE = pp.add(cSpinbox(holder_frame, textvariable = self.hours, width=3, values=tuple(list(range(24)))),side=LEFT)
+		pp.add(cLabel(holder_frame, text=":"), side=LEFT)
+		self.minutesE = pp.add(cSpinbox(holder_frame, textvariable=self.minutes, width=3, values=tuple(list(range(60)))),side=LEFT)
+		self.minutesE.bind("<MouseWheel>", lambda e=Event(), m=59: self._on_scroll(e, maxn=m))
+		self.hourE.bind("<MouseWheel>", lambda e=Event(), m=23: self._on_scroll(e, maxn=m))
+		holder_frame.pack(side=TOP)
+		##setup focus bindings
+		self.hourE.bind("<FocusIn>", self.popup)
+		self.hourE.bind("<FocusOut>", self.close)
+		self.minutesE.bind("<FocusIn>", self.popup)
+		self.minutesE.bind("<FocusOut>", self.close)
+
+		self.width, self.height, self.radious = kwargs['width'], kwargs['height'], rd = (kwargs.pop('radious', 100)*2, )*3
+		self.radious /= 4
+		self.radious -=1 ##fixes clipping
+		assert self.tformat in [12, 24], "Time Format must be '12' or '24'"
+
+		super(TimePicker, self).__init__(master, **kwargs)
+		self.active_line = None
+		self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
+		self.circle_numbers(self.width/2, self.height/2, self.radious*2-15, 10, [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Helvetica 11 bold', "Hours")
+		self.circle_numbers(self.width/2, self.height/2, self.radious+5,  10, [0, 15, 30, 45], 'Helvetica 11 bold', "Minutes")
+		
+		self.am_pm_switch()
+
+
+		self.center = self.create_center_circle(self.width/2, self.height/2, 5, fill="#DDDDDD", width=0)
+		pp.pack()
+
+	def _on_scroll(self, event, maxn=0):
+		num = int(event.widget.get())
+		print(num)
+		event.widget.delete(0, END)
+		if event.delta > 0 :
+			if num >= maxn:
+				event.widget.insert(0, '00')
+			else:
+				event.widget.insert(0, str(num+1).zfill(2))
+		elif event.delta < 0:
+			if num <= 0:
+				event.widget.insert(0, str(maxn).zfill(2))
+			else:
+				event.widget.insert(0, str(num-1).zfill(2))
+			
+	def am_pm_switch(self):
+		ovall = 30
+		ovalw = 40
+		self.create_oval(self.width/2-ovall, self.height/2+ovalw/4, self.width/2+ovall, self.height/2+ovalw, fill="#BBBBBB")
+		sc, st = self.create_am()
+		self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+		self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+	def create_am(self):
+		ovalr = 40
+		am = self.create_center_circle(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, 20, fill='#0575DD', width=0)
+		amtx = self.create_text(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, font=('Helvetica 11 bold'), text="AM")
+		self.split = "am"
+		return am, amtx
+
+	def create_pm(self):
+		ovalr = 40
+		pm = self.create_center_circle(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, 20, fill='#0575DD', width=0)
+		pmtx = self.create_text(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, font=('Helvetica 11 bold'), text="PM")
+		self.split = "pm"
+		return pm, pmtx
+
+	def _switcher(self, event, sc, st):
+		self.delete(sc)
+		self.delete(st)
+		if self.split == "am":
+			sc, st = self.create_pm()
+			self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+		elif self.split == "pm":
+			sc, st = self.create_am()
+			self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+
+
+	def create_center_circle(self, x, y, r, **kwargs):
+		return super().create_oval(x-r, y-r, x+r, y+r, **kwargs)
+	
+	def create_circle_arc(self, x, y, r, **kwargs):
+		if "start" in kwargs and "end" in kwargs:
+			kwargs["extent"] = kwargs["end"] - kwargs["start"]
+			del kwargs["end"]
+		return super().create_arc(x-r, y-r, x+r, y+r, **kwargs)
+	
+	def circle_numbers(self, x: int, y: int, r: int, cr:int, numbers: list, font: str, tp:str):
+		_angle = 360/len(numbers)
+		for i, n in enumerate(numbers):
+			ax =  r * sin(pi * 2 * (360-_angle*i-180) / 360);
+			ay = r * cos(pi * 2 * (360-_angle*i-180) / 360);
+			tag = f'{tp}:{str(n)}'
+			cl = self.create_center_circle(x+ax, y+ay, cr, fill="#DDDDDD", outline="#000", width=0, tag=tag)
+			tx = self.create_text(x+ax, y+ay, text=str(n).zfill(2), fill="black", font=(font), tag='tx'+tag )
+			self.tag_bind(f'tx{tp}:{str(n)}', '<Enter>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=True: self._hover(e, cl, tx, c, s, t))
+			self.tag_bind(f'tx{tp}:{str(n)}', '<Leave>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=False: self._left(e, cl, tx, c, s, t))
+			self.tag_bind(f'{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
+			self.tag_bind(f'tx{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
+
+	def _hover(self, event, cl, tx,  coords, state, tag):
+		if self.active_line:
+			return
+		self.itemconfigure(cl, fill='#0797FF')
+		self.itemconfigure(tx, fill="white")
+		self.itemconfigure(self.center, fill='#0797FF')
+		dx = (1 - 0.8) * self.width/2 + 0.8 * coords[0]
+		dy = (1 - 0.8) * self.height/2 + 0.8 * coords[1]
+		self.active_line = self.create_line(self.width/2, self.height/2, dx, dy, fill="#0797FF", width=2, tag=None) ##create new line
+	def _left(self, event, cl, tx, coords, state, tag):
+		if self.active_line is None: ##if there is no line
+			return
+		self.itemconfigure(cl, fill='#DDDDDD')
+		self.itemconfigure(tx, fill="black")
+		self.itemconfigure(self.center, fill='#DDDDDD')
+		self.delete(self.active_line)
+		self.active_line = None
+
+	def _set_number(self, event, cl, tx, number, tp):
+		if tp == "Hours":
+			if self.split == "pm":
+				number = (number+12)%24
+			self.hours.set(str(number).zfill(2))
+			self.minutesE.focus()
+		elif tp == "Minutes":
+			self.minutes.set(str(number).zfill(2))
+			self.close(event)
+			self.master.focus()
+
+	def get(self):
+		return self.hours.get(), self.minutes.get()
+	def popup(self, event):
+		self.pack(side=TOP)
+	def close(self, event):
+		self.pack_forget()
