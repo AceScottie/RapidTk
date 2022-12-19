@@ -330,7 +330,6 @@ class movableWindow(cCanvas, widgetBase):
 		x=(rx-rrx-w/2)
 		y=ry-rry-10
 		return x, y
-
 	def _drop(self, event):
 		if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
 			self.place(x=self.root.winfo_width()-self.winfo_width())
@@ -569,7 +568,6 @@ class Tooltip:
 		if tw:
 			tw.destroy()
 		self.tw = None
-		
 class Calendar(cFrame):
 	def __init__(self, master, **kwargs):
 		self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -691,138 +689,141 @@ class Calendar(cFrame):
 	def __ignore(self, event, day):
 		pass
 		
-class TimePicker(cCanvas, widgetBase):
+class TimePicker(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
-		pp = PackProcess()
+		kwargs['radious'] = kwargs.pop('radious', 100)
+		assert kwargs.get('radious', 100) >= 100, "key:'radious', radious cannot be less than 100 due to instability, please enter a value of 100 or more"
+		assert kwargs.get('format', 12) in [12, 24], "key:'format', Time Format must be '12' or '24'"
+		print(kwargs['radious'])
+		self.width, self.height, self.radious = (kwargs.pop('radious', 100)*2,)*3
+		self.tformat = kwargs.pop('format', 12)
+		self.open = False
+		self.radious /= 4
+		self.radious -=1 ##fixes clipping
+
+		
 		self.split = "am"
 		self.master = master
-		self.tformat = kwargs.pop('format', 24)
+		super(TimePicker, self).__init__(master)
+		self.root = self.get_root()
+		self.build_ui()
+
+	def build_ui(self):
+		pp=PackProcess()
 		self.hours, self.minutes = StringVar(), StringVar()
 		self.hours.set('00')
 		self.minutes.set('00')
-		holder_frame= pp.add(cFrame(master),side=TOP)
-		self.hourE = pp.add(cSpinbox(holder_frame, textvariable = self.hours, width=3, values=tuple(list(range(24)))),side=LEFT)
+		holder_frame= pp.add(cFrame(self),side=TOP)
+		self.hourE = pp.add(cSpinbox(holder_frame, wrap=True, textvariable = self.hours, state="readonly", exportselection=0, width=3, increment=1, values=tuple(list(str(x).zfill(2) for x in range(0, 24)))), side=LEFT)
 		pp.add(cLabel(holder_frame, text=":"), side=LEFT)
-		self.minutesE = pp.add(cSpinbox(holder_frame, textvariable=self.minutes, width=3, values=tuple(list(range(60)))),side=LEFT)
-		self.minutesE.bind("<MouseWheel>", lambda e=Event(), m=59: self._on_scroll(e, maxn=m))
-		self.hourE.bind("<MouseWheel>", lambda e=Event(), m=23: self._on_scroll(e, maxn=m))
-		holder_frame.pack(side=TOP)
-		##setup focus bindings
+		self.minutesE = pp.add(cSpinbox(holder_frame, wrap=True, textvariable=self.minutes, state="readonly", exportselection=0, width=3, increment=1, values=tuple(list(str(x).zfill(2) for x in range(0, 60)))), side=LEFT)
+		pp.pack()
 		self.hourE.bind("<FocusIn>", self.popup)
-		self.hourE.bind("<FocusOut>", self.close)
+		#self.hourE.bind("<FocusOut>", self.close)
 		self.minutesE.bind("<FocusIn>", self.popup)
-		self.minutesE.bind("<FocusOut>", self.close)
+		#self.minutesE.bind("<FocusOut>", self.close)
+		
 
-		self.width, self.height, self.radious = kwargs['width'], kwargs['height'], rd = (kwargs.pop('radious', 100)*2, )*3
-		self.radious /= 4
-		self.radious -=1 ##fixes clipping
-		assert self.tformat in [12, 24], "Time Format must be '12' or '24'"
-
-		super(TimePicker, self).__init__(master, **kwargs)
+	def draw_clock(self):
+		self.overlay = cCanvas(self.root, width=self.width, height=self.height)
+		#self.overlay = cCanvas(self.root, width=0, height=0)
 		self.active_line = None
 		self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
-		self.circle_numbers(self.width/2, self.height/2, self.radious*2-15, 10, [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Helvetica 11 bold', "Hours")
-		self.circle_numbers(self.width/2, self.height/2, self.radious+5,  10, [0, 15, 30, 45], 'Helvetica 11 bold', "Minutes")
-		
-		self.am_pm_switch()
+		self.circle_numbers(self.width/2, self.height/2, (self.radious*2)-self.radious/2, self.radious/5, [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Helvetica 11 bold', "Hours")
+		self.circle_numbers(self.width/2, self.height/2, self.radious-7, self.radious/5, [0, 15, 30, 45], 'Helvetica 9 bold', "Minutes")
+		if self.tformat == 12:
+			ax = (self.width/100)*40
+			ay = self.height/2+((self.height/100)*5)
+			bx = (self.width/100)*60
+			by = self.height/2+((self.height/100)*15)
+			self.am_pm_switch(ax, ay, bx, by)
+		else:
+			self.circle_numbers(self.width/2, self.height/2, (self.radious*2)-self.radious/1.4, self.radious/5, [00, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 'Helvetica 11 bold', "Hours", offset=15)
 
+		self.center = self.create_center_circle(self.width/2, self.height/2, self.radious/10, fill="#DDDDDD", width=0)
 
-		self.center = self.create_center_circle(self.width/2, self.height/2, 5, fill="#DDDDDD", width=0)
-		pp.pack()
-
-	def _on_scroll(self, event, maxn=0):
-		num = int(event.widget.get())
-		print(num)
-		event.widget.delete(0, END)
-		if event.delta > 0 :
-			if num >= maxn:
-				event.widget.insert(0, '00')
-			else:
-				event.widget.insert(0, str(num+1).zfill(2))
-		elif event.delta < 0:
-			if num <= 0:
-				event.widget.insert(0, str(maxn).zfill(2))
-			else:
-				event.widget.insert(0, str(num-1).zfill(2))
-			
-	def am_pm_switch(self):
-		ovall = 30
-		ovalw = 40
-		self.create_oval(self.width/2-ovall, self.height/2+ovalw/4, self.width/2+ovall, self.height/2+ovalw, fill="#BBBBBB")
-		sc, st = self.create_am()
-		self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-		self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-	def create_am(self):
-		ovalr = 40
-		am = self.create_center_circle(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, 20, fill='#0575DD', width=0)
-		amtx = self.create_text(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, font=('Helvetica 11 bold'), text="AM")
+	def am_pm_switch(self, ax, ay, bx, by):
+		self.crate_curved_rect(ax, ay, bx, by)
+		sc, st = self.create_am(ax, ay, bx, by)
+		self.overlay.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st, ax=ax, ay=ay, bx=bx, by=by:self._switcher(e, a, b, ax, ay, bx, by))
+		self.overlay.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st, ax=ax, ay=ay, bx=bx, by=by:self._switcher(e, a, b, ax, ay, bx, by))
+	def crate_curved_rect(self, ax, ay, bx, by):
+		r = (by-ay)/2
+		self.overlay.create_rectangle(ax, ay, bx, by, fill="#BBBBBB", width=0)
+		self.overlay.create_arc(bx-r, ay, bx+r, by, start=-90, extent=180, fill="#BBBBBB", width=0, outline="#BBBBBB")
+		self.overlay.create_arc(ax-r, ay, ax+r, by, start=270, extent=-180, fill="#BBBBBB", width=0, outline="#BBBBBB")
+	def create_am(self, ax, ay, bx, by):
 		self.split = "am"
-		return am, amtx
-
-	def create_pm(self):
-		ovalr = 40
-		pm = self.create_center_circle(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, 20, fill='#0575DD', width=0)
-		pmtx = self.create_text(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, font=('Helvetica 11 bold'), text="PM")
+		r = (by-ay)/2
+		offset = r/100*20
+		cl = self.overlay.create_oval(ax-offset-(r/2), ay-offset, ax+(r*2)+offset-(r/2), ay+(r*2)+offset, fill="#0575DD", width=0)
+		ct = self.overlay.create_text(ax-(r/2)+r, ay+r, text="AM", font=('Helvetica 11 bold'))
+		return cl, ct
+	def create_pm(self, ax, ay, bx, by):
 		self.split = "pm"
-		return pm, pmtx
-
-	def _switcher(self, event, sc, st):
-		self.delete(sc)
-		self.delete(st)
+		r = (by-ay)/2
+		offset = r/100*20
+		cl = self.overlay.create_oval(bx-(r*2)-offset+(r/2), ay-offset, bx+offset+(r/2), by+offset, fill="#0575DD", width=0)
+		ct = self.overlay.create_text(bx-(r*2)+(r/2)+r, ay+r, text="PM", font=('Helvetica 11 bold'))
+		return cl, ct
+	def _switcher(self, event, sc, st, ax, ay, bx, by):
+		self.overlay.delete(sc)
+		self.overlay.delete(st)
 		if self.split == "am":
-			sc, st = self.create_pm()
-			self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-			self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			sc, st = self.create_pm(ax, ay, bx, by)
+			self.overlay.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st, ax=ax, ay=ay, bx=bx, by=by:self._switcher(e, a, b, ax, ay, bx, by))
+			self.overlay.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st, ax=ax, ay=ay, bx=bx, by=by:self._switcher(e, a, b, ax, ay, bx, by))
 		elif self.split == "pm":
-			sc, st = self.create_am()
-			self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-			self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-
+			sc, st = self.create_am(ax, ay, bx, by)
+			self.overlay.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st, ax=ax, ay=ay, bx=bx, by=by:self._switcher(e, a, b, ax, ay, bx, by))
+			self.overlay.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st, ax=ax, ay=ay, bx=bx, by=by:self._switcher(e, a, b, ax, ay, bx, by))
 
 	def create_center_circle(self, x, y, r, **kwargs):
-		return super().create_oval(x-r, y-r, x+r, y+r, **kwargs)
-	
+		return self.overlay.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 	def create_circle_arc(self, x, y, r, **kwargs):
 		if "start" in kwargs and "end" in kwargs:
 			kwargs["extent"] = kwargs["end"] - kwargs["start"]
 			del kwargs["end"]
-		return super().create_arc(x-r, y-r, x+r, y+r, **kwargs)
-	
-	def circle_numbers(self, x: int, y: int, r: int, cr:int, numbers: list, font: str, tp:str):
+		return self.overlay.create_arc(x-r, y-r, x+r, y+r, **kwargs)
+	def circle_numbers(self, x: int, y: int, r: int, cr:int, numbers: list, font: str, tp:str, offset=0)->None:
 		_angle = 360/len(numbers)
 		for i, n in enumerate(numbers):
-			ax =  r * sin(pi * 2 * (360-_angle*i-180) / 360);
-			ay = r * cos(pi * 2 * (360-_angle*i-180) / 360);
+			ax =  r * sin(pi * 2 * (360-offset-_angle*i-180) / 360)
+			ay = r * cos(pi * 2 * (360-offset-_angle*i-180) / 360)
 			tag = f'{tp}:{str(n)}'
 			cl = self.create_center_circle(x+ax, y+ay, cr, fill="#DDDDDD", outline="#000", width=0, tag=tag)
-			tx = self.create_text(x+ax, y+ay, text=str(n).zfill(2), fill="black", font=(font), tag='tx'+tag )
-			self.tag_bind(f'tx{tp}:{str(n)}', '<Enter>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=True: self._hover(e, cl, tx, c, s, t))
-			self.tag_bind(f'tx{tp}:{str(n)}', '<Leave>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=False: self._left(e, cl, tx, c, s, t))
-			self.tag_bind(f'{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
-			self.tag_bind(f'tx{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
+			tx = self.overlay.create_text(x+ax, y+ay, text=str(n).zfill(2), fill="black", font=(font), tag='tx'+tag )
+			self.overlay.tag_bind(f'tx{tp}:{str(n)}', '<Enter>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=True: self._hover(e, cl, tx, c, s, t))
+			self.overlay.tag_bind(f'tx{tp}:{str(n)}', '<Leave>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=False: self._left(e, cl, tx, c, s, t))
+			self.overlay.tag_bind(f'{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
+			self.overlay.tag_bind(f'tx{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
 
-	def _hover(self, event, cl, tx,  coords, state, tag):
+	def _hover(self, event, cl, tx,  coords, state, tag)->None:
 		if self.active_line:
 			return
-		self.itemconfigure(cl, fill='#0797FF')
-		self.itemconfigure(tx, fill="white")
-		self.itemconfigure(self.center, fill='#0797FF')
-		dx = (1 - 0.8) * self.width/2 + 0.8 * coords[0]
-		dy = (1 - 0.8) * self.height/2 + 0.8 * coords[1]
-		self.active_line = self.create_line(self.width/2, self.height/2, dx, dy, fill="#0797FF", width=2, tag=None) ##create new line
-	def _left(self, event, cl, tx, coords, state, tag):
+		self.overlay.itemconfigure(cl, fill='#0797FF')
+		self.overlay.itemconfigure(tx, fill="white")
+		self.overlay.itemconfigure(self.center, fill='#0797FF')
+		p_change = 0.75
+		dx = (1 - p_change) * self.width/2 + p_change * coords[0]
+		dy = (1 - p_change) * self.height/2 + p_change * coords[1]
+		self.active_line = self.overlay.create_line(self.width/2, self.height/2, dx, dy, fill="#0797FF", width=2, tag=None) ##create new line
+	def _left(self, event, cl, tx, coords, state, tag)->None:
 		if self.active_line is None: ##if there is no line
 			return
-		self.itemconfigure(cl, fill='#DDDDDD')
-		self.itemconfigure(tx, fill="black")
-		self.itemconfigure(self.center, fill='#DDDDDD')
-		self.delete(self.active_line)
+		self.overlay.itemconfigure(cl, fill='#DDDDDD')
+		self.overlay.itemconfigure(tx, fill="black")
+		self.overlay.itemconfigure(self.center, fill='#DDDDDD')
+		self.overlay.delete(self.active_line)
 		self.active_line = None
-
-	def _set_number(self, event, cl, tx, number, tp):
+	def _set_number(self, event, cl, tx, number, tp)->None:
 		if tp == "Hours":
 			if self.split == "pm":
-				number = (number+12)%24
+				if number != 12:
+					number = (number+12)%24
+			elif self.split == "am" and self.tformat != 24:
+				if number == 12:
+					number = 0
 			self.hours.set(str(number).zfill(2))
 			self.minutesE.focus()
 		elif tp == "Minutes":
@@ -830,9 +831,35 @@ class TimePicker(cCanvas, widgetBase):
 			self.close(event)
 			self.master.focus()
 
-	def get(self):
-		return self.hours.get(), self.minutes.get()
-	def popup(self, event):
-		self.pack(side=TOP)
-	def close(self, event):
-		self.pack_forget()
+	def get_hours(self) -> str:
+		return self.hours.get()
+	def get_minutes(self) -> str:
+		return self.minutes.get()
+	def get(self) -> str:
+		return f'{self.hours.get()}:{self.minutes.get()}'
+	def set(self, hours=None, minutes=None) -> None:
+		if hours is not None:
+			self.hours.set(hours)
+		if minutes is not None:
+			self.minutes.set(hours)
+	def popup(self, event) -> None:
+
+		if self.open:
+			return
+		self.open = True
+		print(event)
+		xpos = self.winfo_rootx() - self.winfo_toplevel().winfo_rootx() - (self.width/4)
+		ypos = self.winfo_rooty() - self.winfo_toplevel().winfo_rooty() + self.winfo_height()
+		self.draw_clock()
+		self.overlay.pack_propagate(False)
+		self.overlay.place(x=xpos, y=ypos)
+
+	def close(self, event) -> None:
+		print("closing")
+		self.active_line = None
+		self.overlay.delete("all")
+		self.overlay.place_forget()
+		self.overlay.destroy()
+		self.open = False
+	def __repr__(self) -> str:
+		return self.get()
