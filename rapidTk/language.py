@@ -16,8 +16,8 @@ class languages(SimpleNamespace):
 			langs[l_name] = SimpleNamespace(**d)
 		super().__init__(**langs)
 class localization(object):
-	def __init__(self, lang="en_gb"):
-		self.languages = languages()
+	def __init__(self, lang="en_gb", localpath='./assets/local/'):
+		self.languages = languages(lang=lang, localpath=localpath)
 		self.set_language = lang
 	def set_local(self, lang="en_gb"):
 		self.set_language = lang

@@ -5,6 +5,7 @@ from .cWidgets_extended import *
 from .reWidgets import *
 from .matchart import Chart
 from .flags import *
+from .language import localization
 try:
 	import tkcalendar
 	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
