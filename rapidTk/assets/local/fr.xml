@@ -1,17 +1,16 @@
 <resource>
-	<base>
+	<section1>
 		<string name="hello">Bonjour</string>
 		<string name="goodbye">Au revoir</string>
-		<string name="load_casenote">Veuillez patienter pendant que nous chargeons votre dossier.</string>
-		<string name="wait">Cela peut prendre une minute.</string>
-		<string name="rmuser">Utilisateur supprimé</string>
-	</base>
+	</section1>
 
-	<launcher>
-		<string name="hello">Hello</string>
-		<string name="goodbye">Goodbye</string>
-		<string name="load_casenote">Please wait while we load your caseload.</string>
-		<string name="wait">This may take a minute.</string>
-		<string name="rmuser">Removed User</string>
-	</launcher>
+	<section2>
+		<string name="hello">Bonjour</string>
+		<string name="goodbye">Au revoir</string>
+	</section2>
+
+	<example>
+		<string name="hello">Bonjour</string>
+		<string name="changeLanguage">Changer de langue</string>
+	</example>
 </resource>

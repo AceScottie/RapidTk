@@ -7,7 +7,6 @@ from .flags import __theme_manager__
 
 class _ThemeManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		print('tm called')
 		__theme_manager__ = True
 		self.root = root
 		self.style = Style()

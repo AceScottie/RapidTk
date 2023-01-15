@@ -540,16 +540,13 @@ class cScale(Scale, widgetBase):
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
 
-class cSpinbox(Spinbox, widgetBase):
+class cSpinbox(Spinbox, widgetBase): ##incremental box
+	@time_it
 	def __init__(self, master, **kwargs):
-		kwargs['command'] = kwargs.pop('command', self.__loop)
+		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		super(cSpinbox, self).__init__(master)
 		self.configure(kw_wid)
-		style_widget(self, kw_style, "TScale")
+		style_widget(self, kw_style, "TSpinbox")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-
-	def __loop(self):
-		self.focus_set()
-		self.selection_range(0, 0)

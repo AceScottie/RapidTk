@@ -210,6 +210,27 @@ def example_get():
 	pp.pack()
 	root.mainloop()
 
+def switch_language(e:Event, _l:localization, b:cButton, lb:cLabel):
+	_l.set_local('fr') ##sets the local language strings present in fr.xml
+	lb.configure(text=_l.example.hello) ##changes the string to the new fr.xml -> resource.example.hello string
+	b.configure(text=_l.example.changeLanguage) ##changes the string to the new fr.xml -> resource.example.changeLanguage string
+
+
+def example_baisc_language():
+	"""
+	DOC STRING
+	"""
+	_l = localization(lang='en_gb', localpath='../assets/local/') ## initilise the string resources using the en_gb.xml file found in the ../assets/local/ path.
+	
+	root = rapidTk()
+	lb = cLabel(root, text=_l.example.hello, side=TOP) ## use the string found in en_gb.xml -> resrouces.example.hello 
+	change = cButton(root, text=_l.example.changeLanguage, side=TOP) ## use the string found in en_gb.xml -> resrouces.example.changeLanguage 
+	change.configure(command=lambda e=Event(), _l=_l, lb=lb, b=change:switch_language(e, _l, b, lb)) 
+	root.mainloop()
+
+
+
+
 
 if __name__ == "__main__":
-	example_get()
+	example_baisc_language()
