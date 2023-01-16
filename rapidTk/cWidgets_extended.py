@@ -22,6 +22,21 @@ from .rTkUtils import coord, widgetBase, simpledate, cache
 from .rTkManagers import _WindowManager
 from .rTkTheme import _ThemeManager
 
+try:
+	import tkcalendar
+	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
+except:
+	raise DateEntryNotFoundException
+	class DateEntry:
+		def __init__(self, master, **kwargs):
+			raise DateEntryNotFoundException
+	class cDateEntry:
+		def __init__(self, master, **kwargs):
+			raise DateEntryNotFoundException
+	class reDateEntry:
+		def __init__(self, master, **kwargs):
+			raise DateEntryNotFoundException
+
 
 
 
@@ -330,7 +345,6 @@ class movableWindow(cCanvas, widgetBase):
 		x=(rx-rrx-w/2)
 		y=ry-rry-10
 		return x, y
-
 	def _drop(self, event):
 		if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
 			self.place(x=self.root.winfo_width()-self.winfo_width())
@@ -381,7 +395,7 @@ class qForm:
 	def create_questions(self, holder, objects, configuration):
 		pp = PackProcess()
 		for sec, obj in objects.items():
-			section = pp.add(cFrame(holder, bg="blue"), side=TOP, fill=X)
+			section = pp.add(cFrame(holder, bg="blue"), side=TOP, fill=X, expand=1)
 			pp.add(cLabel(section, text=sec, anchor="center"), side=TOP, fill=X)
 			for ob, opts in obj.items():
 				f = pp.add(cFrame(section), side=TOP, fill=X)
@@ -448,12 +462,13 @@ class qForm:
 				pattern = re.compile(v['validation'], re.IGNORECASE)
 				valid = pattern.match(str(value))
 				if not valid:
+					print(str(type(v['object'])))
 					v['object'].configure(bg="red")
 					validation_valid = False
 				else:
 					if v['object'].cget('background') == "red":
 						if str(type(v['object'])) != "<class 'rTk.objects_ext.autoEntry'>":
-							v['object'].configure(bg=v['object'].winfo_toplevel().option_get('background', '.'), fg=v['object'].winfo_toplevel().option_get('foreground', '.'))
+							v['object'].configure(bg=v['object'].winfo_toplevel().option_get('background', '.') or '#FFFFFF', fg=v['object'].winfo_toplevel().option_get('foreground', '.') or '#000000')
 						else:
 							v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
 			elif str(type(v['object'])) == "<class 'rTk.objects_ext.autoEntry'>":

@@ -1,5 +1,3 @@
-
-
 import sys
 from tkinter import Scrollbar, Event
 
