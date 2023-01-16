@@ -104,14 +104,19 @@ class SingletonMeta(type):
 
 
 class widgetBase:
+	@time_it
 	def __init__(self, master):
 		self.master = master
+	@time_it
 	def get_root(self):
 		return self.master.get_root()
+	@time_it
 	def get_master(self):
 		return self.master
+	@time_it
 	def get_self(self):
 		return self
+	@time_it
 	def get(self, index=None, end=None) -> str:
 		ctype = str(type(self))[:-2].split(".")[-1]
 		if ctype in ["cLabel", "cButton"]:
@@ -130,31 +135,34 @@ class widgetBase:
 			return "This requires cusom get() method"
 		else:
 			raise Exception(f'{type(self)} : {ctype} has no get() method')
+	@time_it
+	def set(self, index=0, text=""):
+		ctype = str(type(self))[:-2].split(".")[-1]
+		if ctype in ["cLabel", "cButton"]:
+			if index in ['', None, 0]:
+				self.configure(text=text)
+			else:
+				o_text = self.__getter(self.cget('text'), 0, index) or ''
+				self.configure(text=o_text+text)
+			self.update()
+		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry"]:
+			if index in ['', None, 0]:
+				return self.var.set(text)
+			else:
+				o_text = self.__getter(self.var.get(), 0, index)
+				self.var.set(o_text+text)
+		#elif ctype in ["cCheckbutton"]:
+		#	return self.var.get()
+		#elif ctype in ["cTreeview"]:
+		#	return "This requires cusom get() method"
+		else:
+			raise Exception(f'{type(self)} : {ctype} has no set() method')
+	@time_it
 	def __getter(self, text, index, end) -> str:
 		if end in ['end', '', None]:
 			end = None
 		index = 0 if not index else index
 		return text[int(index):int(end) if end else None]
-	
-	@singledispatchmethod
-	def set(self, index=0, text=""):
-		raise Exception(f'set((index), text): index defaults to 0 if not set')
-	@set.register
-	def _(self, index:None, text:str):
-		print("got text with no index")
-		print(f'{index=}, {text=}')
-	@set.register
-	def _(self, index: str, text):
-		print("got index as a string")
-		print(f'{index=}, {text=}')
-	@set.register
-	def _(self, index: int, text):
-		print("got index as an int")#
-		print(f'{index=}, {text=}')
-	@set.register
-	def _(self, index:float, text):
-		print("got index as a float")
-		print(f'{index=}, {text=}')
 
 
 def cache(func):

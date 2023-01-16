@@ -69,9 +69,6 @@ class cLabel(Label, widgetBase):
 		style_widget(self, kw_style, "TLabel")
 		if len(kw_pak) != 0:
 			self.pack(kw_pak)
-	@time_it
-	def set(self, value):
-		self.configure(text=value)
 
 class cButton(Button, widgetBase):
 	@time_it

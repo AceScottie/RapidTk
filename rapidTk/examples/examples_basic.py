@@ -183,11 +183,14 @@ def example_basic_menu():
 	root.mainloop()
 
 
-def example_get_runner(event, options, start, end, widgets):
-	print(widgets[options.get()].get(start.get(), end.get()))
+def example_get_runner(event, options, start, end, widgets, out): ##used as part of example_get()
+	out.configure(text=widgets[options.get()].get(start.get(), end.get()))
 def example_get():
 	"""
-	DOC STRING
+	cWidgets that have text values support the get() method.
+	get(start, end) or get() are both valid options for all widgets that support the get() method.
+	!This overwrites the standard tk get() method. 
+
 	"""
 	root = rapidTk(log_level=0)
 	pp = PackProcess()
@@ -204,13 +207,49 @@ def example_get():
 	start = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
 	start.set(None, "Some Text")
 	end = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
-	pp.add(cButton(config, text="run", command=lambda e=Event, o=options, s=start, ed=end, w=w: example_get_runner(e, o, s, ed, w)), side=TOP)
+
+	output = pp.add(cLabel(holder, text="This will be the output"), side=TOP)
+	pp.add(cButton(config, text="Check Output", command=lambda e=Event, o=options, s=start, ed=end, w=w, out=output: example_get_runner(e, o, s, ed, w, out)), side=TOP)
+
+	
+	pp.pack()
+	root.mainloop()
+def example_set_runner(event, options, index, inp, widgets, out): ##used as part of example_set()
+	widgets[options.get()].set(index.get(), inp.get())
+def example_basic_set():
+	"""
+	!WIP! This feature is currently a WIP and only works for cButton, cLable, cEntry, cScrolledText and their subclasses (e.g. reEntry, ImageLabel, iButton)
+	As with get() all widgets with text values will support the set() method.
+	set(index, text) and set(text) are both valid options.
+	set(index, text) will get the origial text valie and append the text from the index position (this will remove any additional text beyond index+text length)
+	set(text) will clear the current text and replace it with the specified text
+
+	!This overwrites the tkinter set() method.
+	"""
+	root = rapidTk(log_level=0)
+	pp = PackProcess()
+	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
+
+	config = pp.add(cFrame(main, borderwidth=3, relief='raised'), side=TOP, fill=BOTH, expand=1)
+	holder = pp.add(cFrame(main, borderwidth=3, relief='groove'), side=TOP, fill=BOTH, expand=1)
+	w={}
+	w['cLabel'] = pp.add(cLabel(holder, text="This is a basic rapidTk Label."), side=TOP, fill=X)
+	w['cButton'] = pp.add(cButton(holder, text="This is an Example Button"), side=TOP)
+	w['cEntry'] = pp.add(cEntry(holder, value="Some Default Text"), side=TOP, fill=X)
+
+	options = pp.add(cOptionMenu(config, options=['cLabel', 'cButton', 'cEntry']), side=LEFT, fill=X)
+	ind = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	set_input = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	set_input.set(None, "Some Text")
+
+	output = pp.add(cLabel(holder, text="This will be the output"), side=TOP)
+	pp.add(cButton(config, text="Set text", command=lambda e=Event, o=options, i=ind, inp=set_input, w=w, out=output: example_set_runner(e, o, i, inp, w, out)), side=TOP)
 
 	
 	pp.pack()
 	root.mainloop()
 
-def switch_language(e:Event, _l:localization, b:cButton, lb:cLabel):
+def switch_language(e:Event, _l:localization, b:cButton, lb:cLabel): ##used as part of example_basic_language
 	_l.set_local('fr') ##sets the local language strings present in fr.xml
 	lb.configure(text=_l.example.hello) ##changes the string to the new fr.xml -> resource.example.hello string
 	b.configure(text=_l.example.changeLanguage) ##changes the string to the new fr.xml -> resource.example.changeLanguage string
@@ -218,7 +257,13 @@ def switch_language(e:Event, _l:localization, b:cButton, lb:cLabel):
 
 def example_baisc_language():
 	"""
-	DOC STRING
+	A global language string subsystem.
+	This allows you to configure xml files (format found in assets/local/) and create a sequence of strings.
+	having multiple xml files allows the user to switch between different string definitions or languages by calling the set_local() method with the filename of the xml.
+
+	it is recommended to set the call on a global scope and use _l or similar to access it throughout your code.
+
+	this can also be used to replace long string values into simple dot notated refrences making code look cleaner.
 	"""
 	_l = localization(lang='en_gb', localpath='../assets/local/') ## initilise the string resources using the en_gb.xml file found in the ../assets/local/ path.
 	
@@ -233,4 +278,4 @@ def example_baisc_language():
 
 
 if __name__ == "__main__":
-	example_baisc_language()
+	example_basic_set()
