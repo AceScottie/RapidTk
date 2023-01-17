@@ -10,54 +10,31 @@ else:
 	from tkinter.ttk import Style
 
 from .rTkErrors import *
-from .rTkUtils import clipboard, widgetBase, time_it
-from .rTkTheme import _ThemeManager
-
-def pack_opts(**kwargs):
-	pak = ["side", "expand", "fill"]
-	if __ttk_enabled__:
-		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
-	else:
-		style = []
-	kw_wid = {}
-	kw_pak = {}
-	kw_style = {}
-	for k, v in kwargs.items():
-		if k in pak:
-			kw_pak[k] = v
-		elif k in style:
-			if k == "bg":
-				kw_style["background"] = v
-			elif k == "fg":
-				kw_style["foreground"] = v
-			elif k == "width": ##fix for picture lable width only
-				if "text" in kwargs.keys():
-					kw_style[k] = v
-				else:
-					kw_style[k] = int(v/10)
-			else:
-				kw_style[k] = v
-		else:
-			kw_wid[k] = v
-	return kw_wid, kw_pak, kw_style
-def style_widget(wd, st, t):
-	if st != {}:
-		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)
-		wd.configure(style=f"{str(wd.__repr__())}.{t}")
-		return style
-	else:
-		return None
+from .rTkUtils import clipboard, widgetBase, time_it, ui
+from .rTkTheme import _ThemeManager, style_widget
 
 class cFrame(Frame, widgetBase):
 	@time_it
-	def __init__(self, master,  **kwargs):
+	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cFrame, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TFrame")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		##pop all pack, gird or place methods.
+		self.method = kwargs.pop('method', None)
+		if self.method is not None:
+			self.method_opts = {}
+			for arg in ui(self.method):
+				if arg in kwargs.keys():
+					self.method_opts[arg] = kwargs.pop(arg)
+		super(cFrame, self).__init__(master, **kwargs)
+		
+		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
+
+		if self.method == "pack":
+			self.pack(**arg)
+		elif self.method == "grid":
+			self.grid(**arg)
+		elif self.method == "place":
+			self.place(**arg)
+
 
 class cLabel(Label, widgetBase):
 	@time_it
@@ -86,28 +63,26 @@ class cEntry(Entry, widgetBase):
 	@time_it
 	def __init__(self, master, value="", **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'value' in kw_wid:
-			del kw_wid['value']
-		super(cEntry, self).__init__(master)
-		if 'textvariable' not in kwargs.keys():
-			self.var = StringVar()
-			if value != "":
-				self.var.set(value)
-			kw_wid['textvariable'] = self.var
-		else:
-			self.var = kw_wid['textvariable']
-			self.var.set(value)
+		value = kwargs.pop('value', '')
+		pk_opts = kwargs.pop('pack', None)
+		g_opts = kwargs.pop('grid', None)
+		pl_opts = kwargs.pop('place', None)
+		kwargs['textvariable'], self.var = (kwargs.get('textvariable', StringVar()),)*2
+		self.var.set(value)
+		super(cEntry, self).__init__(master, **kwargs)
+
+			
 		self.configure(kw_wid)
-		style_widget(self, kw_style, "TEntry")
+		#style_widget(self, kw_style, "TEntry")
 		self.__menu = Menu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
 		self.__menu.add_command(label="Copy", command=self._copy)
 		self.__menu.add_command(label="Paste", command=self._paste)
 		self.__menu.add_command(label="Select All", command=self._select_all)
 		self.bind("<Button-3>", self._do_popup)
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		
+		#if len(kw_pak) != 0:
+		#	self.pack(kw_pak)
 	def get(self, *args):
 		return widgetBase.get(self, *args)
 	@time_it
