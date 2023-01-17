@@ -1,0 +1,44 @@
+\hypertarget{test__combobox_8py_source}{}\doxysection{test\+\_\+combobox.\+py}
+\label{test__combobox_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/testing/test\_combobox.py@{C:/Python310/Lib/site-\/packages/rapidTk/testing/test\_combobox.py}}
+\mbox{\hyperlink{test__combobox_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00001}\mbox{\hyperlink{namespacetest__combobox}{00001}}\ \textcolor{keyword}{from}\ rapidTk\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00002}00002\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00003}00003\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ ttk}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00004}00004\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00006}\mbox{\hyperlink{namespacetest__combobox_ac9802f84d5bd1dd40c882bada01a6c88}{00006}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacetest__combobox_ac9802f84d5bd1dd40c882bada01a6c88}{skillUsed}}():}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00007}00007\ \ \ \ \ \textcolor{keywordflow}{if}\ chkUsedVar.get()\ ==\ 1:}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00008}00008\ \ \ \ \ \ \ \ \ style.map(\textcolor{stringliteral}{'custom.TCombobox'},\ fieldbackground=[(\textcolor{stringliteral}{'readonly'},\textcolor{stringliteral}{'green'})])}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00009}00009\ \ \ \ \ \ \ \ \ style.map(\textcolor{stringliteral}{'custom.TCombobox'},\ foreground=[(\textcolor{stringliteral}{'readonly'},\textcolor{stringliteral}{'red'})])}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00010}00010\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00011}00011\ \ \ \ \ \ \ \ \ style.map(\textcolor{stringliteral}{'custom.TCombobox'},\ fieldbackground=[(\textcolor{stringliteral}{'readonly'},\textcolor{stringliteral}{'white'})])}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00012}00012\ \ \ \ \ \ \ \ \ style.map(\textcolor{stringliteral}{'custom.TCombobox'},\ foreground=[(\textcolor{stringliteral}{'readonly'},\textcolor{stringliteral}{'black'})])}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00014}\mbox{\hyperlink{namespacetest__combobox_aa7330cde001fdb39e8eed4a98e7f05f6}{00014}}\ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00015}00015\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00016}\mbox{\hyperlink{namespacetest__combobox_a045db08a1aaecd45ff151048ea12dd62}{00016}}\ style\ =\ root.thm.style}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00017}00017\ root.thm.set\_theme(\textcolor{stringliteral}{'clam'})}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00018}00018\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00019}\mbox{\hyperlink{namespacetest__combobox_a3864ffccd7577c2fdb5047ae4b06415e}{00019}}\ cboxVar1\ =\ StringVar()}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00020}00020\ cboxVar1.set(\textcolor{stringliteral}{"{}spam"{}})}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00022}\mbox{\hyperlink{namespacetest__combobox_abeb24618fe650c49097f3446e690e8f6}{00022}}\ cboxVar2\ =\ StringVar()}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00023}00023\ cboxVar2.set(\textcolor{stringliteral}{"{}silly"{}})}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00024}00024\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00025}\mbox{\hyperlink{namespacetest__combobox_ab3b2d1be9848f26cc718e9a379706408}{00025}}\ chkUsedVar\ =\ IntVar()}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00026}\mbox{\hyperlink{namespacetest__combobox_afa76e8ba7a0d707529418c4f3cd2b3bc}{00026}}\ chk\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_checkbutton}{cCheckbutton}}(root,\ text=\textcolor{stringliteral}{'Used'},\ variable=chkUsedVar,\ command=skillUsed)}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00027}\mbox{\hyperlink{namespacetest__combobox_af53471bb85b0e8b7154bbda858fb9c4d}{00027}}\ chk.grid(row=0,\ column=2)}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00028}00028\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00029}\mbox{\hyperlink{namespacetest__combobox_a768d090715b7113b186edfb89893e68f}{00029}}\ combo01\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_combobox}{cCombobox}}(root,\ values=[\textcolor{stringliteral}{'spam'},\ \textcolor{stringliteral}{'eric'},\ \textcolor{stringliteral}{'moose'}])}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00030}00030\ combo01[\textcolor{stringliteral}{'state'}]\ =\ \textcolor{stringliteral}{'readonly'}}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00031}00031\ combo01.grid(row=0,\ column=0)}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00032}00032\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00033}\mbox{\hyperlink{namespacetest__combobox_a052bb06ef89b7b6018ad654a99fc7237}{00033}}\ combo02\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_combobox}{cCombobox}}(root,\ values=[\textcolor{stringliteral}{'parrot'},\ \textcolor{stringliteral}{'silly'},\ \textcolor{stringliteral}{'walk'}])}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00034}00034\ combo02.configure(style=\textcolor{stringliteral}{'custom.TCombobox'})}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00035}00035\ combo02[\textcolor{stringliteral}{'state'}]\ =\ \textcolor{stringliteral}{'readonly'}}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00036}00036\ combo02.grid(row=0,\ column=1)}
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{test__combobox_8py_source_l00038}00038\ root.mainloop()}
+
+\end{DoxyCode}

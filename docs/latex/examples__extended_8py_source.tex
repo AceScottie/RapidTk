@@ -1,0 +1,107 @@
+\hypertarget{examples__extended_8py_source}{}\doxysection{examples\+\_\+extended.\+py}
+\label{examples__extended_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/examples/examples\_extended.py@{C:/Python310/Lib/site-\/packages/rapidTk/examples/examples\_extended.py}}
+\mbox{\hyperlink{examples__extended_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00001}\mbox{\hyperlink{namespaceexamples__extended}{00001}}\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00002}00002\ \textcolor{keyword}{from}\ rapidTk\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00003}00003\ \textcolor{keyword}{import}\ logging}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00004}00004\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00005}\mbox{\hyperlink{namespaceexamples__extended_a81310e5603f59591be1036f28e85aa41}{00005}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__extended_a81310e5603f59591be1036f28e85aa41}{example\_TimePicker}}():}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00006}00006\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00007}00007\ \textcolor{stringliteral}{\ \ \ \ DOC\ STRING}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00008}00008\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00009}00009\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00010}00010\ \ \ \ \ root.geometry(\textcolor{stringliteral}{"{}500x500+300+300"{}})}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00011}00011\ \ \ \ \ f\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root,\ side=TOP,\ expand=1,\ fill=BOTH)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00012}00012\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(f,\ text=\textcolor{stringliteral}{"{}test"{}},\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00014}00014\ \ \ \ \ f2\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(f,\ bg=\textcolor{stringliteral}{"{}red"{}},\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00015}00015\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00016}00016\ \ \ \ \ b\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1_time_picker}{TimePicker}}(f2)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00017}00017\ \ \ \ \ b.pack(side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00018}00018\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00019}00019\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(f,\ text=\textcolor{stringliteral}{"{}test"{}},\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00020}00020\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00022}\mbox{\hyperlink{namespaceexamples__extended_aa261edeed38cd1a996dd48b6a04d6255}{00022}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__extended_aa261edeed38cd1a996dd48b6a04d6255}{example\_form\_submit}}(event,\ form):}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00023}00023\ \ \ \ \ valid\ =\ form.validate()\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00024}00024\ \ \ \ \ print(valid)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00025}00025\ \ \ \ \ \textcolor{keywordflow}{if}\ valid:}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00026}00026\ \ \ \ \ \ \ \ \ data\ =\ form.results()}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00027}00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ k,\ v\ \textcolor{keywordflow}{in}\ data.items():}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00028}00028\ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}\%s\ :\ \%s\ "{}}\%(k,v))}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00029}00029\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00030}\mbox{\hyperlink{namespaceexamples__extended_af111e612aced6ae14af92ae913ad39e1}{00030}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__extended_af111e612aced6ae14af92ae913ad39e1}{example\_form}}():}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00031}00031\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00032}00032\ \textcolor{stringliteral}{\ \ \ \ !WIP!\ }}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00033}00033\ \textcolor{stringliteral}{\ \ \ \ !-\/-\/\ This\ feature\ is\ highly\ experimental\ and\ is\ likly\ to\ change\ -\/-\/!}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00034}00034\ \textcolor{stringliteral}{\ \ \ \ To\ make\ a\ form\ follow\ a\ standard\ format.}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00035}00035\ \textcolor{stringliteral}{\ \ \ \ item\ =\ widgettype\ +\ unique\ 2char\ (dict\ object\ must\ have\ a\ unique\ name)\ :str}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00036}00036\ \textcolor{stringliteral}{\ \ \ \ name\ =\ the\ code\ reference\ name.\ will\ eval\ to\ form.data()['form\_name']\ :str}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00037}00037\ \textcolor{stringliteral}{\ \ \ \ label\ =\ 'The\ form\ question\ text'\ :\ str}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00038}00038\ \textcolor{stringliteral}{\ \ \ \ textwidth\ =\ the\ width\ of\ the\ lable\ that\ contains\ the\ question\ text,\ use\ to\ allign\ questions.\ :\ int}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00039}00039\ \textcolor{stringliteral}{\ \ \ \ width\ =\ the\ width\ of\ the\ answer\ box.\ :\ int}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00040}00040\ \textcolor{stringliteral}{\ \ \ \ text\ =\ the\ default\ input\ for\ the\ question\ box.}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00041}00041\ \textcolor{stringliteral}{\ \ \ \ **kwargs\ =\ standard\ kwargs\ supported\ by\ the\ indervidual\ widgets.}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00042}00042\ \textcolor{stringliteral}{\ \ \ \ }}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00043}00043\ \textcolor{stringliteral}{\ \ \ \ example\ format:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00044}00044\ \textcolor{stringliteral}{\ \ \ \ options\ =\ \{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00045}00045\ \textcolor{stringliteral}{\ \ \ \ "{}Section\_Title"{}:\{Item00:\{"{}name"{}:"{}item1"{},\ "{}label"{}:"{}my\ question"{},\ "{}textwidth"{}:10,\ "{}width"{}:20,\ "{}text"{}:"{}Default\ Answer"{}\}\}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00046}00046\ \textcolor{stringliteral}{\ \ \ \ \}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00047}00047\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00048}00048\ \textcolor{stringliteral}{\ \ \ \ example\ Label:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00049}00049\ \textcolor{stringliteral}{\ \ \ \ "{}Basic\ Information"{}:\{"{}Labelfn"{}:\{"{}name"{}:"{}fn"{},\ "{}label"{}:"{}First\ Name:"{},\ "{}textwidth"{}:15,\ "{}width"{}:30,\ "{}text"{}:"{}John\ Smith"{}\}\}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00050}00050\ \textcolor{stringliteral}{\ \ \ \ example\ Entry:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00051}00051\ \textcolor{stringliteral}{\ \ \ \ "{}Basic\ Information"{}:\{"{}Entrycn"{}:\{"{}name"{}:"{}cn"{},\ "{}label"{}:"{}County:"{},\ "{}textwidth"{}:10,\ "{}width"{}:30,\ "{}text"{}:"{}The\ Shire"{}\}\}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00052}00052\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00053}00053\ \textcolor{stringliteral}{\ \ \ \ To\ add\ validation\ to\ any\ of\ the\ form\ componenets\ use\ the\ 'validation'\ keyword\ with\ a\ regex\ input}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00054}00054\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00055}00055\ \textcolor{stringliteral}{\ \ \ \ example\ validation\ enabled\ Entry:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00056}00056\ \textcolor{stringliteral}{\ \ \ \ "{}Random\ Numbers"{}:\{"{}Entryrn"{}:\{"{}name"{}:"{}rn"{},\ "{}label"{}:"{}Input\ Number:"{},\ "{}textwidth"{}:10,\ "{}width"{}:5,\ "{}text"{}:"{}Not\ Valid"{},\ "{}validation"{}:"{}\string^\(\backslash\)\(\backslash\)d*\$"{}\}\}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00057}00057\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00058}00058\ \textcolor{stringliteral}{\ \ \ \ example\ additional\ options:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00059}00059\ \textcolor{stringliteral}{\ \ \ \ "{}Random\ Numbers"{}:\{"{}ScrollTexthg"{}:\{"{}name"{}:"{}hg"{},\ "{}label"{}:"{}ScrollText\ with\ height"{},\ "{}textwidth"{}:25,\ "{}width"{}:30,\ "{}text"{}:"{}Multi\(\backslash\)nline\(\backslash\)ninput"{},\ "{}height"{}:3\}\}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00060}00060\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00061}00061\ \textcolor{stringliteral}{\ \ \ \ complete\ form:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00062}00062\ \textcolor{stringliteral}{\ \ \ \ options\ =\ \{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00063}00063\ \textcolor{stringliteral}{\ \ \ \ "{}Basic\ Information"{}:}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00064}00064\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ "{}Labelfn"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}fn"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}First\ Name:"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:15,\ \textcolor{stringliteral}{"{}width"{}}:30,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}John\ Smith"{}}\},}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00065}00065\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Entrycn"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}cn"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}County:"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:10,\ \textcolor{stringliteral}{"{}width"{}}:30,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}The\ Shire"{}}\},}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00066}00066\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00067}00067\ \ \ \ \ \textcolor{stringliteral}{"{}Random\ Numbers"{}}:}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00068}00068\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Entryrn"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}rn"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}Input\ Number:"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:10,\ \textcolor{stringliteral}{"{}width"{}}:5,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}Not\ Valid"{}},\ \textcolor{stringliteral}{"{}validation"{}}:\textcolor{stringliteral}{"{}\string^\(\backslash\)\(\backslash\)d*\$"{}}\}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00069}00069\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}ScrollTexthg"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}hg"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}ScrollText\ with\ height"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:25,\ \textcolor{stringliteral}{"{}width"{}}:30,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}Multi\(\backslash\)nline\(\backslash\)ninput"{}},\ \textcolor{stringliteral}{"{}height"{}}:3\}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00070}00070\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00071}00071\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00072}00072\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00073}00073\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00074}00074\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00075}00075\ \textcolor{stringliteral}{\ \ \ \ root\ =\ rapidTk()}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00076}00076\ \textcolor{stringliteral}{\ \ \ \ root.geometry("{}400x800"{})}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00077}00077\ \textcolor{stringliteral}{\ \ \ \ scroll\ =\ scrollArea(root,\ h=1,\ side=TOP,\ fill=BOTH,\ expand=1)}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00078}00078\ \textcolor{stringliteral}{\ \ \ \ window\ =\ cFrame(scroll.sFrame,\ side=TOP,\ fill=BOTH,\ expand=1)}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00079}00079\ \textcolor{stringliteral}{\ \ \ \ holder\ =\ cFrame(window,\ height=root.winfo\_height()+1,\ side=TOP,\ fill=BOTH)}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00080}00080\ \textcolor{stringliteral}{\ \ \ \ tw\ =\ 10}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00081}00081\ \textcolor{stringliteral}{\ \ \ \ ww\ =\ 60}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00082}00082\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00083}00083\ \textcolor{stringliteral}{\ \ \ \ auto\_options\ =\ ["{}apple"{},\ "{}banana"{},\ "{}pear"{},\ "{}apple\ pie"{},\ "{}banana\ pie"{}]}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00084}00084\ \textcolor{stringliteral}{\ \ \ \ options\ =\ \{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00085}00085\ \textcolor{stringliteral}{\ \ \ \ "{}Basic\ Information"{}:\{}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00086}00086\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ "{}Labelfn"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}fn"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}First\ Name:"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:15,\ \textcolor{stringliteral}{"{}width"{}}:30,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}John\ Smith"{}}\},}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00087}00087\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Entrycn"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}cn"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}County:"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:10,\ \textcolor{stringliteral}{"{}width"{}}:30,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}The\ Shire"{}}\}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00088}00088\ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00089}00089\ \ \ \ \ \textcolor{stringliteral}{"{}Random\ Numbers"{}}:\{}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00090}00090\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Entryrn"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}rn"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}Input\ Number:"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:10,\ \textcolor{stringliteral}{"{}width"{}}:5,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}Not\ Valid"{}},\ \textcolor{stringliteral}{"{}validation"{}}:\textcolor{stringliteral}{"{}\string^\(\backslash\)\(\backslash\)d*\$"{}}\},}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00091}00091\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}ScrollTexthg"{}}:\{\textcolor{stringliteral}{"{}name"{}}:\textcolor{stringliteral}{"{}hg"{}},\ \textcolor{stringliteral}{"{}label"{}}:\textcolor{stringliteral}{"{}ScrollText\ with\ height"{}},\ \textcolor{stringliteral}{"{}textwidth"{}}:25,\ \textcolor{stringliteral}{"{}width"{}}:30,\ \textcolor{stringliteral}{"{}text"{}}:\textcolor{stringliteral}{"{}Multi\(\backslash\)nline\(\backslash\)ninput"{}},\ \textcolor{stringliteral}{"{}height"{}}:3\}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00092}00092\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00093}00093\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00094}00094\ \ \ \ \ form\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1q_form}{qForm}}()}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00095}00095\ \ \ \ \ form.create\_questions(holder,\ options,\ \{\textcolor{stringliteral}{"{}config"{}}:\textcolor{stringliteral}{"{}confgiration"{}}\})}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00096}00096\ \ \ \ \ submit\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(holder,\ text=\textcolor{stringliteral}{"{}Confirm"{}},\ command=\textcolor{keyword}{lambda}\ e=Event(),\ f=form:\mbox{\hyperlink{namespaceexamples__extended_aa261edeed38cd1a996dd48b6a04d6255}{example\_form\_submit}}(e,\ f),\ side=BOTTOM)}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00097}00097\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00098}00098\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00099}00099\ }
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00100}00100\ \textcolor{keywordflow}{if}\ \_\_name\_\_\ ==\ \textcolor{stringliteral}{"{}\_\_main\_\_"{}}:}
+\DoxyCodeLine{\Hypertarget{examples__extended_8py_source_l00101}00101\ \ \ \ \ \mbox{\hyperlink{namespaceexamples__extended_af111e612aced6ae14af92ae913ad39e1}{example\_form}}()}
+
+\end{DoxyCode}

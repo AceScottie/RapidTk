@@ -1,0 +1,30 @@
+\hypertarget{sp__test_8py_source}{}\doxysection{sp\+\_\+test.\+py}
+\label{sp__test_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/testing/sp\_test.py@{C:/Python310/Lib/site-\/packages/rapidTk/testing/sp\_test.py}}
+\mbox{\hyperlink{sp__test_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00001}\mbox{\hyperlink{namespacesp__test}{00001}}\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00002}00002\ \textcolor{keyword}{from}\ \mbox{\hyperlink{namespacetkinter_1_1ttk}{tkinter.ttk}}\ \textcolor{keyword}{import}\ Spinbox}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00003}00003\ }
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00004}\mbox{\hyperlink{classsp__test_1_1x_spinbox}{00004}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classsp__test_1_1x_spinbox}{xSpinbox}}(Spinbox):}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00005}\mbox{\hyperlink{classsp__test_1_1x_spinbox_a5591b836fd911414795be67b51abdbcc}{00005}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classsp__test_1_1x_spinbox_a5591b836fd911414795be67b51abdbcc}{\_\_init\_\_}}(self,\ master,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00006}00006\ \ \ \ \ \ \ \ \ kwargs[\textcolor{stringliteral}{'command'}]\ =\ kwargs.pop(\textcolor{stringliteral}{'command'},\ self.\mbox{\hyperlink{classsp__test_1_1x_spinbox_a2fe1106d3932a89bb4ad6b683ad50add}{\_\_loop}})}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00007}00007\ \ \ \ \ \ \ \ \ kwargs[\textcolor{stringliteral}{'values'}]\ =\ kwargs.pop(\textcolor{stringliteral}{'values'},\ (0,\ 1,\ 2,\ 3,\ 4,5,\ 6,\ 7,\ 8,\ 9))}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00008}00008\ \ \ \ \ \ \ \ \ super(xSpinbox,\ self).\mbox{\hyperlink{classsp__test_1_1x_spinbox_a5591b836fd911414795be67b51abdbcc}{\_\_init\_\_}}(master,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00009}00009\ \ \ \ \ \ \ \ \ self.bind(\textcolor{stringliteral}{'<MouseWheel>'},\ self.\mbox{\hyperlink{classsp__test_1_1x_spinbox_a2fe1106d3932a89bb4ad6b683ad50add}{\_\_loop}})\ }
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00011}00011\ \ \ \ \ \textcolor{keyword}{def\ }\_\_loop(self,\ event=None):}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00012}00012\ \ \ \ \ \ \ \ \ self.focus\_set()}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00013}00013\ \ \ \ \ \ \ \ \ self.selection\_range(0,\ 0)}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00014}00014\ }
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00015}00015\ \textcolor{keywordflow}{if}\ \_\_name\_\_\ ==\ \textcolor{stringliteral}{"{}\_\_main\_\_"{}}:}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00016}\mbox{\hyperlink{namespacesp__test_a1a3ccbaee64de20f415adf34510bbc47}{00016}}\ \ \ \ \ root=Tk()}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00017}\mbox{\hyperlink{namespacesp__test_a0038b75a7bc64f04c7a0b2d2700e4e1f}{00017}}\ \ \ \ \ sv\ =\ StringVar()}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00018}00018\ \ \ \ \ sv.set(\textcolor{stringliteral}{'00'})}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00019}\mbox{\hyperlink{namespacesp__test_ac9e4da3b2af23c1bb31e6660da655526}{00019}}\ \ \ \ \ holder\_frame=\ Frame(root)}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00020}\mbox{\hyperlink{namespacesp__test_ac6fe36df594be73f27adf23d92a8f73b}{00020}}\ \ \ \ \ holder\_frame.pack(side=TOP)}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00021}\mbox{\hyperlink{namespacesp__test_a8d0deecab284078bf45356ae5f71fc43}{00021}}\ \ \ \ \ sp\ =\ \mbox{\hyperlink{classsp__test_1_1x_spinbox}{xSpinbox}}(holder\_frame,\ textvariable\ =\ sv,\ wrap=\textcolor{keyword}{True},\ state=\textcolor{stringliteral}{"{}readonly"{}},\ exportselection=0,\ width=3,\ increment=1,\ values=tuple(list(str(x).zfill(2)\ \textcolor{keywordflow}{for}\ x\ \textcolor{keywordflow}{in}\ range(0,\ 24))))}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00022}00022\ \ \ \ \ sp.pack(side=TOP)}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00023}00023\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{sp__test_8py_source_l00024}00024\ }
+
+\end{DoxyCode}

@@ -1,0 +1,62 @@
+\hypertarget{st__tst_8py_source}{}\doxysection{st\+\_\+tst.\+py}
+\label{st__tst_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/testing/st\_tst.py@{C:/Python310/Lib/site-\/packages/rapidTk/testing/st\_tst.py}}
+\mbox{\hyperlink{st__tst_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00001}\mbox{\hyperlink{namespacest__tst}{00001}}\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00002}00002\ \textcolor{keyword}{from}\ \mbox{\hyperlink{namespacetkinter_1_1ttk}{tkinter.ttk}}\ \textcolor{keyword}{import}\ Spinbox}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00003}00003\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00004}\mbox{\hyperlink{namespacest__tst_a850265bc07f0992f92f828ffc05e3212}{00004}}\ state=\textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00006}\mbox{\hyperlink{namespacest__tst_aea864a80697154dc015d2151ea41404a}{00006}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacest__tst_aea864a80697154dc015d2151ea41404a}{draw}}(c):}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00007}00007\ \ \ \ \ ax,\ ay,\ bx,\ by\ =\ 25,\ 25,\ 75,\ 75}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00008}00008\ \ \ \ \ r\ =\ (by-\/ay)/2}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00009}00009\ \ \ \ \ c.create\_rectangle(ax,\ ay,\ bx,\ by,\ fill=\textcolor{stringliteral}{"{}\#BBBBBB"{}},\ width=0,\ tag=\textcolor{stringliteral}{'aa11'})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00010}00010\ \ \ \ \ c.create\_arc(bx-\/r,\ ay,\ bx+r,\ by,\ start=-\/90,\ extent=180,\ fill=\textcolor{stringliteral}{"{}\#BBBBBB"{}},\ width=0,\ outline=\textcolor{stringliteral}{"{}\#BBBBBB"{}},\ tag=\textcolor{stringliteral}{'aa11'})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00011}00011\ \ \ \ \ c.create\_arc(ax-\/r,\ ay,\ ax+r,\ by,\ start=270,\ extent=-\/180,\ fill=\textcolor{stringliteral}{"{}\#BBBBBB"{}},\ width=0,\ outline=\textcolor{stringliteral}{"{}\#BBBBBB"{}},\ tag=\textcolor{stringliteral}{'aa11'})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00012}00012\ \ \ \ \ c.tag\_bind(\textcolor{stringliteral}{'aa11'},\ \textcolor{stringliteral}{'<Button-\/1>'},\ \textcolor{keyword}{lambda}\ e=Event(),\ m=\textcolor{stringliteral}{"{}Clicked"{}}:\ print(m))}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00014}\mbox{\hyperlink{namespacest__tst_a9de3b6161cd243dd1461e1e3f90cc32a}{00014}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacest__tst_a9de3b6161cd243dd1461e1e3f90cc32a}{popup}}(event,\ c):}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00015}00015\ \ \ \ \ \textcolor{keyword}{global}\ state}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00016}00016\ \ \ \ \ \textcolor{keywordflow}{if}\ state:}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00017}00017\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00018}00018\ \ \ \ \ state=\textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00019}00019\ \ \ \ \ print(\textcolor{stringliteral}{"{}popped"{}})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00020}00020\ \ \ \ \ c.pack\_propagate(\textcolor{keyword}{False})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00021}00021\ \ \ \ \ c.place(x=20,\ y=20)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00022}00022\ \ \ \ \ \mbox{\hyperlink{namespacest__tst_aea864a80697154dc015d2151ea41404a}{draw}}(c)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00023}\mbox{\hyperlink{namespacest__tst_afb22179e102202a7db517bfe79123291}{00023}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacest__tst_afb22179e102202a7db517bfe79123291}{popdown}}(event,\ c):}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00024}00024\ \ \ \ \ \textcolor{keyword}{global}\ state}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00025}00025\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ state:}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00026}00026\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00027}00027\ \ \ \ \ state=\textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00028}00028\ \ \ \ \ print(\textcolor{stringliteral}{"{}deleted"{}})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00029}00029\ \ \ \ \ c.delete(\textcolor{stringliteral}{'all'})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00030}00030\ \ \ \ \ c.place\_forget()}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00031}00031\ \ \ \ \ \textcolor{comment}{\#c.destroy()}}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00032}00032\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00033}\mbox{\hyperlink{namespacest__tst_a3498a4a19fa7c00ac496430dde26220e}{00033}}\ root=Tk()}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00034}00034\ root.geometry(\textcolor{stringliteral}{"{}500x500+100+100"{}})}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00035}\mbox{\hyperlink{namespacest__tst_a3cb748ca87592dc1c3dd94b180633463}{00035}}\ Button(root,\ text=\textcolor{stringliteral}{"{}do\ stuff"{}}).pack(side=TOP)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00036}00036\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00037}\mbox{\hyperlink{namespacest__tst_a1bac4d74f5b741d411c4d5b187718f6f}{00037}}\ f=\ Frame(root)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00038}00038\ f.pack()}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00039}00039\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00040}\mbox{\hyperlink{namespacest__tst_acceba41a380a271b57c1a9a41c24250a}{00040}}\ c\ =\ Canvas(root,\ width=100,\ height=100)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00041}00041\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00042}\mbox{\hyperlink{namespacest__tst_ae2dc4933932adcef9ddbb8ca3a625be8}{00042}}\ s1\ =\ Spinbox(f,\ wrap=\textcolor{keyword}{True},\ values=tuple(list(str(x).zfill(2)\ \textcolor{keywordflow}{for}\ x\ \textcolor{keywordflow}{in}\ range(10))))}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00043}00043\ s1.pack(side=LEFT)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00044}00044\ Label(f,\ text=\textcolor{stringliteral}{"{}:"{}}).pack(side=LEFT)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00045}\mbox{\hyperlink{namespacest__tst_ac6895e50661a8e9f286f4e8076dae7fc}{00045}}\ s2\ =\ Spinbox(f,\ wrap=\textcolor{keyword}{True},\ values=tuple(list(str(x).zfill(2)\ \textcolor{keywordflow}{for}\ x\ \textcolor{keywordflow}{in}\ range(10,\ 20))))}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00046}00046\ s2.pack()}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00047}00047\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00048}\mbox{\hyperlink{namespacest__tst_a7bdd511fc5dd0fcf73c65cd859931bc2}{00048}}\ s1.bind(\textcolor{stringliteral}{'<FocusIn>'},\ \textcolor{keyword}{lambda}\ e=Event(),\ c=c:\ \mbox{\hyperlink{namespacest__tst_a9de3b6161cd243dd1461e1e3f90cc32a}{popup}}(e,\ c))}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00049}00049\ s2.bind(\textcolor{stringliteral}{'<FocusIn>'},\ \textcolor{keyword}{lambda}\ e=Event(),\ c=c:\ \mbox{\hyperlink{namespacest__tst_a9de3b6161cd243dd1461e1e3f90cc32a}{popup}}(e,\ c))}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00050}00050\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00051}00051\ root.bind(\textcolor{stringliteral}{'<Button-\/1>'},\ \textcolor{keyword}{lambda}\ e=Event(),\ c=c:\ \mbox{\hyperlink{namespacest__tst_afb22179e102202a7db517bfe79123291}{popdown}}(e,\ c))}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00052}00052\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00053}00053\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00054}00054\ Button(root,\ text=\textcolor{stringliteral}{"{}do\ other\ stuff"{}}).pack(side=TOP)}
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00055}00055\ }
+\DoxyCodeLine{\Hypertarget{st__tst_8py_source_l00056}00056\ root.mainloop()}
+
+\end{DoxyCode}
