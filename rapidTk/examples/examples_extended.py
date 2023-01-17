@@ -39,6 +39,7 @@ def example_form():
 	width = the width of the answer box. : int
 	text = the default input for the question box.
 	**kwargs = standard kwargs supported by the indervidual widgets.
+	
 	example format:
 	options = {
 	"Section_Title":{Item00:{"name":"item1", "label":"my question", "textwidth":10, "width":20, "text":"Default Answer"}}
@@ -46,7 +47,6 @@ def example_form():
 
 	example Label:
 	"Basic Information":{"Labelfn":{"name":"fn", "label":"First Name:", "textwidth":15, "width":30, "text":"John Smith"}}
-
 	example Entry:
 	"Basic Information":{"Entrycn":{"name":"cn", "label":"County:", "textwidth":10, "width":30, "text":"The Shire"}}
 

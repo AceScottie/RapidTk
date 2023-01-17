@@ -111,29 +111,47 @@ class rapidTk(Tk):
 	def get_root(self):
 		return self
 
-class PackProcess:
 	@time_it
-	def __init__(self):
-		self.widgets = []
-	@time_it
-	def add(self, widget, side=None, expand=0, fill=None):
-		self.widgets.append({"widget":widget, "side":side, "expand":expand, "fill":fill})
-		return widget
-	@time_it
-	def pack(self):
-		for element in self.widgets:
-			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])
+	def clear(self, widget=None):
+		w=self
+		if widget:
+			w=widget
+		for _c in w.winfo_children():
+			_c.destroy()
 
-class GridProcess:
 	@time_it
-	def __init__(self):
-		self.widgets = []
-	@time_it
-	def add(self, widget, column=None, row=0):
-		self.widgets.append({"widget":widget, "column":column, "row":row})
-		return widget
-	@time_it
-	def grid(self):
-		for element in self.widgets:
-			element['widget'].grid(column=element['column'], row=element['row'])
+	def center_root(self, h_offset=300, v_offset=300, min_height=600, min_width=1200):
+		ws = self.winfo_screenwidth()
+		hs = self.winfo_screenheight()
+		self.geometry("%sx%s+%s+%s" % (ws-300, hs-300, int(ws/2-(ws-h_offset)/2), int(hs/2-(hs-v_offset)/2))) ##live
+		self.minsize(height=min_height, width=min_width)
+		self.update()
+		self.update_idletasks()
+		
 
+class __processor:
+	@time_it
+	def __init__(self, method="pack"):
+		self.methods = {"pack":lambda: pack(), "place":lambda:place(), "grid":lambda:grid()}
+		self.method = method
+		self.widgets = []
+		self.pack = self.place = self.grid = self.process
+	@time_it
+	def add(self, widget, **kwargs):
+		self.widgets.append({"widget":widget, "options":kwargs})
+		return widget
+	def process(self):
+		m = self.methods[self.method]
+		for element in self.widgets:
+			print(element["options"])
+			element['widget'].m(**element["options"])
+
+class PackProcess(__processor):
+	def __init__(self):
+		super().__init__(method="pack")
+class GridProcess(__processor):
+	def __init__(self):
+		super().__init__(method="grid")
+class PlaceProcess(__processor):
+	def __init__(self):
+		super().__init__(method="place")

@@ -186,3 +186,11 @@ class simpledate(datetime):
 	@classmethod
 	def now(cls, tz=None):
 		return super().now(tz=tz).simplify()
+
+def ui(method="pack"):
+	return {
+	'pack':["after","anchor","before","expand","fill","in","ipadx","ipady","padx","pady","side"],
+	'grid':["column","columnspan","in","ipadx","ipady","padx","pady","row","rowspan","sticky"],
+	'place':["anchor","bordermode","height","in","relheight","relwidth","relx","rely","width","x","y"]
+	}[method]
+	

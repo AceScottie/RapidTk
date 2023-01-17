@@ -16,7 +16,7 @@ from math import sin, cos, pi
 
 from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess, GridProcess
-from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox
+from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
 from .rTkErrors import *
 from .rTkUtils import coord, widgetBase, simpledate, cache
 from .rTkManagers import _WindowManager
@@ -392,60 +392,64 @@ class movableWindow(cCanvas, widgetBase):
 class qForm:
 	def __init__(self):
 		self.questions = {}
-	def create_questions(self, holder, objects, configuration):
-		pp = PackProcess()
+	def create_questions(self, holder, objects, configuration={}, frames={} , pp_in=None):
+		if pp_in is None:
+			pp = PackProcess()
+		else:
+			pp = pp_in
 		for sec, obj in objects.items():
-			section = pp.add(cFrame(holder, bg="blue"), side=TOP, fill=X, expand=1)
+			section = pp.add(cFrame(holder), side=TOP, fill=BOTH, expand=1)
 			pp.add(cLabel(section, text=sec, anchor="center"), side=TOP, fill=X)
 			for ob, opts in obj.items():
-				f = pp.add(cFrame(section), side=TOP, fill=X)
-				name  = opts['name']
-				self.questions[name] = {"label":pp.add(cLabel(f, text=opts['label'], width=opts['textwidth'], anchor="e"), side=LEFT), "object":None, "validation":None, "bg":None, 'fg':None}
-				insert = ""
-				if "text" in opts:
-					insert = opts['text']
-					del opts['text']
-				validation = None
+				f = pp.add(cFrame(section, **configuration), **frames)
+				name  = opts.pop('name')
+				self.questions[name] = {"label":pp.add(cLabel(f, text=opts.pop('label'), width=opts.pop('textwidth'), anchor="e"), side=LEFT), "object":None, "validation":None, "bg":None, 'fg':None}
+				insert = opts.pop('text', "")
+				p_opts = opts.pop("p_opts", {})
+				print(p_opts)
 				if "validation" in opts:
-					self.questions[name]['validation'] = opts['validation']
-					del opts['validation']
-				del opts['label']
-				del opts['name']
-				del opts['textwidth']
+					self.questions[name]['validation'] = opts.pop('validation', None)
 				if ob[:-2] == "Entry":
-					self.questions[name]["object"] = pp.add(cEntry(f, **opts), side=LEFT)
+					self.questions[name]["object"] = pp.add(reEntry(f, **opts), side=RIGHT, **p_opts)
 					try:
 						self.questions[name]['object'].insert(INSERT, insert)
 					except:
 						print("%s Entry %s"%(name, insert))
 				elif ob[:-2] == "autoEntry":
-					self.questions[name]["object"] = pp.add(autoEntry(f, **opts), side=LEFT)
+					self.questions[name]["object"] = pp.add(reautoEntry(f, **opts), side=RIGHT, **p_opts)
 					try:
 						self.questions[name]['object'].insert(INSERT, insert)
 					except:
 						print("%s autoEntry %s"%(name, insert))
 				elif ob[:-2] == "Label":
 					opts['text'] = insert
-					self.questions[name]["object"] = pp.add(cLabel(f, **opts), side=LEFT)
+					self.questions[name]["object"] = pp.add(cLabel(f, **opts), side=RIGHT, **p_opts)
 				elif ob[:-2] == "DateEntry":
-					self.questions[name]["object"] = pp.add(cDateEntry(f, **opts), side=LEFT)
+					self.questions[name]["object"] = pp.add(reDateEntry(f, **opts), side=RIGHT, **p_opts)
 					try:
 						self.questions[name]['object'].insert(INSERT, insert)
 					except:
 						print("%s DateEntry %s"%(name, insert))
 				elif ob[:-2] == "Checkbutton":
-					self.questions[name]["object"] = pp.add(cCheckbutton(f, **opts), side=LEFT)
+					self.questions[name]["object"] = pp.add(cCheckbutton(f, **opts), side=RIGHT, **p_opts)
 					try:
 						self.questions[name]['object'].set(int(insert))
 					except:
 						print("%s Checkbutton %s"%(name, insert))
 				elif ob[:-2] == "ScrollText":
-					self.questions[name]["object"] = pp.add(cScrolledText(f, **opts), side=LEFT)
+					self.questions[name]["object"] = pp.add(cScrolledText(f, **opts), side=RIGHT, **p_opts) ##TODO: create reScrolledText
 					try:
 						self.questions[name]['object'].insert(INSERT, insert)
 					except:
 						print("%s ScrollText %s"%(name, insert))
-		pp.pack()
+				elif ob[:-2] == "Option":
+					self.questions[name]["object"] = pp.add(reOptionMenu(f, **opts), side=RIGHT, **p_opts)
+					try:
+						self.questions[name]['object'].set(insert)
+					except:
+						print("%s autoEntry %s"%(name, insert))
+		if pp_in is None:
+			pp.pack()
 	def results(self):
 		results = {}
 		for k, v in self.questions.items():

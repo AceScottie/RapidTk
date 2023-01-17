@@ -62,7 +62,7 @@ def example_basic_objects2():
 
 	cCheckbutton() has get() and set() methods which use the IntVar built into the class.
 
-	cOptionMeny() has a defautl value, a list of valid options and a list of none valid options if needed.
+	cOptionMenu() has a defautl value, a list of valid options and a list of none valid options if needed.
 	If the default value is part of the options it will not duplicate it in the options.
 	non_valid is just a safe way to remove options over time without adjusting code. This can be used if options is gathered from an external source.
 

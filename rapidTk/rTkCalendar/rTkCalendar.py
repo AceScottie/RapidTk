@@ -129,6 +129,13 @@ class cDateEntry(DateEntry, widgetBase):
 				super().insert(ind, data)
 		except:
 			super().insert(ind, data)
+	def __setattr__(self, at, val):
+		if at in ["bg", "background"]:
+			self.style.configure(self._mystyle_name,  fieldbackground=val)
+		elif at in ["fg", "foreground"]:
+			self.style.configure(self._mystyle_name,  foreground=val)
+		else:
+			super().__setattr__(at, val)
 
 class reDateEntry(cDateEntry, widgetBase): ## TODO: move most of this code to cDateEntry for autoStyle and stuff
 	def __init__(self, master, **kwargs):
