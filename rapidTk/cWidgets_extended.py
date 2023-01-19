@@ -389,101 +389,7 @@ class movableWindow(cCanvas, widgetBase):
 		self.destroy()
 	def __del__(self):
 		self._close()
-class qForm:
-	def __init__(self):
-		self.questions = {}
-	def create_questions(self, holder, objects, configuration={}, frames={} , pp_in=None):
-		if pp_in is None:
-			pp = PackProcess()
-		else:
-			pp = pp_in
-		for sec, obj in objects.items():
-			section = pp.add(cFrame(holder), side=TOP, fill=BOTH, expand=1)
-			pp.add(cLabel(section, text=sec, anchor="center"), side=TOP, fill=X)
-			for ob, opts in obj.items():
-				f = pp.add(cFrame(section, **configuration), **frames)
-				name  = opts.pop('name')
-				self.questions[name] = {"label":pp.add(cLabel(f, text=opts.pop('label'), width=opts.pop('textwidth'), anchor="e"), side=LEFT), "object":None, "validation":None, "bg":None, 'fg':None}
-				insert = opts.pop('text', "")
-				p_opts = opts.pop("p_opts", {})
-				print(p_opts)
-				if "validation" in opts:
-					self.questions[name]['validation'] = opts.pop('validation', None)
-				if ob[:-2] == "Entry":
-					self.questions[name]["object"] = pp.add(reEntry(f, **opts), side=RIGHT, **p_opts)
-					try:
-						self.questions[name]['object'].insert(INSERT, insert)
-					except:
-						print("%s Entry %s"%(name, insert))
-				elif ob[:-2] == "autoEntry":
-					self.questions[name]["object"] = pp.add(reautoEntry(f, **opts), side=RIGHT, **p_opts)
-					try:
-						self.questions[name]['object'].insert(INSERT, insert)
-					except:
-						print("%s autoEntry %s"%(name, insert))
-				elif ob[:-2] == "Label":
-					opts['text'] = insert
-					self.questions[name]["object"] = pp.add(cLabel(f, **opts), side=RIGHT, **p_opts)
-				elif ob[:-2] == "DateEntry":
-					self.questions[name]["object"] = pp.add(reDateEntry(f, **opts), side=RIGHT, **p_opts)
-					try:
-						self.questions[name]['object'].insert(INSERT, insert)
-					except:
-						print("%s DateEntry %s"%(name, insert))
-				elif ob[:-2] == "Checkbutton":
-					self.questions[name]["object"] = pp.add(cCheckbutton(f, **opts), side=RIGHT, **p_opts)
-					try:
-						self.questions[name]['object'].set(int(insert))
-					except:
-						print("%s Checkbutton %s"%(name, insert))
-				elif ob[:-2] == "ScrollText":
-					self.questions[name]["object"] = pp.add(cScrolledText(f, **opts), side=RIGHT, **p_opts) ##TODO: create reScrolledText
-					try:
-						self.questions[name]['object'].insert(INSERT, insert)
-					except:
-						print("%s ScrollText %s"%(name, insert))
-				elif ob[:-2] == "Option":
-					self.questions[name]["object"] = pp.add(reOptionMenu(f, **opts), side=RIGHT, **p_opts)
-					try:
-						self.questions[name]['object'].set(insert)
-					except:
-						print("%s autoEntry %s"%(name, insert))
-		if pp_in is None:
-			pp.pack()
-	def results(self):
-		results = {}
-		for k, v in self.questions.items():
-			try:
-				results[k] = v['object'].get()
-			except:
-				raise
-		return results
-	def validate(self):
-		validation_valid = True
-		for k, v in self.questions.items():
-			value = v['object'].get()
-			if v['validation'] is not None and str(type(v['object'])) != "<class 'rTk.objects.autoEntry'>":
-				pattern = re.compile(v['validation'], re.IGNORECASE)
-				valid = pattern.match(str(value))
-				if not valid:
-					print(str(type(v['object'])))
-					v['object'].configure(bg="red")
-					validation_valid = False
-				else:
-					if v['object'].cget('background') == "red":
-						if str(type(v['object'])) != "<class 'rTk.objects_ext.autoEntry'>":
-							v['object'].configure(bg=v['object'].winfo_toplevel().option_get('background', '.') or '#FFFFFF', fg=v['object'].winfo_toplevel().option_get('foreground', '.') or '#000000')
-						else:
-							v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
-			elif str(type(v['object'])) == "<class 'rTk.objects_ext.autoEntry'>":
-				if value not in v['object'].auto:
-					v['object'].configure(bg="red")
-					validation_valid = False
-				else:
-					v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
-		return validation_valid
-	def update(self, question, value):
-		self.questions[question]['object'].set(value)
+
 class ImageLabel(cLabel, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(ImageLabel, self).__init__(master)
@@ -751,7 +657,6 @@ class TimePicker(cCanvas, widgetBase):
 
 	def _on_scroll(self, event, maxn=0):
 		num = int(event.widget.get())
-		print(num)
 		event.widget.delete(0, END)
 		if event.delta > 0 :
 			if num >= maxn:

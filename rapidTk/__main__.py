@@ -123,7 +123,7 @@ class rapidTk(Tk):
 	def center_root(self, h_offset=300, v_offset=300, min_height=600, min_width=1200):
 		ws = self.winfo_screenwidth()
 		hs = self.winfo_screenheight()
-		self.geometry("%sx%s+%s+%s" % (ws-300, hs-300, int(ws/2-(ws-h_offset)/2), int(hs/2-(hs-v_offset)/2))) ##live
+		self.geometry("%sx%s+%s+%s" % (ws-300*2, hs-300, int(ws/2-(ws-h_offset)/2), int(hs/2-(hs-v_offset)/2))) ##live
 		self.minsize(height=min_height, width=min_width)
 		self.update()
 		self.update_idletasks()
@@ -132,7 +132,7 @@ class rapidTk(Tk):
 class __processor:
 	@time_it
 	def __init__(self, method="pack"):
-		self.methods = {"pack":lambda: pack(), "place":lambda:place(), "grid":lambda:grid()}
+		self.methods = {"pack":None, "place":None, "grid":None}
 		self.method = method
 		self.widgets = []
 		self.pack = self.place = self.grid = self.process
@@ -144,7 +144,13 @@ class __processor:
 		m = self.methods[self.method]
 		for element in self.widgets:
 			print(element["options"])
-			element['widget'].m(**element["options"])
+			##Dirty fix
+			if self.method == "pack":
+				element['widget'].pack(**element["options"])
+			elif self.method == "grid":
+				element['widget'].grid(**element["options"])
+			elif self.method == "place":
+				element['widget'].place(**element["options"])
 
 class PackProcess(__processor):
 	def __init__(self):

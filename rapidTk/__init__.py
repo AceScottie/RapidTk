@@ -1,8 +1,9 @@
 from .__main__ import *
-from .rTkUtils import coord, clipboard
+from .rTkUtils import *
 from .cWidgets import *
 from .cWidgets_extended import *
 from .reWidgets import *
+from .rTkForm import qForm
 from .matchart import Chart
 from .flags import *
 from .language import localization

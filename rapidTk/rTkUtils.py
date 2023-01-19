@@ -1,5 +1,6 @@
 import sys
 from uuid import uuid4
+from threading import Timer
 if sys.platform == 'win32':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard
 	from win32con import CF_TEXT, CF_UNICODETEXT
@@ -187,10 +188,113 @@ class simpledate(datetime):
 	def now(cls, tz=None):
 		return super().now(tz=tz).simplify()
 
-def ui(method="pack"):
-	return {
-	'pack':["after","anchor","before","expand","fill","in","ipadx","ipady","padx","pady","side"],
-	'grid':["column","columnspan","in","ipadx","ipady","padx","pady","row","rowspan","sticky"],
-	'place':["anchor","bordermode","height","in","relheight","relwidth","relx","rely","width","x","y"]
-	}[method]
+##use init: inline_layout(**kwargs)
+##use get: inline_layout.filter() -> kwargs that are not part of layout method.
+##use set: inline_layout.inline(widget) -> lay out the widget (pack, grid or place)
+class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!!
+	def __init__(self, **kwargs):
+		self.kwargs = kwargs
+		self.method = None
+		self.methods = {'pack':self.__pack, 'place':self.__place, 'grid':self.__grid}
+		self.valid = True
+		self.__global_options = ["in", "anchor", "ipady", "ipadx", "padx", "pady"]
+		self.__pack_add = ["anchor", "ipadx", "ipady","padx", "pady", "in"]
+		self.__grid_add = ["ipadx", "ipady", "padx", "pady", "in"]
+		self.__place_add = ["anchor", "in"]
+		self.method_opts = {}
+		if self.kwargs.get('method', None) is not None:
+			self.method = kwargs.pop('method')
+		else:
+			self.method = self.__detect_method(**self.kwargs)
+			if self.method is not None:
+				valid_args = self.filter(**self.kwargs)
+				self.valid = self.__validate(**valid_args)
+	def __detect_method(self, **kwargs):
+		method = None
+		for k, v in kwargs.items():
+			if k not in self.__global_options:
+				method = self.__detect_layout(k)
+				if method != None:
+					return method
+	def __validate(self, **kwargs):
+		for k, v in kwargs.items():
+			if k not in self.__global_options:
+				v = self.__validate_method(k)
+				if not v:
+					self.method = False
+					raise ValueError(f"{k} keyword exists in multiple managers")
+					return v
+	def __validate_method(self, k):
+		methods = ['pack', 'place', 'grid']
+		methods.remove(self.method)
+		notin = self.__layout_keys[methods[0]] + self.__layout_keys[methods[1]]
+		kws_all = self.__layout_keys['pack'] + notin
+		if k in kws_all+self.__global_options:
+			return k in self.__layout_keys[self.method] and k not in notin
+		else:
+			return True
+	def __detect_layout(self, k):
+		mth = None
+		mth= 'pack' if k in self.__layout_keys['pack'] and k not in self.__layout_keys['grid']+self.__layout_keys['place'] else None
+		if mth is not None:
+			return mth
+		mth = 'grid' if k in self.__layout_keys['grid'] and k not in self.__layout_keys['pack']+self.__layout_keys['place']  else None
+		if mth is not None:
+			return mth
+		mth = 'place' if k in self.__layout_keys['place'] and k not in self.__layout_keys['grid']+self.__layout_keys['grid']  else None
+		if mth is not None:
+			return mth
+	@property
+	def __layout_keys(self):
+		return {
+		'pack':["after","before","expand","fill","padx","pady","side"],
+		'grid':["column","columnspan","ipadx","ipady","padx","pady","row","rowspan","sticky"],
+		'place':["bordermode","height","relheight","relwidth","relx","rely","width","x","y"]
+		}
+	@property
+	def __all(self):
+		return list(set(self.__layout_keys['pack']+self.__layout_keys['grid']+self.__layout_keys['place']))
+	def __pack(self, widget, **kwargs):
+		widget.pack(**kwargs)
+	def __grid(self, widget, **kwargs):
+		widget.grid(**kwargs)
+	def __place(self, widget, **kwargs):
+		widget.place(**kwargs)
+	def filter(self, **kwargs):
+		non_opts = {}
+		for key, value in self.kwargs.items():
+			if key in self.__all:
+				self.method_opts[key] = value
+			else:
+				non_opts[key] = value
+		return non_opts
+	def inline(self, widget):
+		print(f'adding inline widget {widget=}')
+		self.methods[self.method](widget, **self.method_opts)
+
+class RepeatedTimer(object):
+	def __init__(self, interval, function, *args, **kwargs):
+		self._timer		= None
+		self.interval	= interval
+		self.function	= function
+		self.args		= args
+		self.kwargs		= kwargs
+		self.is_running = False
+		self.start()
+
+	def _run(self):
+		self.is_running = False
+		self.start()
+		self.function(*self.args, **self.kwargs)
+
+	def start(self):
+		if not self.is_running:
+			self._timer = Timer(self.interval, self._run)
+			self._timer.start()
+			self.is_running = True
+
+	def stop(self):
+		self._timer.cancel()
+		self.is_running = False
+
 	

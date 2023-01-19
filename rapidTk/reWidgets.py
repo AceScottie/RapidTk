@@ -89,43 +89,6 @@ class MaxLengthEntry(ValidatingEntry, widgetBase): ##entry with a max length fla
 				return None
 		return None # new value too long
 
-##TODO: remove pack_opts.
-def pack_opts(**kwargs):
-	pak = ["side", "expand", "fill"]
-	if __ttk_enabled__:
-		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
-	else:
-		style = []
-	kw_wid = {}
-	kw_pak = {}
-	kw_style = {}
-	for k, v in kwargs.items():
-		if k in pak:
-			kw_pak[k] = v
-		elif k in style:
-			if k == "bg":
-				kw_style["background"] = v
-			elif k == "fg":
-				kw_style["foreground"] = v
-			elif k == "width": ##fix for picture lable width only
-				if "text" in kwargs.keys():
-					kw_style[k] = v
-				else:
-					kw_style[k] = int(v/10)
-			else:
-				kw_style[k] = v
-		else:
-			kw_wid[k] = v
-	return kw_wid, kw_pak, kw_style
-##TODO: add this to theme manager
-def style_widget(wd, st, t):
-	if st != {}:
-		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)
-		wd.configure(style=f"{str(wd.__repr__())}.{t}")
-		return style
-	else:
-		return None
-
 ##TODO: conform all this to a standard set of methods.
 class reEntry(cEntry, widgetBase):
 	def __init__(self, master, value="", **kwargs):
@@ -136,7 +99,7 @@ class reEntry(cEntry, widgetBase):
 		self.fg = self.cget('foreground')
 	def __isvalid(self):
 		try:
-			match = re.match(self.regex, self.stvar.get())
+			match = re.match(self.regex, self.var.get())
 			if not match:
 				self.configure(bg="red", fg="white")
 				return False
@@ -154,6 +117,7 @@ class reEntry(cEntry, widgetBase):
 	def get(self):
 		return super().get(), self.__isvalid()
 	
+from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
 
 class reOptionMenu(cOptionMenu, widgetBase):
 	def __init__(self, master, **kwargs):
@@ -174,10 +138,10 @@ class reOptionMenu(cOptionMenu, widgetBase):
 class reCombobox(cCombobox, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(reCombobox, self).__init__(master, **kwargs)
-		#self.style.configure('Fail.TCombobox', fieldbackground='red', background='red', foreground='white')
-		self.var.trace('w', self.__isvalid)
+		self.style.configure('Fail.TCombobox', fieldbackground='red', background='red', foreground='white')
+		self.var.trace('w', self._isvalid)
 
-	def __isvalid(self, a=None, b=None, c=None, e=None):
+	def _isvalid(self, a=None, b=None, c=None, e=None):
 		#self.get_master().focus_set()
 		self.selection_clear()
 		if self.var.get() in [str(x) for x in self.values]:
@@ -188,7 +152,7 @@ class reCombobox(cCombobox, widgetBase):
 			return False
 	#@override
 	def get(self):
-		return self.var.get(), self._isvalid()
+		return super().get(), self._isvalid()
 		
 class reautoEntry(autoEntry, widgetBase):
 	def __isvalid(self):
