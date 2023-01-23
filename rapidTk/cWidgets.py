@@ -123,12 +123,10 @@ class cTreeview(Treeview, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.master = master
-		self.__dict__.update(kwargs)
 		self.i = 0
 		self.detached_data = []
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		bg = kwargs.pop('bg', '#FFFFFF')
-		fg = kwargs.pop('bg', '#000000')
+		fg = kwargs.pop('fg', '#000000')
 
 		rgb = [int(bg.replace("#","")[i:i+2], 16) for i in (0, 2, 4)]
 		rgbt1 = []
@@ -153,9 +151,8 @@ class cTreeview(Treeview, widgetBase):
 		widget_args = layout.filter()
 		super(cTreeview, self).__init__(master, **widget_args)
 		self.tag_configure('highlight', background='lightblue', foreground="black")
-		if bgp and fgp:
-			self.tag_configure("t1", background=colour2, foreground=ffg)
-			self.tag_configure("t2", background=colour3, foreground=ffg)
+		self.tag_configure("t1", background=colour2, foreground=fg)
+		self.tag_configure("t2", background=colour3, foreground=fg)
 		self['show'] = 'headings'
 		if layout.method is not None:
 			layout.inline(self)
@@ -280,7 +277,7 @@ class cScrolledText(ScrolledText, widgetBase):
 class cCheckbutton(Checkbutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		kwargs['variable'], self.var = kwargs.get('variable', StringVar())*2
+		kwargs['variable'] = self.var = kwargs.get('variable', StringVar())
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cCheckbutton, self).__init__(master, **widget_args)

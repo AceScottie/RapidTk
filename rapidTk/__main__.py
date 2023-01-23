@@ -120,13 +120,19 @@ class rapidTk(Tk):
 			_c.destroy()
 
 	@time_it
-	def center_root(self, h_offset=300, v_offset=300, min_height=600, min_width=1200):
+	def center_root(self, width=300, height=300, min_height=600, min_width=1200):
+		if width < min_width: width = min_width
+		if height < min_height: height = min_height
 		ws = self.winfo_screenwidth()
 		hs = self.winfo_screenheight()
-		self.geometry("%sx%s+%s+%s" % (ws-300*2, hs-300, int(ws/2-(ws-h_offset)/2), int(hs/2-(hs-v_offset)/2))) ##live
+		posx, posy = int((ws/2) - (width/2)), int((hs/2) - (height/2))
+		self.geometry(f"{width}x{height}+{posx}+{posy}")
 		self.minsize(height=min_height, width=min_width)
 		self.update()
 		self.update_idletasks()
+	@time_it
+	def window_scale(self, percent:int) -> tuple[int, int]:
+		return int((self.winfo_screenwidth()/100)*percent), int((self.winfo_screenheight()/100)*percent)
 		
 
 class __processor:
