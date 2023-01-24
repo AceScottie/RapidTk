@@ -293,33 +293,26 @@ class cCheckbutton(Checkbutton, widgetBase):
 
 class cOptionMenu(OptionMenu, widgetBase):
 	@time_it
-	def __init__(self, master, **kwargs):
-		self.options = kwargs.pop('options', [])
-		selectable_options = [str(x) for x in self.options]
-		self.var = kwargs.pop('variable', StringVar())
-		self.__value = kwargs.pop('default', None)
-		if self.__value in selectable_options:
-			selectable_options.remove(selectable_options.index(str(kwargs['default'])))
-		else:
-			self.__value = self.options[0] if len(self.options) > 0 else None
-			if len(self.options) > 0:
-				selectable_options = [str(x) for x in self.options[1:]]
-			else:
-				selectable_options = [str(x) for x in self.options]
-		self.var.set(self.__value)
-		nv = kwargs.pop('non_valid', [])
-		for item in nv:
-			if item in self.options:
-				del self.options[self.options.index(item)]
+	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
+		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
+		self.selectable_options = [str(x) for x in self.options] ## modified options for display
+		kwargs['textvariable'] = self.var = kwargs.pop('variable', kwargs.pop('textvariable',StringVar()))
+		kwargs['value'] = self.__value = kwargs.pop('default', None) 
+		if self.__value is not None:
+			self.var.set(self.__value)
+			if self.__value in self.selectable_options:
+				self.selectable_options.remove(self.__value)
 		
-		#kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
+		#nv = kwargs.pop('non_valid', []) 
+		
+		kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
+		kwargs['values'] = self.selectable_options
+		
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
-		print(f"cOptionMenu filterd {widget_args}")
-		##tkinter.OptionMenu.__init__(self, master, variable, value, *values, **kwargs):
-		super(cOptionMenu, self).__init__(master, self.var, self.__value, *selectable_options, **widget_args)
+		super(cOptionMenu, self).__init__(master, **widget_args)
 		
-		
+		print(self['menu'])
 		self['menu'].configure(activebackground="blue", activeforeground="white")
 		self.bind("<space>", self.open_option_menu)
 

@@ -121,12 +121,16 @@ from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cChec
 
 class reOptionMenu(cOptionMenu, widgetBase):
 	def __init__(self, master, **kwargs):
+		self.nv_options = kwargs.pop('non_valid', [])
 		super(reOptionMenu, self).__init__(master, **kwargs)
 		self.bg = self.cget('background')
 		self.fg = self.cget('foreground')
-		self.var.trace('w', self.__isvalid)
-	def __isvalid(self, a=None, b=None, c=None, e=None):
-		if super().get() in [str(x) for x in self.options]:
+		self.var.trace('w', self._isvalid)
+
+	def _isvalid(self, a=None, b=None, c=None, e=None):
+		print("reOptionMeny")
+		print(self.var.get(), [str(x) for x in self.options], self.nv_options)
+		if self.var.get() in [str(x) for x in self.options] and self.var.get() not in self.nv_options:
 			self.configure(bg=self.bg, fg=self.fg)
 			return True
 		else:

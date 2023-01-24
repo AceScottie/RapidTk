@@ -76,7 +76,7 @@ class qForm:
 				except:
 					print("Exception: %s ScrollText %s"%(name, insert))
 			case "Option":
-				self.questions[name]["object"] = pp.add(cOptionMenu(f, **opts), side=RIGHT, **p_opts)
+				self.questions[name]["object"] = pp.add(reOptionMenu(f, **opts), side=RIGHT, **p_opts)
 				try:
 					if insert != None:
 						self.questions[name]['object'].set(insert)
@@ -120,27 +120,29 @@ class qForm:
 		for k, v in self.questions.items():
 			value = v['object'].get()
 			if isinstance(value, tuple):
-				return value[1]
+				if not value[1]: validation_valid = False
 				value = value[0]
-			if v['validation'] is not None and str(type(v['object'])) != "<class 'rTk.objects.autoEntry'>":
-				pattern = re.compile(v['validation'], re.IGNORECASE)
-				valid = pattern.match(str(value))
-				print(f"validation {str(value)} -> {v['validation']} {valid}")
-				if not valid:
-					v['object'].configure(bg="red")
-					validation_valid = False
-				else:
-					if v['object'].cget('background') == "red":
-						if str(type(v['object'])) != "<class 'rTk.objects_ext.autoEntry'>":
-							v['object'].configure(bg=v['object'].winfo_toplevel().option_get('background', '.') or '#FFFFFF', fg=v['object'].winfo_toplevel().option_get('foreground', '.') or '#000000')
-						else:
-							v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
-			elif str(type(v['object'])) == "<class 'rTk.objects_ext.autoEntry'>":
-				if value not in v['object'].auto:
-					v['object'].configure(bg="red")
-					validation_valid = False
-				else:
-					v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
+			else:
+				if v['validation'] is not None and str(type(v['object'])) != "<class 'rTk.objects.autoEntry'>":
+					pattern = re.compile(v['validation'], re.IGNORECASE)
+					valid = pattern.match(str(value))
+					print(f"validation {str(value)} -> {v['validation']} {valid}")
+					if not valid:
+						v['object'].configure(bg="red")
+						validation_valid = False
+					else:
+						if v['object'].cget('background') == "red":
+							if str(type(v['object'])) != "<class 'rTk.objects_ext.autoEntry'>":
+								v['object'].configure(bg=v['object'].winfo_toplevel().option_get('background', '.') or '#FFFFFF', fg=v['object'].winfo_toplevel().option_get('foreground', '.') or '#000000')
+							else:
+								v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
+				elif str(type(v['object'])) == "<class 'rTk.objects_ext.autoEntry'>":
+					if value not in v['object'].auto:
+						v['object'].configure(bg="red")
+						validation_valid = False
+					else:
+						v['object'].configure(bg=v['object'].bg, fg=v['object'].fg)
+		print(f"form valid: {validation_valid}")
 		return validation_valid
 	def update(self, question, value):
 		self.questions[question]['object'].set(value)
