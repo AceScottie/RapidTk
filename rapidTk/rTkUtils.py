@@ -106,7 +106,7 @@ class SingletonMeta(type):
 
 class widgetBase:
 	@time_it
-	def __init__(self, master):
+	def __init__(self, master, **kwargs):
 		self.master = master
 	@time_it
 	def get_root(self):

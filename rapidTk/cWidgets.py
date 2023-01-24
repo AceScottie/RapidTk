@@ -1,11 +1,12 @@
-from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu, Radiobutton, Listbox, Scale
+from tkinter import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale
 from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar
 from tkinter.ttk import Treeview, Combobox, Spinbox
 from tkinter.scrolledtext import ScrolledText
+from .rTkOverrides import OptionMenu
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
-	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
+	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton
 else:
 	from tkinter.ttk import Style
 
@@ -295,11 +296,10 @@ class cOptionMenu(OptionMenu, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.options = kwargs.pop('options', [])
 		selectable_options = [str(x) for x in self.options]
-		kwargs['variable'], self.var = kwargs.get('variable', StringVar()), kwargs.get('variable', StringVar())
-		kwargs['value'] = self.__value = kwargs.pop('default', None)
+		self.var = kwargs.pop('variable', StringVar())
+		self.__value = kwargs.pop('default', None)
 		if self.__value in selectable_options:
-			del selectable_options[selectable_options.index(str(kwargs['default']))]
-
+			selectable_options.remove(selectable_options.index(str(kwargs['default'])))
 		else:
 			self.__value = self.options[0] if len(self.options) > 0 else None
 			if len(self.options) > 0:
@@ -312,17 +312,17 @@ class cOptionMenu(OptionMenu, widgetBase):
 			if item in self.options:
 				del self.options[self.options.index(item)]
 		
-		#kwargs['takefocus'] = kwargs.pop('takefocus', 1)
+		#kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		print(f"cOptionMenu filterd {widget_args}")
-		super(cOptionMenu, self).__init__(master, *self.options, **widget_args)
+		##tkinter.OptionMenu.__init__(self, master, variable, value, *values, **kwargs):
+		super(cOptionMenu, self).__init__(master, self.var, self.__value, *selectable_options, **widget_args)
 		
 		
 		self['menu'].configure(activebackground="blue", activeforeground="white")
-
-		#style_widget(self, kw_style, "TOptionMenu")
 		self.bind("<space>", self.open_option_menu)
+
 		if layout.method is not None:
 			layout.inline(self)
 	@time_it
