@@ -68,6 +68,7 @@ def pack_opts(**kwargs):
 		else:
 			kw_wid[k] = v
 	return kw_wid, kw_pak, kw_style
+
 class autoEntry(cEntry, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)	
@@ -77,22 +78,21 @@ class autoEntry(cEntry, widgetBase):
 		##custom kwargs
 		self.options =  kwargs.pop('auto', [])
 		self.len = kwargs.pop('len', 3)
+		assertValue(f'{self.len} >= 1', "len must be greater than 1")
 		self.anchor = kwargs.pop('anchor', "center")
-		self.strict = False
-		self.autoshow = kwargs.pop('autoshow', False)
 		self.autobg = kwargs.pop('autobg', '#DDDDDD')
 		self.autofg = kwargs.pop('autofg', '#000000')
 		self.hovertext = kwargs.pop('hovertext', '#BBBBBB')
 		self.hovercolor = kwargs.pop('hovercolor', '#000000')
-		self.cursor_colour = kwargs.pop('cursor_colour', '#000000')
+		self.cursor_color = kwargs.pop('cursor_color', '#000000')
 		self.strict = kwargs.pop('strict', 0) in [1, '1', True]
 		self.autoshow = kwargs.pop('autoshow', 0) in [1, '1', True]
 
 
-		self.bg, kwargs['background'], kwargs['bg'] = (kwargs.get('bg', kwargs.get('background', '#AAFFAA')),)*3
-		self.fg, kwargs['foreground'], kwargs['fg'] = (kwargs.pop('fg', kwargs.pop('foreground','#000000')),)*3
+		self.bg = kwargs['background'] = kwargs['bg'] = kwargs.get('bg', kwargs.get('background', '#AAFFAA'))
+		self.fg = kwargs['foreground'] = kwargs['fg'] = kwargs.pop('fg', kwargs.pop('foreground','#000000'))
 
-		kwargs['insertbackground'] = kwargs.pop('insertbackground', self.cursor_colour)
+		kwargs['insertbackground'] = kwargs.pop('insertbackground', self.cursor_color)
 		kwargs['textvariable'] = kwargs.pop('textvariable', StringVar())
 		self.sv = kwargs['textvariable']
 
@@ -239,16 +239,11 @@ class scrollArea(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		self.h = 0
-		self.v = 0
 		self.scroll_v = None
 		self.scroll_h = None
-		if "h" in kw_wid.keys():
-			self.h = kw_wid['h']
-			del kw_wid['h']
-		if "v" in kw_wid.keys():
-			self.v = kw_wid['v']
-			del kw_wid['v']
+		self.h = kwargs.pop('h', 0)
+		self.v = kwargs.pop('v', 0)
+		
 		cFrame.__init__(*(self, master), **kw_wid)
 		
 		self.sCanvas = cCanvas(self, side=TOP, fill=BOTH, expand=1)
@@ -283,6 +278,7 @@ class movableWindow(cCanvas, widgetBase):
 		self.__dict__.update(kwargs)
 		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.motion = False
+
 		if 'width' not in kw_wid:
 			kw_wid['width'] = 400
 		if 'height' not in kw_wid:
@@ -393,7 +389,7 @@ class movableWindow(cCanvas, widgetBase):
 class ImageLabel(cLabel, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(ImageLabel, self).__init__(master)
-	def load(self, im, bg):
+	def load(self, im, bg="white"):
 		if isinstance(im, str):
 			im = Image.open(im)
 		self.loc = 0
@@ -412,19 +408,19 @@ class ImageLabel(cLabel, widgetBase):
 			self.config(image=self.frames[0], bg=bg)
 		else:
 			try:
-				self.next_frame()
+				self._next_frame()
 			except:
 				pass
 	def unload(self):
 		self.config(image=None)
 		self.frames = None
-	def next_frame(self):
+	def _next_frame(self):
 		if self.frames:
 			self.loc += 1
 			self.loc %= len(self.frames)
 			try:
 				self.config(image=self.frames[self.loc])
-				self.get_root().after(self.delay, self.next_frame)
+				self.get_root().after(self.delay, self._next_frame)
 			except:
 				pass
 class Tooltip:

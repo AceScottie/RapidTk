@@ -31,3 +31,14 @@ class MenuContexError(TemplateException):
 	def __init__(self):
 		message = "context should be a {type}|{name}:command dictionary pair"
 		super().__init__(message)
+
+
+
+class assertValue(ValueError):
+	def __init__(self, test, message):
+		try:
+			assert eval(test)
+		except:
+			raise super().__init__(message)
+
+
