@@ -35,9 +35,9 @@ class MenuContexError(TemplateException):
 
 
 class assertValue(ValueError):
-	def __init__(self, test, message):
+	def __init__(self, condition, message):
 		try:
-			assert eval(test)
+			assert eval(condition)
 		except:
 			raise super().__init__(message)
 

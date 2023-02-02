@@ -423,18 +423,25 @@ class ImageLabel(cLabel, widgetBase):
 				self.get_root().after(self.delay, self._next_frame)
 			except:
 				pass
-class Tooltip:
-	def __init__(self, widget,*,bg='#FFFFEA',fg='#000000',pad=(5, 3, 5, 3),text='widget info',waittime=400,wraplength=250):
-		self.waittime = waittime
-		self.wraplength = wraplength
-		self.widget = widget
-		self.text = text
+class Tooltip(cLabel, widgetBase):
+	def __init__(self, widget,**kwargs):
+		self.waittime = kwargs.pop('waittime', 400)
+		self.wraplength = kwargs.pop('wraplength', 250)
+		self.pad = kwargs.pop('pad', (5, 3, 5, 3))
+		kwargs["text"] = kwargs.get('text', "")
+		kwargs["wraplength"] = kwargs.get('wraplength', 400)
+		kwargs["background"] = kwargs.get('bg', '#FFFFEA')
+		kwargs["foreground"] = kwargs.get('fg', '#000000')
+		kwargs["relief"] = kwargs.get('relief', SOLID)
+		kwargs["borderwidth"] = kwargs.get('borderwidth', 0)
+		kwargs["fg"] = kwargs.get('fg', '#000000')
+		kwargs["fg"] = kwargs.get('fg', '#000000')
+
+		self.kwargs = kwargs
 		self.widget.bind("<Enter>", self.onEnter)
 		self.widget.bind("<Leave>", self.onLeave)
 		self.widget.bind("<ButtonPress>", self.onLeave)
-		self.bg = bg
-		self.fg = fg 
-		self.pad = pad
+		
 		self.id = None
 		self.tw = None
 	def onEnter(self, event=None):
@@ -480,7 +487,7 @@ class Tooltip:
 		self.tw = Toplevel(widget)
 		self.tw.wm_overrideredirect(True)
 		win = cFrame(self.tw,background=self.bg,borderwidth=0)
-		label = cLabel(win,text=self.text,justify=LEFT,background=self.bg, foreground=self.fg, relief=SOLID,borderwidth=0,wraplength=self.wraplength)
+		label = cLabel(win,**self.kwargs)
 		label.grid(padx=(pad[0], pad[2]),pady=(pad[1], pad[3]),sticky=NSEW)
 		win.grid()
 		x, y = tip_pos_calculator(widget, label)
