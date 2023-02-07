@@ -8,9 +8,10 @@ import re
 ##TODO: Add documentation for all of this
 
 class ValidatingEntry(cEntry, widgetBase): ##used for MaxLengthEntry
-	def __init__(self, master, value="", **kw):
+	def __init__(self, master, **kwargs):
+		value = kwargs.pop('value')
 		#apply(Entry.__init__, (self, master), kw)
-		cEntry.__init__(*(self, master), **kw)
+		cEntry.__init__(*(self, master), **kwargs)
 		self.__value = value
 		self.__variable = StringVar()
 		self.__variable.set(value)
@@ -30,11 +31,11 @@ class ValidatingEntry(cEntry, widgetBase): ##used for MaxLengthEntry
 		# override: return value, new value, or None if invalid
 		return value
 class MaxLengthEntry(ValidatingEntry, widgetBase): ##entry with a max length flag ##TODO: convert this to re-wiget
-	def __init__(self, master, value="", maxlength=None, valtype=None, **kw):
-		self.maxlength = maxlength
-		self.valtype = valtype
+	def __init__(self, master, **kwargs):
+		self.maxlength = kwargs.pop('maxlength', None)
+		self.valtype = kwargs.pop('valtype', None)
 		#apply(ValidatingEntry.__init__, (self, master), kw)
-		ValidatingEntry.__init__(*(self, master), **kw)
+		ValidatingEntry.__init__(*(self, master), **kwargs)
 	def validate(self, value):
 		if self.maxlength is None or len(value) <= self.maxlength:
 			if self.valtype != None:

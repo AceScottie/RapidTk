@@ -470,3 +470,34 @@ class cSpinbox(Spinbox, widgetBase): ##incremental box
 		super(cSpinbox, self).__init__(master, **widget_args)
 		if layout.method is not None:
 			layout.inline(self)
+
+class cDate(cFrame, widgetBase):
+	def __init__(self, master, **kwargs):
+		base_formats = [
+		'dd{sep}mm{sep}yyyy',
+		'dd{sep}mm{sep}yy',
+		'yyyy{sep}mm{sep}dd',
+		'yy{sep}mm{sep}dd',
+		'mm{sep}dd{sep}yyyy',
+		'mm{sep}dd{sep}yy'
+		]
+		seperators = ['/', '-', '.']
+		formats = []
+		formats.append([[x.format(sep=y) for y in seperators] for x in base_formats])
+		self.formats = [item for sub in formats[0] for item in sub]
+		self.d_format = kwargs.pop('format', 'dd/mm/yyyy')
+		if self.d_format not in self.formats:
+			local_formats = '\t\n'.join(self.formats)
+			raise ValueError(f"{self.d_format} is not a valid format, please select from one of the standard formats:\n{local_formats}")
+		self.seperator = self.d_format[2] if self.d_format[2] in seperators else self.d_format[4]
+		
+		super(cDate, self).__init__(master)
+		
+	def _create_entries(self, **kwargs):
+		
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		
+
+		if layout.method is not None:
+			layout.inline(self)
