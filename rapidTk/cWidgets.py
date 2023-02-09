@@ -33,9 +33,15 @@ class cFrame(Frame, widgetBase):
 class cLabel(Label, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
+		self.bg = kwargs.get('bg', kwargs.get('background', None))
+		self.fg = kwargs.get('fg', kwargs.get('foreground', None))
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cLabel, self).__init__(master, **widget_args)
+		if self.bg is None:
+			self.bg = self.cget('background')
+		if self.fg is None:
+			self.fg = self.cget('foreground')
 		
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		if layout.method is not None:

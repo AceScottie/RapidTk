@@ -7,11 +7,11 @@ class TaskIdExistsError(TemplateException):
 class TaskIdNotExistsError(TemplateException):
 	def __init__(self):
 		pass
-class duiplicateIDError(TemplateException):
+class DuiplicateValueError(TemplateException):
 	def __init__(self):
 		message = "Value already exists as UID"
 		super().__init__(message)
-class duiplicateIDError(TemplateException):
+class DuiplicateIdError(TemplateException):
 	def __init__(self):
 		message = "Tab with this id has not been created"
 		super().__init__(message)
@@ -19,7 +19,7 @@ class PlatformError(TemplateException):
 	def __init__(self):
 		message = "This module does not work on this platform"
 		super().__init__(message)
-class DateEntryNotFoundException(TemplateException):
+class DateEntryNotFoundError(TemplateException):
 	def __init__(self):
 		message = "tkcalendar module not found.\nPlease install tkcalendar module to use DateEntry widgets."
 		super().__init__(message)
@@ -31,14 +31,8 @@ class MenuContexError(TemplateException):
 	def __init__(self):
 		message = "context should be a {type}|{name}:command dictionary pair"
 		super().__init__(message)
-
-
-
-class assertValue(ValueError):
+class assertValue:
 	def __init__(self, condition, message):
-		try:
-			assert eval(condition)
-		except:
-			raise super().__init__(message)
-
-
+		if not condition():
+			print("running condition")
+			raise ValueError(message)

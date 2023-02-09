@@ -1,4 +1,4 @@
-from .cWidgets import cEntry, cOptionMenu, cCombobox, cScrolledText
+from .cWidgets import cEntry, cLabel, cScrolledText, cOptionMenu
 from .cWidgets_extended import autoEntry
 from .rTkUtils import widgetBase
 from .flags import __ttk_enabled__
@@ -98,7 +98,7 @@ class reEntry(cEntry, widgetBase):
 		super(reEntry, self).__init__(master, **kwargs)
 		self.bg = self.cget('background')
 		self.fg = self.cget('foreground')
-	def __isvalid(self):
+	def _isvalid(self):
 		try:
 			match = re.match(self.regex, self.var.get())
 			if not match:
@@ -113,13 +113,33 @@ class reEntry(cEntry, widgetBase):
 	#@override
 	def insert(self, pos, text=""):
 		super().insert(pos, text)
-		self.__isvalid()
+		self._isvalid()
 	#@override
 	def get(self):
-		return super().get(), self.__isvalid()
+		return super().get(), self._isvalid()
 	
-from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
 
+class reLabel(cLabel, widgetBase):
+	def __init__(self, master, **kwargs):
+		self.re = kwargs.pop('re')
+		super(reLabel, self).__init__(master, **kwargs)
+	def _isvalid(self):
+		try:
+			match = re.match(self.regex, self.cget('text'))
+			if not match:
+				self.configure(bg="red", fg="white")
+				return False
+			else:
+				self.configure(bg=self.bg, fg=self.fg)
+				return True
+		except:
+			raise
+			return False
+	def get(self):
+		return self.cget('text'), self._isvalid()
+
+	def set(self, text:str):
+		self.configure(text=text)
 class reOptionMenu(cOptionMenu, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.nv_options = kwargs.pop('non_valid', [])
@@ -160,7 +180,7 @@ class reCombobox(cCombobox, widgetBase):
 		return super().get(), self._isvalid()
 		
 class reautoEntry(autoEntry, widgetBase):
-	def __isvalid(self):
+	def _isvalid(self):
 		if self.sv.get() in self.options:
 			self.configure(bg=self.bg, fg=self.fg)
 			return True
@@ -169,14 +189,14 @@ class reautoEntry(autoEntry, widgetBase):
 			return False
 	#@override
 	def get(self):
-		return self.sv.get(), self.isvalid()
+		return self.sv.get(), self._isvalid()
 
 
 ##TODO: complete __isvalid method
 class reScrolledText(cScrolledText, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.regex = kwargs.pop('re', '.*')
-	def __isvalid(self):
+	def _isvalid(self):
 		try:
 			match = re.match(self.regex, self.stvar.get())
 			if not match:

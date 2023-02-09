@@ -1,11 +1,10 @@
+#tkinter imports
 from tkinter import StringVar, IntVar, Event, INSERT, END, Misc, Toplevel
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, SOLID
 from tkinter import N, E, S, W, NW, NE, SE, SW, NSEW
 from tkinter import Scrollbar, VERTICAL, HORIZONTAL 
 from tkinter.simpledialog import askstring, askinteger
-
-
-
+##additional imports
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps
 import re
 from itertools import count
@@ -14,6 +13,7 @@ from collections.abc import Callable
 from dateutil.relativedelta import relativedelta
 from math import sin, cos, pi
 
+#rtk imports
 from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess, GridProcess
 from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
@@ -37,37 +37,6 @@ except:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException
 
-
-
-
-from functools import wraps
-def memoize(func):
-	cache = {}
-
-	@wraps(func)
-	def wrapper(*args, **kwargs):
-		key = str(args) + str(kwargs)
-		if key not in cache:
-			cache[key] = func(*args, **kwargs)
-		return cache[key]
-	return wrapper
-def pack_opts(**kwargs):
-	pak = ["side", "expand", "fill"]
-	if __ttk_enabled__:
-		style = ['bg', 'height', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
-	else:
-		style = []
-	kw_wid = {}
-	kw_pak = {}
-	kw_style = {}
-	for k, v in kwargs.items():
-		if k in pak:
-			kw_pak[k] = v
-		elif k in style:
-			kw_style[k] = v
-		else:
-			kw_wid[k] = v
-	return kw_wid, kw_pak, kw_style
 
 class autoEntry(cEntry, widgetBase):
 	def __init__(self, master, **kwargs):
@@ -96,8 +65,8 @@ class autoEntry(cEntry, widgetBase):
 		kwargs['textvariable'] = kwargs.pop('textvariable', StringVar())
 		self.sv = kwargs['textvariable']
 
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		cEntry.__init__(*(self, master), **kwargs)
+
 		self.aw = cCanvas(self.winfo_toplevel(), bg="white", borderwidth=2, relief="raised")
 		self.bind('<Button-2>', self._full)
 		self.bind('<F1>', self._full)
@@ -107,8 +76,6 @@ class autoEntry(cEntry, widgetBase):
 		self.bind('<FocusOut>', self._close_overlay)
 		self.winfo_toplevel().bind_all('<Button-1>', self._close_overlay)
 		self.sv.trace("w", lambda name, index, mode, e=Event(): self._autocomplete(e))
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
 
 	def _autocomplete(self, event):
 		if self.winfo_toplevel().focus_get() != self:
@@ -385,7 +352,6 @@ class movableWindow(cCanvas, widgetBase):
 		self.destroy()
 	def __del__(self):
 		self._close()
-
 class ImageLabel(cLabel, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(ImageLabel, self).__init__(master)
@@ -497,18 +463,16 @@ class Tooltip(cLabel, widgetBase):
 		if tw:
 			tw.destroy()
 		self.tw = None
-		
-class Calendar(cFrame):
+class Calendar(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 		self.short_days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
 		self.months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
 		self.short_months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-		self.master = master
 		self.date = kwargs.pop('date', simpledate.now())
 		self.func = kwargs.pop('func', self.__ignore)
-		super(Calendar, self).__init__(self.master)
-		self.configure(**kwargs)
+		super(Calendar, self).__init__(self.master, **kwargs)
+
 		pp = PackProcess()
 		t_frame = pp.add(cFrame(self), side=TOP, fill=X)
 		self.c_frame = pp.add(cFrame(self), side=TOP, fill=X)
@@ -618,7 +582,6 @@ class Calendar(cFrame):
 		gp.grid()
 	def __ignore(self, event, day):
 		pass
-		
 class TimePicker(cCanvas, widgetBase):
 	def __init__(self, master, **kwargs):
 		pp = PackProcess()
@@ -641,7 +604,7 @@ class TimePicker(cCanvas, widgetBase):
 		self.minutesE.bind("<FocusIn>", self.popup)
 		self.minutesE.bind("<FocusOut>", self.close)
 
-		self.width, self.height, self.radious = kwargs['width'], kwargs['height'], rd = (kwargs.pop('radious', 100)*2, )*3
+		self.width = self.height = self.radious = kwargs['width'] = kwargs['height'] = rd = kwargs.pop('radious', 100)*2
 		self.radious /= 4
 		self.radious -=1 ##fixes clipping
 		assert self.tformat in [12, 24], "Time Format must be '12' or '24'"

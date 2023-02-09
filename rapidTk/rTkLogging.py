@@ -29,7 +29,6 @@ class rTkLogger(logging.Logger):
         self.hndlr = self.addHandler(self.handler)
 
     def __state(self, s, mod):
-
         if s:
             self.handler = logging.StreamHandler()
         else:

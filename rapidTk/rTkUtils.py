@@ -269,7 +269,7 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 				non_opts[key] = value
 		return non_opts
 	def inline(self, widget):
-		print(f'adding inline widget {widget=}')
+		#logging.getLogger('rapidTk').rtkverbose(f'adding inline widget {widget=}')
 		self.methods[self.method](widget, **self.method_opts)
 
 class RepeatedTimer(object):

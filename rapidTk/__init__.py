@@ -11,7 +11,6 @@ try:
 	import tkcalendar
 	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
 except:
-	raise DateEntryNotFoundException
 	class DateEntry:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException
@@ -21,6 +20,7 @@ except:
 	class reDateEntry:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException
+
 from .rTkLogging import rTkLogger
 
 import logging
