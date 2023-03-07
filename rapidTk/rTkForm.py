@@ -1,6 +1,7 @@
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, X, Y, BOTH
 from tkinter import Event, INSERT
 import re
+from .__main__ import PackProcess
 from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu, cScale
 from .reWidgets import reEntry, reCombobox, reOptionMenu, reautoEntry, reScrolledText
 try:

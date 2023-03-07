@@ -1,8 +1,10 @@
+import logging
 from tkinter import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale
 from tkinter import Canvas, Menu
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar
 from tkinter.ttk import Treeview, Combobox, Spinbox
 from tkinter.scrolledtext import ScrolledText
+from .__main__ import rapidTk
 from .rTkOverrides import OptionMenu
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
@@ -11,20 +13,16 @@ else:
 	from tkinter.ttk import Style
 
 from .rTkErrors import *
-from .rTkUtils import clipboard, widgetBase, time_it, inline_layout
+from .rTkUtils import clipboard, widgetBase, time_it, inline_layout, _UniqueIdentifiers
 from .rTkTheme import _ThemeManager, style_widget
 
 class cFrame(Frame, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		#self.__dict__.update(kwargs)
-		##pop all pack, gird or place methods.
-		#self.method = kwargs.pop('method', None)
+		self.uuid = _UniqueIdentifiers().new()
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cFrame, self).__init__(master, **widget_args)
-		
-		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		if layout.method is not None:
 			layout.inline(self)
 
@@ -33,6 +31,7 @@ class cFrame(Frame, widgetBase):
 class cLabel(Label, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		self.bg = kwargs.get('bg', kwargs.get('background', None))
 		self.fg = kwargs.get('fg', kwargs.get('foreground', None))
 		layout = inline_layout(**kwargs)
@@ -51,26 +50,28 @@ class cLabel(Label, widgetBase):
 class cButton(Button, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		kwargs['cursor'] = kwargs.pop('cursor', 'hand2')
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cButton, self).__init__(master, **widget_args)
+		logging.getLogger('rapidTk').rtkverbose(f"created widget {self} with args {widget_args}")
 		if layout.method is not None:
 			layout.inline(self)
 
 class cEntry(Entry, widgetBase):
 	@time_it
-	def __init__(self, master, value="", **kwargs):
+	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
+		logging.getLogger('rapidTk').rtkverbose(f"cEntry got kwargs {kwargs}")
 		value = kwargs.pop('value', '')
-		pk_opts = kwargs.pop('pack', None)
-		g_opts = kwargs.pop('grid', None)
-		pl_opts = kwargs.pop('place', None)
 		kwargs['textvariable'], self.var = (kwargs.get('textvariable', StringVar()),)*2
 		self.var.set(value)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
+		logging.getLogger('rapidTk').rtkverbose(f"cEntry got widget_args {widget_args} and {layout.method}")
 		super(cEntry, self).__init__(master, **widget_args)
-		
+		logging.getLogger('rapidTk').rtkverbose(f"created cEntry {self} with args {widget_args}")
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		self.__menu = Menu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
@@ -117,6 +118,7 @@ class cEntry(Entry, widgetBase):
 class cCanvas(Canvas, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		if 'bd' not in kwargs or 'boarder' not in kwargs:
 			kwargs['bd'] = -2
 		layout = inline_layout(**kwargs)
@@ -129,6 +131,7 @@ class cCanvas(Canvas, widgetBase):
 class cTreeview(Treeview, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		self.master = master
 		self.i = 0
 		self.detached_data = []
@@ -228,11 +231,13 @@ class cTreeview(Treeview, widgetBase):
 class cScrolledText(ScrolledText, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		value = kwargs.pop('value', '')
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cScrolledText, self).__init__(master, **widget_args)
-		
+		if isinstance(self.get_root(), rapidTk):
+			self.get_root().sm.add_widget(self)
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		if value != '':
 			self.insert(1.0, value)
@@ -284,6 +289,7 @@ class cScrolledText(ScrolledText, widgetBase):
 class cCheckbutton(Checkbutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		kwargs['variable'] = self.var = kwargs.get('variable', StringVar())
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
@@ -300,6 +306,7 @@ class cCheckbutton(Checkbutton, widgetBase):
 class cOptionMenu(OptionMenu, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
+		self.uuid = _UniqueIdentifiers().new()
 		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
 		self.selectable_options = [str(x) for x in self.options] ## modified options for display
 		kwargs['textvariable'] = self.var = kwargs.pop('variable', kwargs.pop('textvariable',StringVar()))
@@ -317,8 +324,6 @@ class cOptionMenu(OptionMenu, widgetBase):
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cOptionMenu, self).__init__(master, **widget_args)
-		
-		print(self['menu'])
 		self['menu'].configure(activebackground="blue", activeforeground="white")
 		self.bind("<space>", self.open_option_menu)
 
@@ -341,6 +346,7 @@ class cOptionMenu(OptionMenu, widgetBase):
 class cCombobox(Combobox, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		self.values, kwargs['values'] = (kwargs.pop('options', []),)*2
 		kwargs['textvariable']  = kwargs.get('textvariable', StringVar())
 		self.var = kwargs['textvariable']
@@ -387,6 +393,7 @@ class cCombobox(Combobox, widgetBase):
 class cMenu(Menu, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		context = kwargs.pop('context', None) # get context builder or None
 		if not isinstance(context, dict):
 			raise MenuContexError 
@@ -439,6 +446,7 @@ class cMenu(Menu, widgetBase):
 class cRadiobutton(Radiobutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cRadiobutton, self).__init__(master, **widget_args)
@@ -448,6 +456,7 @@ class cRadiobutton(Radiobutton, widgetBase):
 class cListbox(Listbox, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cListbox, self).__init__(master, **widget_args)
@@ -457,6 +466,7 @@ class cListbox(Listbox, widgetBase):
 class cScale(Scale, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		self.var, kwargs['variable'] = (kwargs.pop('variable', IntVar()),)*2
 		vals = kwargs.pop('range', [0, 1])
 		kwargs['from_'] = vals[0]
@@ -471,14 +481,43 @@ class cScale(Scale, widgetBase):
 class cSpinbox(Spinbox, widgetBase): ##incremental box
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
+		self.values = kwargs.get('values', ['0','1','2'])
+		kwargs['textvariable'] = self.var = kwargs.pop('textvariable', StringVar())
+		kwargs['value'] = kwargs.get('value', self.values[0])
+		self.var.set(kwargs['value'])
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
+		print(widget_args)
 		super(cSpinbox, self).__init__(master, **widget_args)
+		if isinstance(self.get_root(), rapidTk):
+			self.get_root().sm.add_widget(self, self._on_scroll)
 		if layout.method is not None:
 			layout.inline(self)
 
+	def _on_scroll(self, event):
+		item = self.var.get()
+		print(self.values, item)
+		cpos = self.values.index(item)
+		print(f'{cpos=}')
+		print(f'{event.delta=}')
+		if event.delta > 0 :
+			pos = cpos-1
+			if pos >= 0:
+				self.var.set(self.values[pos])
+			else:
+				self.var.set(self.values[-1])
+		elif event.delta < 0:
+			pos = cpos+1
+			if pos < len(self.values)-1:
+				self.var.set(self.values[pos])
+			else:
+				self.var.set(self.values[0])
+		self.update()
+
 class cDate(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		base_formats = [
 		'dd{sep}mm{sep}yyyy',
 		'dd{sep}mm{sep}yy',
@@ -496,7 +535,6 @@ class cDate(cFrame, widgetBase):
 			local_formats = '\t\n'.join(self.formats)
 			raise ValueError(f"{self.d_format} is not a valid format, please select from one of the standard formats:\n{local_formats}")
 		self.seperator = self.d_format[2] if self.d_format[2] in seperators else self.d_format[4]
-		
 		super(cDate, self).__init__(master)
 		
 	def _create_entries(self, **kwargs):

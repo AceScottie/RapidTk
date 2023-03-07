@@ -3,7 +3,8 @@ from tkinter import Scrollbar, Event
 
 from rapidTk import *
 import logging
-
+rtklog = logging.getLogger('rapidTk')
+rtklog.setLevel(0)
 
 """
 rapdTk Log Levels:
@@ -232,7 +233,7 @@ def example_basic_set():
 	holder = pp.add(cFrame(main, borderwidth=3, relief='groove'), side=TOP, fill=BOTH, expand=1)
 	w={}
 	w['cLabel'] = pp.add(cLabel(holder, text="This is a basic rapidTk Label."), side=TOP, fill=X)
-	w['cButton'] = pp.add(cButton(holder, text="This is an Example Button"), side=TOP)
+	w['cButton'] = pp.add(cButton(holder, text="This is an Example Button", cursor='@../assets/cur.cur'), side=TOP)
 	w['cEntry'] = pp.add(cEntry(holder, value="Some Default Text"), side=TOP, fill=X)
 
 	options = pp.add(cOptionMenu(config, options=['cLabel', 'cButton', 'cEntry']), side=LEFT, fill=X)
@@ -271,9 +272,35 @@ def example_baisc_language():
 	change.configure(command=lambda e=Event(), _l=_l, lb=lb, b=change:switch_language(e, _l, b, lb)) 
 	root.mainloop()
 
+def uuid_printer(event, widget):
+	print(f"This button has the UUID: {widget.uuid}")
+def uuid_print_all(event, widget):
+	print(widget.get_root().uid)
+def example_uuids():
+	"""
+	All basic widgets in rapidTk have a Unique Identifier which is stored in the metaclass _UniqueIdentifiers()
+	You can generate a new uuid by calling `uuid = _UniqueIdentifiers().new()
+	Also you can add your own unique identifieds with `_UniqueIdentifiers().append('[UniqueIdentifier]')`
+	Attemping to manually add an existing identifier will raise a duiplicateIDError
+	You can see all used UUIDs by calling get_root().uid on any widget to get a list of UUIDs
+	"""
+	root = rapidTk()
+	pp = PackProcess()
+	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
+	b1 = pp.add(cButton(main, text="Button 1"), side=TOP, fill=X)
+	b2 = pp.add(cButton(main, text="Button 2"), side=TOP)
+	b3 = pp.add(cButton(main, text="Button 3"), side=TOP, fill=X)
 
+	b4 = pp.add(cButton(main, text="Print all UUID"), side=TOP, fill=X)
+
+	b1.configure(command=lambda e=Event(), w=b1:uuid_printer(e, w))
+	b2.configure(command=lambda e=Event(), w=b2:uuid_printer(e, w))
+	b3.configure(command=lambda e=Event(), w=b3:uuid_printer(e, w))
+	b4.configure(command=lambda e=Event(), w=b3:uuid_print_all(e, w))
+	pp.pack()
+	root.mainloop()
 
 
 
 if __name__ == "__main__":
-	example_basic_set()
+	example_uuids()

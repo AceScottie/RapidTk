@@ -15,10 +15,11 @@ from math import sin, cos, pi
 
 #rtk imports
 from .flags import __ttk_enabled__, __window_manager__
-from .__main__ import PackProcess, GridProcess
+from .__main__ import PackProcess, GridProcess, rapidTk
 from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
 from .rTkErrors import *
 from .rTkUtils import coord, widgetBase, simpledate, cache
+from .rTkUtils import time_it, inline_layout
 from .rTkManagers import _WindowManager
 from .rTkTheme import _ThemeManager
 
@@ -47,7 +48,7 @@ class autoEntry(cEntry, widgetBase):
 		##custom kwargs
 		self.options =  kwargs.pop('auto', [])
 		self.len = kwargs.pop('len', 3)
-		assertValue(f'{self.len} >= 1', "len must be greater than 1")
+		#assertValue(f'{self.len} >= 1', "len must be greater than 1")
 		self.anchor = kwargs.pop('anchor', "center")
 		self.autobg = kwargs.pop('autobg', '#DDDDDD')
 		self.autofg = kwargs.pop('autofg', '#000000')
@@ -122,6 +123,8 @@ class autoEntry(cEntry, widgetBase):
 		self.aw.configure(width=self.winfo_width(), height=100)
 		self.aw.pack_propagate(False)
 		self.aw.place(x=pos.x, y=pos.y)
+		if isinstance(self.get_root(), rapidTk):
+			self.get_root().sm.add_widget(self.aw)
 		self.bt = cTreeview(self.aw, bg=self.autobg, fg=self.autofg, side=LEFT)
 		vsb = Scrollbar(self.aw, orient="vertical",command=self.bt.yview)
 		self.bt.configure(yscrollcommand=vsb.set)
@@ -165,7 +168,7 @@ class autoEntry(cEntry, widgetBase):
 		return self.sv.get(), self.isvalid()
 	def __del__(self):
 		self._close_overlay()
-		super().destroy()
+		#super().destroy()
 class iButton(cButton, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
@@ -205,15 +208,19 @@ class iButton(cButton, widgetBase):
 class scrollArea(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		#kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.scroll_v = None
 		self.scroll_h = None
 		self.h = kwargs.pop('h', 0)
 		self.v = kwargs.pop('v', 0)
 		
-		cFrame.__init__(*(self, master), **kw_wid)
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(scrollArea, self).__init__(master, **widget_args)
 		
 		self.sCanvas = cCanvas(self, side=TOP, fill=BOTH, expand=1)
+		if isinstance(self.get_root(), rapidTk):
+			self.get_root().sm.add_widget(self.sCanvas)
 		self.sFrame = cFrame(self.sCanvas, side=LEFT, fill=BOTH, expand=1)
 		self.cw = self.sCanvas.create_window((0, 0), window=self.sFrame, anchor=NW)
 		if self.h in [1, "1", True]:
@@ -227,8 +234,9 @@ class scrollArea(cFrame, widgetBase):
 		self.sFrame.bind("<Configure>", self._update_scrollregion)
 		self.sCanvas.bind('<Configure>', self._FrameWidth)
 		
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		if layout.method is not None:
+			layout.inline(self)
+
 	def _update_scrollregion(self, event):
 		self.sCanvas.configure(scrollregion=self.sCanvas.bbox("all"))
 	def _FrameWidth(self, event):
@@ -303,7 +311,7 @@ class movableWindow(cCanvas, widgetBase):
 			self.posx, self.posy = self._calc_move(self.root.winfo_pointerx(), self.root.winfo_rootx(), self.winfo_width(), self.root.winfo_pointery(), self.root.winfo_rooty())
 			self.place(x=self.posx, y=self.posy)
 			#self.update()
-	@memoize
+	@cache
 	def _calc_move(self, rx, rrx, w, ry, rry):
 		x=(rx-rrx-w/2)
 		y=ry-rry-10
@@ -390,7 +398,8 @@ class ImageLabel(cLabel, widgetBase):
 			except:
 				pass
 class Tooltip(cLabel, widgetBase):
-	def __init__(self, widget,**kwargs):
+	def __init__(self, master,**kwargs):
+		self.master = master
 		self.waittime = kwargs.pop('waittime', 400)
 		self.wraplength = kwargs.pop('wraplength', 250)
 		self.pad = kwargs.pop('pad', (5, 3, 5, 3))
@@ -404,9 +413,9 @@ class Tooltip(cLabel, widgetBase):
 		kwargs["fg"] = kwargs.get('fg', '#000000')
 
 		self.kwargs = kwargs
-		self.widget.bind("<Enter>", self.onEnter)
-		self.widget.bind("<Leave>", self.onLeave)
-		self.widget.bind("<ButtonPress>", self.onLeave)
+		self.master.bind("<Enter>", self.onEnter)
+		self.master.bind("<Leave>", self.onLeave)
+		self.master.bind("<ButtonPress>", self.onLeave)
 		
 		self.id = None
 		self.tw = None
@@ -418,7 +427,7 @@ class Tooltip(cLabel, widgetBase):
 		self.hide()
 	def schedule(self):
 		self.unschedule()
-		self.id = self.widget.after(self.waittime, self.show)
+		self.id = self.master.after(self.waittime, self.show)
 	def unschedule(self):
 		id_ = self.id
 		self.id = None
@@ -471,7 +480,7 @@ class Calendar(cFrame, widgetBase):
 		self.short_months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 		self.date = kwargs.pop('date', simpledate.now())
 		self.func = kwargs.pop('func', self.__ignore)
-		super(Calendar, self).__init__(self.master, **kwargs)
+		super(Calendar, self).__init__(master, **kwargs)
 
 		pp = PackProcess()
 		t_frame = pp.add(cFrame(self), side=TOP, fill=X)
@@ -592,11 +601,12 @@ class TimePicker(cCanvas, widgetBase):
 		self.hours.set('00')
 		self.minutes.set('00')
 		holder_frame= pp.add(cFrame(master),side=TOP)
-		self.hourE = pp.add(cSpinbox(holder_frame, textvariable = self.hours, width=3, values=tuple(list(range(24)))),side=LEFT)
+		self.hourE = pp.add(cSpinbox(holder_frame, textvariable=self.hours, width=3, values=tuple(list(range(24)))),side=LEFT)
 		pp.add(cLabel(holder_frame, text=":"), side=LEFT)
 		self.minutesE = pp.add(cSpinbox(holder_frame, textvariable=self.minutes, width=3, values=tuple(list(range(60)))),side=LEFT)
-		self.minutesE.bind("<MouseWheel>", lambda e=Event(), m=59: self._on_scroll(e, maxn=m))
-		self.hourE.bind("<MouseWheel>", lambda e=Event(), m=23: self._on_scroll(e, maxn=m))
+		##Move to scroll manager
+		#self.minutesE.bind("<MouseWheel>", lambda e=Event(), m=59: self._on_scroll(e, maxn=m))
+		#self.hourE.bind("<MouseWheel>", lambda e=Event(), m=23: self._on_scroll(e, maxn=m))
 		holder_frame.pack(side=TOP)
 		##setup focus bindings
 		self.hourE.bind("<FocusIn>", self.popup)

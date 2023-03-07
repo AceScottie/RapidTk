@@ -7,8 +7,6 @@ from .rTkUtils import coord, _UniqueIdentifiers
 from .rTkManagers import _ScrollManager, _WindowManager, _PopupManager, _TabManager
 from .rTkTheme import _ThemeManager
 
-
-
 from .rTkUtils import time_it
 
 
@@ -21,7 +19,6 @@ class rapidTk(Tk):
 			self.log.setLevel(log_level)
 		elif not isinstance(log_level, int):
 			raise Exception(f'log_level requires an interger value not type {type(log_level)}')
-		
 		self.afters = {}
 		self.quitter = False
 		self.origin = [coord(0, 0), coord(0, 0)]
@@ -149,8 +146,8 @@ class __processor:
 	def process(self):
 		m = self.methods[self.method]
 		for element in self.widgets:
-			print(element["options"])
 			##Dirty fix
+			logging.getLogger('rapidTk').rtkverbose(f"packing element {element['widget']} with options {element['options']}")
 			if self.method == "pack":
 				element['widget'].pack(**element["options"])
 			elif self.method == "grid":

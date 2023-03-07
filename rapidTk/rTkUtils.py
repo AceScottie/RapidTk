@@ -10,6 +10,14 @@ from time import perf_counter
 from .rTkErrors import *
 import logging
 
+class SingletonMeta(type):
+	_instances = {}
+	def __call__(cls, *args, **kwargs):
+		if cls not in cls._instances:
+			instance = super().__call__(*args, **kwargs)
+			cls._instances[cls] = instance
+		return cls._instances[cls]
+
 def time_it(func):
 	def wrapper(*args, **kwargs):
 		start = perf_counter()
@@ -20,7 +28,7 @@ def time_it(func):
 		return rs
 	return wrapper
 
-class _UniqueIdentifiers(list):
+class _UniqueIdentifiers(list, metaclass=SingletonMeta):
 	def __init__(self):
 		super().__init__(self)
 	def __getslice__(self,i,j):
@@ -95,13 +103,7 @@ class clipboard(object):
 		except:
 			return ""
 
-class SingletonMeta(type):
-	_instances = {}
-	def __call__(cls, *args, **kwargs):
-		if cls not in cls._instances:
-			instance = super().__call__(*args, **kwargs)
-			cls._instances[cls] = instance
-		return cls._instances[cls]
+
 
 
 class widgetBase:
@@ -110,7 +112,8 @@ class widgetBase:
 		self.master = master
 	@time_it
 	def get_root(self):
-		return self.master.get_root()
+		return self.nametowidget('.')
+		#return self.master.get_root()
 	@time_it
 	def get_master(self):
 		return self.master
@@ -125,7 +128,7 @@ class widgetBase:
 				return self.cget("text")
 			else:
 				return self.__getter(self.cget('text'), index, end)
-		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry"]:
+		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry", "typedEntry", "vEntry"]:
 			if index in ['', None] and end in ['', None]:
 				return self.var.get()
 			else:
@@ -198,7 +201,7 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		self.methods = {'pack':self.__pack, 'place':self.__place, 'grid':self.__grid}
 		self.valid = True
 		self.__global_options = ["in", "anchor", "ipady", "ipadx", "padx", "pady"]
-		self.__pack_add = ["anchor", "ipadx", "ipady","padx", "pady", "in"]
+		self.__pack_add = ["anchor", "ipadx", "ipady","padx", "pady", "in", "side", "fill", "expand"]
 		self.__grid_add = ["ipadx", "ipady", "padx", "pady", "in"]
 		self.__place_add = ["anchor", "in"]
 		self.method_opts = {}
@@ -249,7 +252,7 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		return {
 		'pack':["after","before","expand","fill","padx","pady","side"],
 		'grid':["column","columnspan","ipadx","ipady","padx","pady","row","rowspan","sticky"],
-		'place':["bordermode","height","relheight","relwidth","relx","rely","width","x","y"]
+		'place':["bordermode","relheight","relwidth","relx","rely","x","y", "pl_width", "pl_height"] ##width and hight both belong here but cause issues with widget width and hight, need solution for that.
 		}
 	@property
 	def __all(self):
@@ -264,12 +267,17 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		non_opts = {}
 		for key, value in self.kwargs.items():
 			if key in self.__all:
-				self.method_opts[key] = value
+				if key == "pl_height":## yet another dirty fix. at this point i should just re-wright the layout methods.
+					self.method_opts['width'] = value
+				elif key == "pl_width":
+					self.method_opts['width'] = value
+				else:
+					self.method_opts[key] = value
 			else:
 				non_opts[key] = value
 		return non_opts
 	def inline(self, widget):
-		#logging.getLogger('rapidTk').rtkverbose(f'adding inline widget {widget=}')
+		logging.getLogger('rapidTk').rtkverbose(f'adding inline widget {widget=}')
 		self.methods[self.method](widget, **self.method_opts)
 
 class RepeatedTimer(object):
