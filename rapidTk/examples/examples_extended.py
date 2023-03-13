@@ -182,7 +182,7 @@ def example_scroll_manager():
 	st = []
 	for i in range(20):
 		st.append(cScrolledText(t1.sFrame, height=3, value=exstr, side=TOP))
-	a1 = cSpinbox(t1.sFrame, side=BOTTOM)
+	a1 = cSpinbox(t1.sFrame, side=BOTTOM, values=exstr.split('\n'))
 	t2 = scrollArea(root.tm.tab(tabs[1]), bg="white", h=1, v=1, side=TOP, fill=BOTH, expand=1)
 	for i in range(30):
 		cLabel(t2.sFrame, text=f"World {i}", side=TOP)

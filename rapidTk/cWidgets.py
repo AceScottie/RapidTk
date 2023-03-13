@@ -1,11 +1,11 @@
 import logging
 from tkinter import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale
 from tkinter import Canvas, Menu
-from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar
-from tkinter.ttk import Treeview, Combobox, Spinbox
+from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar, Event
+from tkinter.ttk import Treeview, Combobox
 from tkinter.scrolledtext import ScrolledText
 from .__main__ import rapidTk
-from .rTkOverrides import OptionMenu
+from .rTkOverrides import OptionMenu, Spinbox
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
 	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton
@@ -303,7 +303,7 @@ class cCheckbutton(Checkbutton, widgetBase):
 	def set(self, value):
 		self.var.set(value)
 
-class cOptionMenu(OptionMenu, widgetBase):
+class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverrides
 	@time_it
 	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
 		self.uuid = _UniqueIdentifiers().new()
@@ -478,42 +478,44 @@ class cScale(Scale, widgetBase):
 			layout.inline(self)
 
 
-class cSpinbox(Spinbox, widgetBase): ##incremental box
+class cSpinbox(Spinbox, widgetBase): ##Spinbox overrideen from rTkOverrides
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.uuid = _UniqueIdentifiers().new()
 		self.values = kwargs.get('values', ['0','1','2'])
 		kwargs['textvariable'] = self.var = kwargs.pop('textvariable', StringVar())
 		kwargs['value'] = kwargs.get('value', self.values[0])
+		self.wrap = kwargs.pop('wrap', 0)
+		#kwargs['xscrollcommand'] = kwargs.get('xscrollcommand', self._on_command) ##onscroll or button
+		root = master.nametowidget('.')
+		fn = root.register(self._on_command)
+		kwargs['command'] = kwargs.get('command', (fn, '%d')) ##on button
+		self._callback = kwargs.pop('callback', self.__void__)
+		self._inc = kwargs['increment'] = kwargs.get('increment', 1)
 		self.var.set(kwargs['value'])
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
-		print(widget_args)
 		super(cSpinbox, self).__init__(master, **widget_args)
 		if isinstance(self.get_root(), rapidTk):
 			self.get_root().sm.add_widget(self, self._on_scroll)
 		if layout.method is not None:
 			layout.inline(self)
-
+	def __void__(self, *args):
+		pass
+	def _on_command(self, direction):
+		if direction == 'up': #button up click
+			self.spin(1, self.wrap)
+			self._callback(self, 1)
+		elif direction == 'down': #button down click
+			self.spin(0, self.wrap)
+			self._callback(self, 0)
 	def _on_scroll(self, event):
-		item = self.var.get()
-		print(self.values, item)
-		cpos = self.values.index(item)
-		print(f'{cpos=}')
-		print(f'{event.delta=}')
-		if event.delta > 0 :
-			pos = cpos-1
-			if pos >= 0:
-				self.var.set(self.values[pos])
-			else:
-				self.var.set(self.values[-1])
-		elif event.delta < 0:
-			pos = cpos+1
-			if pos < len(self.values)-1:
-				self.var.set(self.values[pos])
-			else:
-				self.var.set(self.values[0])
-		self.update()
+		if event.delta >= 0: #mouse scroll up
+			self.spin(1, self.wrap)
+			self._callback(self, 1)
+		elif event.delta <= 0: #mouse scroll down
+			self.spin(0, self.wrap)
+			self._callback(self, 0)
 
 class cDate(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):

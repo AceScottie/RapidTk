@@ -1,4 +1,4 @@
-from tkinter import Widget, Menubutton, Menu, TclError, RAISED, Misc, _setit, StringVar
+from tkinter import Widget, Menubutton, Menu, TclError, RAISED, Misc, _setit, StringVar, Spinbox
 
 class OptionMenu(Menubutton):
     """OptionMenu which allows the user to select a value from a menu."""
@@ -35,6 +35,49 @@ class OptionMenu(Menubutton):
             return self.__menu
         return Widget.__getitem__(self, name)
 
+class Spinbox(Spinbox):
+    """
+        Override of the Tk Spinbox. Adds `values` attribute along with next() and previous() methods.
+    """
+    def __init__(self, master, **kwargs):
+        """
+        Adds values as an attribute.
+        """
+        self.values = kwargs.get('values', None)
+        super(Spinbox, self).__init__(master, **kwargs)
+    def configure(self, **kwargs):
+        """
+        overrides to ensure any change to values is changed with the attributes.
+        """
+        if 'values' in kwargs:
+            self.values = kwargs.get('values')
+        super().configure(**kwargs)
+    def config(self, **kwargs):
+        self.configure(**kwargs)
+    def next(self, wrap:bool=0):
+        """
+        returns the next item from inputted values, if value is last in list istead wraps to first item in list.
+        """
+        if wrap:
+            return self.values[0 if self.values.index(self.get()) >= len(self.values)-1 else self.values.index(self.get())+1]
+        else:
+            return self.values[self.values.index(self.get()) if self.values.index(self.get()) >= len(self.values)-1 else self.values.index(self.get())+1]
+    def previous(self, wrap:bool=0):
+        """
+        returns the previous item from inputted values, if value is first in list istead wraps to last item in list.
+        """
+        if wrap:
+            return self.values[len(self.values)-1 if self.values.index(self.get()) <= 0 else self.values.index(self.get())-1]
+        else:
+            return self.values[self.values.index(self.get()) if self.values.index(self.get()) <= 0 else self.values.index(self.get())-1]
+    def spin(self, direction:bool=0, wrap:bool=0):
+        """
+        increments the value in the direction provided: True:up, False:down
+        """
+        if direction: #direction up
+            self.configure(value=self.next(wrap))
+        else: #direction down
+            self.configure(value=self.previous(wrap))
 
 if __name__ == "__main__":
     import tkinter as tk

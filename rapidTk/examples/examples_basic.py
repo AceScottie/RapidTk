@@ -300,7 +300,32 @@ def example_uuids():
 	pp.pack()
 	root.mainloop()
 
+def example_spinbox_trigger(event, widget):
+	print(f"current: {widget.get()}, next:{widget.next()}, previous:{widget.previous()}")
+def example_spinbox_callback(widget, direction:bool):
+	print(f"value={widget.get()}")
+	print(f"stringvar={widget.var.get()}")
+	print(f"{direction=}")
+def example_spinbox():
+	"""
+	cSpinbox is modified version of the overridden Spinbox (see rTkOverrides).
+	It automatically binds the mousewheel if root is an instance of rapidTk.
+	It automatically sets the `command` keyword to perform the same action as the mousewheel (which can be overriden by the user).
+	It automatically handels wrapping if the `wrap` keyword is set to 1 or True.
+	The 'callback' keyword acceps a function with widget and direction args which will be called after a (scroll/button) event is performed.
+	"""
+	root = rapidTk()
+	sp1 = cSpinbox(root, values=[str(x) for x in range(10)], wrap=1, callback=example_spinbox_callback, side=TOP)
+	sp1.bind('<Return>', lambda e=Event(), w=sp1: example_spinbox_trigger(e, w))
+	root.mainloop()
+	"""
+	The overriden Spinbox has a few additional methods.
+	next(wrap:bool) -> returns the next item in the values (if not wrap and item is last index returns last index item).
+	previous(wrap:bool) -> returns the previous item in the values (if not wrap and item is 0th index returns 0th index item).
+	spin(direction:bool) -> configures the Spinbox to the next/previous item based on the input direction (True:up, False:down)
+	configure(**kwargs) -> calls the configure() method of the super class. if one of the keywords is `values` sets the attribute values to the keyword `values`
+	"""
 
 
 if __name__ == "__main__":
-	example_uuids()
+	example_spinbox()
