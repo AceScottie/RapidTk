@@ -486,7 +486,6 @@ class cSpinbox(Spinbox, widgetBase): ##Spinbox overrideen from rTkOverrides
 		kwargs['textvariable'] = self.var = kwargs.pop('textvariable', StringVar())
 		kwargs['value'] = kwargs.get('value', self.values[0])
 		self.wrap = kwargs.pop('wrap', 0)
-		#kwargs['xscrollcommand'] = kwargs.get('xscrollcommand', self._on_command) ##onscroll or button
 		root = master.nametowidget('.')
 		fn = root.register(self._on_command)
 		kwargs['command'] = kwargs.get('command', (fn, '%d')) ##on button

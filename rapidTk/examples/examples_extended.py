@@ -8,13 +8,12 @@ def example_TimePicker():
 	"""
 	root = rapidTk()
 	root.geometry("500x500+300+300")
-	f = cFrame(root, side=TOP, expand=1, fill=BOTH)
+	f = cFrame(root, side=TOP, bg="blue", expand=1, fill=BOTH)
 	cButton(f, text="test", side=TOP)
 
 	f2 = cFrame(f, bg="red", side=TOP)
 	
-	b = TimePicker(f2)
-	b.pack(side=TOP)
+	b = TimePicker(f2, bg="red", fill=X, side=TOP)
 
 	cButton(f, text="test", side=TOP)
 	root.mainloop()
@@ -200,4 +199,4 @@ def example_scroll_manager():
 
 
 if __name__ == "__main__":
-	example_scroll_manager()
+	example_TimePicker()

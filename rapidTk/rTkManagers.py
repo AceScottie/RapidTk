@@ -3,42 +3,41 @@ from queue import Queue
 from tkinter import Event, TOP, LEFT, RIGHT, CENTER, BOTTOM, BOTH
 from .rTkErrors import *
 from .rTkUtils import SingletonMeta
-from .flags import __scroll_manager__, __window_manager__, __popup_manager__, __tab_manager__
 
 class _ScrollManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		__scroll_manager__ = True
-		self._current = None
-		self.q = Queue()
-		self.q_o = Queue() ## not yet implemented
+		self._current = None ##the current scrollable widget
+		self._current_o = None ##the current overriden scroll command
+		self.q = Queue() ##widget queue
+		self.q_o = Queue() ##override queue
 	def __set_current(self, event, widget, override):
-		if self._current is not None:
-			self.q.put(self._current)
-			#self.q_o.put(self._current.override?) #not yet implemented
-		self._current = widget
-		if override is None:
+		if self._current is not None: ##if there is a current widget which has not triggered <Leave>
+			self.q.put(self._current) ##put the widget in the queue
+			self.q_o.put(self._current_o) ##put its override in the queue
+		self._current = widget ## set the new widget as current
+		self._current_o = override ##set its override to the current override
+		if self._current_o is None: ##if not overriden
 			self._current.bind_all('<MouseWheel>', self._on_mousescroll)
-		else:
+		else: ## run bind to the overridden command
 			self._current.bind_all('<MouseWheel>', override)
 	def __unset_current(self, event, widget):
 		self._current.unbind_all('<MouseWheel>')
-		if not self.q.empty():
-			self._current = self.q.get()
-			self._current.bind_all('<MouseWheel>', self._on_mousescroll) ## can not use overriden scroll commands yet!
-		else:
+		if not self.q.empty(): ##if there are widgets in the queue that have not been left with <Leave> event.
+			self._current = self.q.get() ##get the widget from the queue
+			override = self.q_o.get() ##with its override (function or None)
+			if override is None: ##if not overridden run the standard mousescroll binding
+				self._current.bind_all('<MouseWheel>', self._on_mousescroll)
+			else: ##bind the mouse scroll to the overriden function
+				self._current.bind_all('<MouseWheel>', override)
+		else: ##if the queue is empty then default everything
 			self._current = None
-	def _on_mousescroll(self, event):
+			self._current_o = None
+	def _on_mousescroll(self, event): ##default mousescroll command
 		self._current.yview_scroll(int(-1 * (event.delta / 120)), "units")
 		self._current.update()
-	def add_widget(self, widget, override=None):
+	def add_widget(self, widget, override=None): ##adds the standard binding to scrollable widgets.
 		widget.bind('<Enter>', lambda e=Event(), w=widget, o=override: self.__set_current(e, w, o))
 		widget.bind('<Leave>', lambda e=Event(), w=widget: self.__unset_current(e, w))
-
-
-
-
-
-
 
 
 class _WindowManager(object, metaclass=SingletonMeta):

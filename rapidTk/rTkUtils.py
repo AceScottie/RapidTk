@@ -252,7 +252,7 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		return {
 		'pack':["after","before","expand","fill","padx","pady","side"],
 		'grid':["column","columnspan","ipadx","ipady","padx","pady","row","rowspan","sticky"],
-		'place':["bordermode","relheight","relwidth","relx","rely","x","y", "pl_width", "pl_height"] ##width and hight both belong here but cause issues with widget width and hight, need solution for that.
+		'place':["bordermode","relheight","relwidth","relx","rely","x","y", "pl_width", "pl_height"]##width and hight both belong here but cause issues with widget width and hight, need solution for that.
 		}
 	@property
 	def __all(self):
