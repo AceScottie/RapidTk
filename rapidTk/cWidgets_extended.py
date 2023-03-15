@@ -21,7 +21,7 @@ from .flags import __ttk_enabled__, __window_manager__
 from .__main__ import PackProcess, GridProcess, rapidTk
 from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
 from .rTkErrors import *
-from .rTkUtils import coord, widgetBase, simpledate, cache
+from .rTkUtils import coord, widgetBase, widgetBase_override, simpledate, cache
 from .rTkUtils import time_it, inline_layout
 from .rTkManagers import _WindowManager
 from .rTkTheme import _ThemeManager
@@ -83,6 +83,9 @@ class autoEntry(cEntry, widgetBase):
 		self.winfo_toplevel().bind_all('<Button-1>', self._close_overlay)
 		self.sv.trace("w", lambda name, index, mode, e=Event(): self._autocomplete(e))
 
+	#def __click_to_close(self, event):
+	#	self.get_root().unbind_all('<Button-1>')
+	#	self._close_overlay(event)
 	def _autocomplete(self, event):
 		if self.winfo_toplevel().focus_get() != self:
 			return
@@ -95,6 +98,7 @@ class autoEntry(cEntry, widgetBase):
 					if(opt[0:len(intxt)].lower() == intxt.lower()):
 						valid.append(opt)
 				else:
+					print(opt)
 					if intxt.lower() in opt.lower():
 						valid.append(opt)
 			if len(valid) > 0:
@@ -119,9 +123,10 @@ class autoEntry(cEntry, widgetBase):
 		else:
 			self._full(event)
 	def _full(self, event):
-		xpos = self.winfo_rootx() - self.winfo_toplevel().winfo_rootx()
-		ypos = self.winfo_rooty() - self.winfo_toplevel().winfo_rooty() + self.winfo_height()
-		self._overlay(self.options, coord(xpos,ypos))
+		if not self.aw.winfo_ismapped():
+			xpos = self.winfo_rootx() - self.winfo_toplevel().winfo_rootx()
+			ypos = self.winfo_rooty() - self.winfo_toplevel().winfo_rooty() + self.winfo_height()
+			self._overlay(self.options, coord(xpos,ypos))
 	def _overlay(self, options, pos):
 		if self.aw.winfo_ismapped():
 			self._close_overlay()	
@@ -256,33 +261,17 @@ class scrollArea(cFrame, widgetBase):
 class movableWindow(cCanvas, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
 		self.motion = False
-
-		if 'width' not in kw_wid:
-			kw_wid['width'] = 400
-		if 'height' not in kw_wid:
-			kw_wid['height'] = 400
-		if 'bg' not in kw_wid:
-			self.bg="#FFFFFF"
-		else:
-			self.bg = kw_wid['bg']
-		if 'fg' not in kw_wid:
-			self.fg="#000000"
-		else:
-			self.fg = kw_wid['fg']
-			del kw_wid['fg']
-		self.width = kw_wid['width']
-		self.height = kw_wid['height']
-		if 'title' in kw_wid:
-			self.title = True
-			self.title_text = kw_wid['title']
-			del kw_wid['title']
-		else:
-			self.title = False
-		kw_wid['borderwidth'] = 1
-		kw_wid['relief'] = "groove"
-		cCanvas.__init__(*(self, master), **kw_wid)
+		self.bg = kwargs.pop('bg', kwargs.pop('background', "#FFFFFF"))
+		self.fg = kwargs.pop('fg', kwargs.pop('foreground', "#000000"))
+		self.width = kwargs['width'] = kwargs.get('width', 400)
+		self.height = kwargs['height'] = kwargs.get('height', 400)
+		self.title = kwargs.pop('title', False)
+		kwargs['borderwidth'] = kwargs.get('borderwidth', 1)
+		kwargs['relief'] = kwargs.get('relief', "groove")
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		cCanvas.__init__(*(self, master), **widget_args)
 		self.root = self.get_root()
 		self.wm = self.get_root().wm
 		self.pid = self.root.uid.new()
@@ -299,7 +288,7 @@ class movableWindow(cCanvas, widgetBase):
 		self.top = cFrame(self, borderwidth=1, relief="raised", side=TOP, fill=X)
 		self.body= cFrame(self, borderwidth=2, relief="ridge", side=TOP, fill=BOTH, expand=1)
 		if self.title:
-			move = cLabel(self.top, text=self.title_text, fg=self.fg, justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
+			move = cLabel(self.top, text=self.title, fg=self.fg, justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		else:
 			move = cLabel(self.top, text="", justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		self.close = cButton(self.top, text="X", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
@@ -596,7 +585,7 @@ class Calendar(cFrame, widgetBase):
 		gp.grid()
 	def __ignore(self, event, day):
 		pass
-class TimePicker(cFrame, widgetBase):
+class TimePicker(cFrame, widgetBase_override):
 	def __init__(self, master, **kwargs):
 		pp = PackProcess()
 		self.split = "am"
@@ -621,9 +610,9 @@ class TimePicker(cFrame, widgetBase):
 		#holder_frame.pack(side=TOP)
 		##setup focus bindings
 		self.hourE.bind("<FocusIn>", self.popup)
-		self.hourE.bind("<FocusOut>", self.close)
+		self.hourE.bind("<FocusOut>", self.__focus_loss)
 		self.minutesE.bind("<FocusIn>", self.popup)
-		self.minutesE.bind("<FocusOut>", self.close)
+		self.minutesE.bind("<FocusOut>", self.__focus_loss)
 
 		
 		self.radious /= 4
@@ -632,7 +621,8 @@ class TimePicker(cFrame, widgetBase):
 		pp.pack()
 		
 		
-		self.sub_can = cCanvas(self.get_root(), bg=tp_bg, width=self.width, height=self.height, highlightbackground="#010101")
+		self.sub_can = cCanvas(self.get_root(), bg=tp_bg, width=self.width+5, height=self.height+5, highlightbackground="#010101", highlightthickness=0)
+		self.sub_can.bind("<FocusIn>", self.popup)
 		hwnd = self.sub_can.winfo_id()
 		colorkey = win32api.RGB(1,1,1) #full black in COLORREF structure
 		wnd_exstyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
@@ -641,7 +631,8 @@ class TimePicker(cFrame, widgetBase):
 		win32gui.SetLayeredWindowAttributes(hwnd, colorkey,255,win32con.LWA_COLORKEY)
 
 		self.active_line = None
-		self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
+		main = self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
+		self.sub_can.tag_bind(main, "<Button-1>", self.popup)
 		self.circle_numbers(self.width/2, self.height/2, self.radious*2-15, 10, [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Helvetica 11 bold', "Hours")
 		self.circle_numbers(self.width/2, self.height/2, self.radious+5,  10, [0, 15, 30, 45], 'Helvetica 11 bold', "Minutes")
 		self.am_pm_switch()
@@ -651,6 +642,12 @@ class TimePicker(cFrame, widgetBase):
 
 		if layout.method is not None:
 			layout.inline(self)
+
+	def __focus_loss(self, event):
+		if self.get_root().focus_get() != self.sub_can:
+			self.close(event)
+		else:
+			self.minutesE.focus_set()
 
 	def _on_scroll(self, event, maxn=0):
 		num = int(event.widget.get())
@@ -686,16 +683,16 @@ class TimePicker(cFrame, widgetBase):
 		self.split = "pm"
 		return pm, pmtx
 	def _switcher(self, event, sc, st):
-		self.delete(sc)
-		self.delete(st)
+		self.sub_can.delete(sc)
+		self.sub_can.delete(st)
 		if self.split == "am":
 			sc, st = self.create_pm()
-			self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-			self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			self.sub_can.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			self.sub_can.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
 		elif self.split == "pm":
 			sc, st = self.create_am()
-			self.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
-			self.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			self.sub_can.tag_bind(sc, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
+			self.sub_can.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
 	def create_center_circle(self, x, y, r, **kwargs):
 		return self.sub_can.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 	def create_circle_arc(self, x, y, r, **kwargs):

@@ -89,9 +89,6 @@ class _PopupManager(object, metaclass=SingletonMeta):
 	def _manage_overlay(self):
 		pass #handel closing and opening overlays
 
-
-
-
 class _TabManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
 		__tab_manager__ = True
@@ -100,11 +97,10 @@ class _TabManager(object, metaclass=SingletonMeta):
 		self.names = {}
 		self.active_tab = None
 	def new(self, widget, **kwargs):
-		uid = self.root.uid.new()
-		self.tabs[uid] = widget
+		self.tabs[widget.uuid] = widget
 		if "name" in kwargs and kwargs['name'] not in self.names:
-			self.names[kwargs['name']] = uid
-		return uid
+			self.names[kwargs['name']] = widget.uuid
+		return widget.uuid
 	def get_by_name(self, name):
 		if name in self.names:
 			return self.names[name]
@@ -112,6 +108,7 @@ class _TabManager(object, metaclass=SingletonMeta):
 			logging.getLogger('rapidTk').rtkwarning(f'{name} is not in the list of tabs')
 			return None
 	def switch(self, event=None, uid=None):
+		print(f"switching {uid=}")
 		if uid != None:
 			if self.active_tab != None:
 				self.tabs[self.active_tab].pack_forget()

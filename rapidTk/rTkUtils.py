@@ -110,6 +110,18 @@ class widgetBase:
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.master = master
+		self.uid = _UniqueIdentifiers().new()
+		if kwargs.pop('rtkwb_override', 0):
+			self.bind('<Button-1>', self.__focus_shift)
+			self.bind('<Button-2>', self.__focus_shift)
+			self.bind('<Escape>', self.__focus_shift)
+	@time_it
+	def __focus_shift(self, event):
+		print(f"wtype = {str(type(event.widget))}")
+		if event.keysym == "Escape":
+			self.get_root().focus_set()
+		elif event.widget != self.get_root().focus_get():
+			event.widget.focus_set()
 	@time_it
 	def get_root(self):
 		return self.nametowidget('.')
@@ -167,6 +179,16 @@ class widgetBase:
 			end = None
 		index = 0 if not index else index
 		return text[int(index):int(end) if end else None]
+
+class widgetBase_override(widgetBase):
+	"""
+	overrides the mouse bindings to prevent issues of focus loss when focus loss is expected.
+	"""
+	def __init__(self, master, **kwargs):
+		self.master = master
+		self.uid = _UniqueIdentifiers().new()
+		kwargs['rtkwb_override'] = 1
+		super(widgetBase_override, self).__init__(master, **kwargs)
 
 
 def cache(func):

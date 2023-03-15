@@ -91,7 +91,7 @@ def example_form():
 		}
 	}
 	form = qForm()
-	form.create_questions(holder, options, {"config":"confgiration"})
+	form.create_questions(holder, options, {"bg":"red"})
 	submit = cButton(holder, text="Confirm", command=lambda e=Event(), f=form:example_form_submit(e, f), side=BOTTOM)
 
 	root.mainloop()

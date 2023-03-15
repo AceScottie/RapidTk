@@ -93,10 +93,9 @@ def example_basic_objects2():
 	root.mainloop()
 
 
-def example_no_PackProcess():
+def example_no_Process():
 	"""
-	PackProcess() is an optional extra, all cWidgets support inline packing and also the .pack() method.
-	This can be extended to use .grid() and .place() if required.]
+	PackProcess(), GridProcess() and PlaceProcess() are an optional extra, all cWidgets support inline layouts along with the standard layout methods.
 	The down side to inline packing is it creates and packs widgets 1 at a time making layouts be created in the order coded.
 	"""
 	root = rapidTk()

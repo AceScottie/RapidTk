@@ -61,22 +61,23 @@ class DateEntry(DateEntry, widgetBase):
 
 class cDateEntry(DateEntry, widgetBase):
 	def __init__(self, master, **kwargs):
-		widgetBase.__init__(self, master)
+		#widgetBase.__init__(self, master)
 		self._myid = _UniqueIdentifiers().new()
-		self.style = self.get_root().thm.style
 		kwargs['textvariable'] = self.var = kwargs.pop('textvariable', StringVar())
 		kwargs['date_pattern'] = kwargs.pop('date_pattern', "dd/mm/yyyy")
 		self.var.set(kwargs.pop('text', "01/01/1970"))
-		kwargs['style'] =  self._mystyle_name = kwargs.pop('style', f'{self._myid}.DateEntry')
-
-		self.bg = kwargs.pop('fieldbackground', self.style.lookup(self._mystyle_name, "fieldbackground"))
-		self.fg = kwargs.pop('foreground', self.style.lookup(self._mystyle_name, "foreground"))
-
+		self._mystyle_name = kwargs.pop('style', f'{self._myid}.DateEntry')
+		self.bg = kwargs.pop('fieldbackground', None)
+		self.fg = kwargs.pop('foreground', None)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cDateEntry, self).__init__(master, **widget_args)
+		self.style = self.get_root().thm.style
+		if self.bg is None: self.bg = self.style.lookup(self._mystyle_name, "fieldbackground")
+		if self.bg is None: self.bg = self.style.lookup(self._mystyle_name, "foreground")
 		if layout.method is not None:
 			layout.inline(self)
+
 	def detele(ind=0, end='end'):
 		super().insert(0, '')
 	def insert(self, ind=0, data=''):

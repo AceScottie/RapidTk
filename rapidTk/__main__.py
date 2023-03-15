@@ -34,6 +34,15 @@ class rapidTk(Tk):
 		self.wm = _WindowManager(self)
 		self.after(1, self._schedule)
 		self.bind('<F12>',self._fullscreen)
+		self.bind('<Button-1>', self.__focus_shift)
+		self.bind('<Button-2>', self.__focus_shift)
+		self.bind('<Escape>', self.__focus_shift)
+	@time_it
+	def __focus_shift(self, event):
+		if event.keysym == "Escape":
+			self.get_root().focus_set()
+		elif event.widget != self.get_root().focus_get():
+			event.widget.focus_set()
 	@time_it
 	def _schedule(self):
 		if not self.quitter:
