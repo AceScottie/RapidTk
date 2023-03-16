@@ -588,9 +588,12 @@ class Calendar(cFrame, widgetBase):
 class TimePicker(cFrame, widgetBase_override):
 	def __init__(self, master, **kwargs):
 		pp = PackProcess()
+		self._acl = None
+		self._atx = None
 		self.split = "am"
 		self.master = master
 		self.tformat = kwargs.pop('format', 24)
+		self.min_interval = kwargs.pop('interval', 5)
 		tp_bg = kwargs.pop('tp_bg', '#010101')
 		self.width = self.height = self.radious = rd = kwargs.pop('radious', 100)*2
 
@@ -631,10 +634,10 @@ class TimePicker(cFrame, widgetBase_override):
 		win32gui.SetLayeredWindowAttributes(hwnd, colorkey,255,win32con.LWA_COLORKEY)
 
 		self.active_line = None
-		main = self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
-		self.sub_can.tag_bind(main, "<Button-1>", self.popup)
+		self._main = self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
+		self.sub_can.tag_bind(self._main, "<Button-1>", self.popup)
 		self.circle_numbers(self.width/2, self.height/2, self.radious*2-15, 10, [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Helvetica 11 bold', "Hours")
-		self.circle_numbers(self.width/2, self.height/2, self.radious+5,  10, [0, 15, 30, 45], 'Helvetica 11 bold', "Minutes")
+		self.circle_numbers(self.width/2, self.height/2, self.radious+5,  10, list(range(0, 60, self.min_interval)), 'Helvetica 11 bold', "Minutes")
 		self.am_pm_switch()
 		self.center = self.create_center_circle(self.width/2, self.height/2, 5, fill="#DDDDDD", width=0)
 		#self.update()
@@ -642,13 +645,11 @@ class TimePicker(cFrame, widgetBase_override):
 
 		if layout.method is not None:
 			layout.inline(self)
-
 	def __focus_loss(self, event):
 		if self.get_root().focus_get() != self.sub_can:
 			self.close(event)
 		else:
 			self.minutesE.focus_set()
-
 	def _on_scroll(self, event, maxn=0):
 		num = int(event.widget.get())
 		event.widget.delete(0, END)
@@ -661,8 +662,7 @@ class TimePicker(cFrame, widgetBase_override):
 			if num <= 0:
 				event.widget.insert(0, str(maxn).zfill(2))
 			else:
-				event.widget.insert(0, str(num-1).zfill(2))
-			
+				event.widget.insert(0, str(num-1).zfill(2))	
 	def am_pm_switch(self):
 		ovall = 30
 		ovalw = 40
@@ -672,13 +672,13 @@ class TimePicker(cFrame, widgetBase_override):
 		self.sub_can.tag_bind(st, "<Button-1>", lambda e=Event(), a=sc, b=st:self._switcher(e, a, b))
 	def create_am(self):
 		ovalr = 40
-		am = self.create_center_circle(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, 20, fill='#0575DD', width=0)
+		am = self.create_center_circle(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, 12, fill='#0575DD', width=0)
 		amtx = self.sub_can.create_text(self.width/2-ovalr/1.75, self.height/2+ovalr/1.75, font=('Helvetica 11 bold'), text="AM")
 		self.split = "am"
 		return am, amtx
 	def create_pm(self):
 		ovalr = 40
-		pm = self.create_center_circle(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, 20, fill='#0575DD', width=0)
+		pm = self.create_center_circle(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, 12, fill='#0575DD', width=0)
 		pmtx = self.sub_can.create_text(self.width/2+ovalr/1.75, self.height/2+ovalr/1.75, font=('Helvetica 11 bold'), text="PM")
 		self.split = "pm"
 		return pm, pmtx
@@ -709,18 +709,25 @@ class TimePicker(cFrame, widgetBase_override):
 			cl = self.create_center_circle(x+ax, y+ay, cr, fill="#DDDDDD", outline="#000", width=0, tag=tag)
 			tx = self.sub_can.create_text(x+ax, y+ay, text=str(n).zfill(2), fill="black", font=(font), tag='tx'+tag )
 			self.sub_can.tag_bind(f'tx{tp}:{str(n)}', '<Enter>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=True: self._hover(e, cl, tx, c, s, t))
-			self.sub_can.tag_bind(f'tx{tp}:{str(n)}', '<Leave>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=False: self._left(e, cl, tx, c, s, t))
+			#self.sub_can.tag_bind(f'tx{tp}:{str(n)}', '<Leave>', lambda e=Event(), cl=cl, tx=tx, c=(x+ax, y+ay), t=tag, s=False: self._left(e, cl, tx, c, s, t))
 			self.sub_can.tag_bind(f'{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
 			self.sub_can.tag_bind(f'tx{tp}:{str(n)}', '<Button-1>', lambda e=Event(), c=cl, s=tx, n=n, t=tp,: self._set_number(e, c, s, n, t))
 	def _hover(self, event, cl, tx,  coords, state, tag):
 		if self.active_line:
-			return
+			self.sub_can.delete(self.active_line)
+			self.sub_can.itemconfigure(self._acl, fill='#DDDDDD')
+			self.sub_can.itemconfigure(self._atx, fill="black")
+		self._acl = cl
+		self._atx = tx
 		self.sub_can.itemconfigure(cl, fill='#0797FF')
 		self.sub_can.itemconfigure(tx, fill="white")
+
 		self.sub_can.itemconfigure(self.center, fill='#0797FF')
 		dx = (1 - 0.8) * self.width/2 + 0.8 * coords[0]
 		dy = (1 - 0.8) * self.height/2 + 0.8 * coords[1]
 		self.active_line = self.sub_can.create_line(self.width/2, self.height/2, dx, dy, fill="#0797FF", width=2, tag=None) ##create new line
+		self.sub_can.tag_lower(self.active_line)
+		self.sub_can.tag_lower(self._main)
 	def _left(self, event, cl, tx, coords, state, tag):
 		if self.active_line is None: ##if there is no line
 			return

@@ -200,13 +200,17 @@ class cTreeview(Treeview, widgetBase):
 			self.move(k, '', index)
 		self.heading(col, text=col, command=lambda _col=col:self._treeview_sort_column(_col, self._dir(rv)))
 	@time_it
+	def detach(self, a):
+		self.detached_data.append(a)
+		super().detach(a)
+	@time_it
 	def hide(self, a, b, c, event, ivar): # hides data based on input
 		if ivar.get() == 1:
 			for a in self.detached_data:
 				self.reattach(a,'',a)
 		else:
 			for a in self.detached_data:
-				self.detach(a)
+				super().detach(a)
 	@time_it
 	def insert(self, parent='', index='end', iid=None, tags=(), text="", values=[]):##adds new row 
 		self.i += 1
@@ -290,7 +294,7 @@ class cCheckbutton(Checkbutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.uuid = _UniqueIdentifiers().new()
-		kwargs['variable'] = self.var = kwargs.get('variable', StringVar())
+		kwargs['variable'] = self.var = kwargs.get('variable', IntVar())
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cCheckbutton, self).__init__(master, **widget_args)
