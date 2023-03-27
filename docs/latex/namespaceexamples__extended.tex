@@ -1,0 +1,85 @@
+\hypertarget{namespaceexamples__extended}{}\doxysection{examples\+\_\+extended Namespace Reference}
+\label{namespaceexamples__extended}\index{examples\_extended@{examples\_extended}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceexamples__extended_a81310e5603f59591be1036f28e85aa41}{example\+\_\+\+Time\+Picker}} ()
+\item 
+def \mbox{\hyperlink{namespaceexamples__extended_aa261edeed38cd1a996dd48b6a04d6255}{example\+\_\+form\+\_\+submit}} (event, form)
+\item 
+def \mbox{\hyperlink{namespaceexamples__extended_af111e612aced6ae14af92ae913ad39e1}{example\+\_\+form}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceexamples__extended_af111e612aced6ae14af92ae913ad39e1}\label{namespaceexamples__extended_af111e612aced6ae14af92ae913ad39e1}} 
+\index{examples\_extended@{examples\_extended}!example\_form@{example\_form}}
+\index{example\_form@{example\_form}!examples\_extended@{examples\_extended}}
+\doxysubsubsection{\texorpdfstring{example\_form()}{example\_form()}}
+{\footnotesize\ttfamily def examples\+\_\+extended.\+example\+\_\+form (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    !WIP! 
+    !-- This feature is highly experimental and is likly to change --!
+    To make a form follow a standard format.
+    item = widgettype + unique 2char (dict object must have a unique name) :str
+    name = the code reference name. will eval to form.data()['form_name'] :str
+    label = 'The form question text' : str
+    textwidth = the width of the lable that contains the question text, use to allign questions. : int
+    width = the width of the answer box. : int
+    text = the default input for the question box.
+    **kwargs = standard kwargs supported by the indervidual widgets.
+    
+    example format:
+    options = {
+    "Section_Title":{Item00:{"name":"item1", "label":"my question", "textwidth":10, "width":20, "text":"Default Answer"}}
+    }
+
+    example Label:
+    "Basic Information":{"Labelfn":{"name":"fn", "label":"First Name:", "textwidth":15, "width":30, "text":"John Smith"}}
+    example Entry:
+    "Basic Information":{"Entrycn":{"name":"cn", "label":"County:", "textwidth":10, "width":30, "text":"The Shire"}}
+
+    To add validation to any of the form componenets use the 'validation' keyword with a regex input
+
+    example validation enabled Entry:
+    "Random Numbers":{"Entryrn":{"name":"rn", "label":"Input Number:", "textwidth":10, "width":5, "text":"Not Valid", "validation":"^\\d*$"}}
+
+    example additional options:
+    "Random Numbers":{"ScrollTexthg":{"name":"hg", "label":"ScrollText with height", "textwidth":25, "width":30, "text":"Multi\nline\ninput", "height":3}}
+
+    complete form:
+    options = {
+    "Basic Information":
+        "Labelfn":{"name":"fn", "label":"First Name:", "textwidth":15, "width":30, "text":"John Smith"},
+        "Entrycn":{"name":"cn", "label":"County:", "textwidth":10, "width":30, "text":"The Shire"},
+        }
+    "Random Numbers":
+        "Entryrn":{"name":"rn", "label":"Input Number:", "textwidth":10, "width":5, "text":"Not Valid", "validation":"^\\d*$"}
+        "ScrollTexthg":{"name":"hg", "label":"ScrollText with height", "textwidth":25, "width":30, "text":"Multi\nline\ninput", "height":3}
+        }
+    }\end{DoxyVerb}
+ 
+
+Definition at line \mbox{\hyperlink{examples__extended_8py_source_l00030}{30}} of file \mbox{\hyperlink{examples__extended_8py_source}{examples\+\_\+extended.\+py}}.
+
+\mbox{\Hypertarget{namespaceexamples__extended_aa261edeed38cd1a996dd48b6a04d6255}\label{namespaceexamples__extended_aa261edeed38cd1a996dd48b6a04d6255}} 
+\index{examples\_extended@{examples\_extended}!example\_form\_submit@{example\_form\_submit}}
+\index{example\_form\_submit@{example\_form\_submit}!examples\_extended@{examples\_extended}}
+\doxysubsubsection{\texorpdfstring{example\_form\_submit()}{example\_form\_submit()}}
+{\footnotesize\ttfamily def examples\+\_\+extended.\+example\+\_\+form\+\_\+submit (\begin{DoxyParamCaption}\item[{}]{event,  }\item[{}]{form }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{examples__extended_8py_source_l00022}{22}} of file \mbox{\hyperlink{examples__extended_8py_source}{examples\+\_\+extended.\+py}}.
+
+\mbox{\Hypertarget{namespaceexamples__extended_a81310e5603f59591be1036f28e85aa41}\label{namespaceexamples__extended_a81310e5603f59591be1036f28e85aa41}} 
+\index{examples\_extended@{examples\_extended}!example\_TimePicker@{example\_TimePicker}}
+\index{example\_TimePicker@{example\_TimePicker}!examples\_extended@{examples\_extended}}
+\doxysubsubsection{\texorpdfstring{example\_TimePicker()}{example\_TimePicker()}}
+{\footnotesize\ttfamily def examples\+\_\+extended.\+example\+\_\+\+Time\+Picker (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    DOC STRING\end{DoxyVerb}
+ 
+
+Definition at line \mbox{\hyperlink{examples__extended_8py_source_l00005}{5}} of file \mbox{\hyperlink{examples__extended_8py_source}{examples\+\_\+extended.\+py}}.
+

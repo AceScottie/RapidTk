@@ -1,0 +1,194 @@
+\hypertarget{r_tk_utils_8py_source}{}\doxysection{r\+Tk\+Utils.\+py}
+\label{r_tk_utils_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/rTkUtils.py@{C:/Python310/Lib/site-\/packages/rapidTk/rTkUtils.py}}
+\mbox{\hyperlink{r_tk_utils_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00001}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_utils}{00001}}\ \textcolor{keyword}{import}\ sys}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00002}00002\ \textcolor{keyword}{from}\ uuid\ \textcolor{keyword}{import}\ uuid4}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00003}00003\ \textcolor{keywordflow}{if}\ sys.platform\ ==\ \textcolor{stringliteral}{'win32'}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00004}00004\ \ \ \ \ \textcolor{keyword}{from}\ win32clipboard\ \textcolor{keyword}{import}\ OpenClipboard,\ EmptyClipboard,\ SetClipboardText,\ GetClipboardData,\ CloseClipboard}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00005}00005\ \ \ \ \ \textcolor{keyword}{from}\ win32con\ \textcolor{keyword}{import}\ CF\_TEXT,\ CF\_UNICODETEXT}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00006}00006\ \textcolor{keyword}{from}\ functools\ \textcolor{keyword}{import}\ wraps,\ singledispatchmethod}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00007}00007\ \textcolor{keyword}{from}\ datetime\ \textcolor{keyword}{import}\ datetime}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00008}00008\ \textcolor{keyword}{from}\ time\ \textcolor{keyword}{import}\ perf\_counter}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00009}00009\ \textcolor{keyword}{from}\ .rTkErrors\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00010}00010\ \textcolor{keyword}{import}\ logging}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00011}00011\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00012}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_utils_a9a505ce7f58d714dc60766a07c06828c}{00012}}\ \textcolor{keyword}{def\ }time\_it(func):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00013}00013\ \ \ \ \ \textcolor{keyword}{def\ }wrapper(*args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00014}00014\ \ \ \ \ \ \ \ \ start\ =\ perf\_counter()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00015}00015\ \ \ \ \ \ \ \ \ fn\ =\ func}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00016}00016\ \ \ \ \ \ \ \ \ rs\ =\ fn(*args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00017}00017\ \ \ \ \ \ \ \ \ t\ =\ perf\_counter()-\/start}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00018}00018\ \ \ \ \ \ \ \ \ logging.getLogger(\textcolor{stringliteral}{'rapidTk'}).rtkverbose(f\textcolor{stringliteral}{'Timer\ for\ <\{fn.\_\_qualname\_\_\}.\{fn.\_\_name\_\_\}>\ finished\ in\ \{t:0.9f\}'})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00019}00019\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ rs}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00020}00020\ \ \ \ \ \textcolor{keywordflow}{return}\ wrapper}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00022}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers}{00022}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers}{\_UniqueIdentifiers}}(list):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00023}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_ad3d515b7de11c6cef158989565948672}{00023}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_ad3d515b7de11c6cef158989565948672}{\_\_init\_\_}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00024}00024\ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_ad3d515b7de11c6cef158989565948672}{\_\_init\_\_}}(self)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00025}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a23bc9e3afe09f39271bef6b86c085521}{00025}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a23bc9e3afe09f39271bef6b86c085521}{\_\_getslice\_\_}}(self,i,j):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00026}00026\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ UniqueIdentifiers(super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a23bc9e3afe09f39271bef6b86c085521}{\_\_getslice\_\_}}(self,\ i,\ j))}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00027}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a5eb62af970ace78c0e2bd37c3e6638cf}{00027}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a5eb62af970ace78c0e2bd37c3e6638cf}{\_\_add\_\_}}(self,\ item):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00028}00028\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ UniqueIdentifiers(super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a5eb62af970ace78c0e2bd37c3e6638cf}{\_\_add\_\_}}(self,item))}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00029}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_afb8d0608eab981e6edb1e3ba1e4023d8}{00029}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_afb8d0608eab981e6edb1e3ba1e4023d8}{\_\_mul\_\_}}(self,other):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00030}00030\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ UniqueIdentifiers(super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_afb8d0608eab981e6edb1e3ba1e4023d8}{\_\_mul\_\_}}(self,other))}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00031}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a238db0449173b97446ad81774b6e2095}{00031}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a238db0449173b97446ad81774b6e2095}{\_\_getitem\_\_}}(self,\ item):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00032}00032\ \ \ \ \ \ \ \ \ result\ =\ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a238db0449173b97446ad81774b6e2095}{\_\_getitem\_\_}}(self,\ item)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00033}00033\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ type(item)\ \textcolor{keywordflow}{is}\ slice:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00034}00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ UniqueIdentifiers(result)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00035}00035\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00036}00036\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00037}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a32885015d1dff17458289cad4157b641}{00037}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a32885015d1dff17458289cad4157b641}{append}}(self,\ item):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00038}00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ item\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ self:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00039}00039\ \ \ \ \ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a32885015d1dff17458289cad4157b641}{append}}(item)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00040}00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00041}00041\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{raise}\ duiplicateIDError}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00042}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a084e247a964e4f850c04846e6ea60630}{00042}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a084e247a964e4f850c04846e6ea60630}{new}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00043}00043\ \ \ \ \ \ \ \ \ uid\ =\ uuid4()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00044}00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ uid\ \textcolor{keywordflow}{in}\ self:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00045}00045\ \ \ \ \ \ \ \ \ \ \ \ \ uid\ =\ uuid4()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00046}00046\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1___unique_identifiers_a32885015d1dff17458289cad4157b641}{append}}(uid)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00047}00047\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ uid}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00048}00048\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00049}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord}{00049}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord}{coord}}(object):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00050}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a917fac410fe2b9615aa8cb62e46e3acd}{00050}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a917fac410fe2b9615aa8cb62e46e3acd}{\_\_init\_\_}}(self,\ x=0,\ y=0,\ z=0):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00051}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a62e1279ff802e321ee3008c82cca21fb}{00051}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a62e1279ff802e321ee3008c82cca21fb}{x}}\ =\ x}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00052}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a6071a8a2cd1870469c9ca5a1e705fa1a}{00052}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a6071a8a2cd1870469c9ca5a1e705fa1a}{y}}\ =\ y}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00053}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_af974fc4c3258ecbb7e075255a23b6863}{00053}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_af974fc4c3258ecbb7e075255a23b6863}{z}}\ =\ z}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00054}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a9dcbbed748e6235a9f881fc83bbb5900}{00054}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a9dcbbed748e6235a9f881fc83bbb5900}{vec2}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00055}00055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a62e1279ff802e321ee3008c82cca21fb}{x}},\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a6071a8a2cd1870469c9ca5a1e705fa1a}{y}})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00056}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a1518aa33d6ca19264f83040a69146d41}{00056}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a1518aa33d6ca19264f83040a69146d41}{vec3}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00057}00057\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a62e1279ff802e321ee3008c82cca21fb}{x}},\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a6071a8a2cd1870469c9ca5a1e705fa1a}{y}},\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_af974fc4c3258ecbb7e075255a23b6863}{z}})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00058}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_acb46204ecf13eeaac4ec67903ee6d4e7}{00058}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_acb46204ecf13eeaac4ec67903ee6d4e7}{translate}}(self,\ x=0,\ y=0,\ z=0):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00059}00059\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a62e1279ff802e321ee3008c82cca21fb}{x}}\ +=\ x}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00060}00060\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a6071a8a2cd1870469c9ca5a1e705fa1a}{y}}\ +=\ y}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00061}00061\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_af974fc4c3258ecbb7e075255a23b6863}{z}}\ +=\ z}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00062}00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a1518aa33d6ca19264f83040a69146d41}{vec3}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00063}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a7fefd7c658437d7d0e09e2cc9e977744}{00063}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a7fefd7c658437d7d0e09e2cc9e977744}{set}}(self,\ x=None,\ y=None,\ z=None):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00064}00064\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ x\ !=\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00065}00065\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a62e1279ff802e321ee3008c82cca21fb}{x}}\ =\ x}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00066}00066\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ y\ !=\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00067}00067\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a6071a8a2cd1870469c9ca5a1e705fa1a}{y}}\ =\ y}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00068}00068\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ z\ !=\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00069}00069\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_af974fc4c3258ecbb7e075255a23b6863}{z}}\ =\ z}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00070}00070\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1coord_a1518aa33d6ca19264f83040a69146d41}{vec3}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00071}00071\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00072}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard}{00072}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard}{clipboard}}(object):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00073}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard_a9b39577a835d8165c9e2a0e672a63289}{00073}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard_a9b39577a835d8165c9e2a0e672a63289}{\_\_new\_\_}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00074}00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ sys.platform\ !=\ \textcolor{stringliteral}{"{}win32"{}}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00075}00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{raise}\ PlatformError}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00076}00076\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ object.\_\_new\_\_(self)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00077}00077\ \ \ \ \ \textcolor{preprocessor}{@staticmethod}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00078}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard_ae71c11510bda444ca1c2e595edd3ee0f}{00078}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard_ae71c11510bda444ca1c2e595edd3ee0f}{copy}}(text):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00079}00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00080}00080\ \ \ \ \ \ \ \ \ \ \ \ \ OpenClipboard()\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00081}00081\ \ \ \ \ \ \ \ \ \ \ \ \ EmptyClipboard()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00082}00082\ \ \ \ \ \ \ \ \ \ \ \ \ SetClipboardText(text,\ CF\_UNICODETEXT)\ \textcolor{comment}{\#\ set\ clipboard\ data}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00083}00083\ \ \ \ \ \ \ \ \ \ \ \ \ CloseClipboard()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00084}00084\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00085}00085\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00086}00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00087}00087\ \ \ \ \ \textcolor{preprocessor}{@staticmethod}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00088}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard_adf8f7931d41ac00f42cf0cfd8ad58a89}{00088}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1clipboard_adf8f7931d41ac00f42cf0cfd8ad58a89}{paste}}():}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00089}00089\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00090}00090\ \ \ \ \ \ \ \ \ \ \ \ \ OpenClipboard()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00091}00091\ \ \ \ \ \ \ \ \ \ \ \ \ data\ =\ GetClipboardData(CF\_UNICODETEXT)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00092}00092\ \ \ \ \ \ \ \ \ \ \ \ \ CloseClipboard()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00093}00093\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ data}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00094}00094\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00095}00095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00096}00096\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00097}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta}{00097}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta}{SingletonMeta}}(type):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00098}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ace4e42af858d347e62c16bbbd20dd2ef}{00098}}\ \ \ \ \ \_instances\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00099}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ac373dd8bb1f4c7f4d8efa6f08f695205}{00099}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ac373dd8bb1f4c7f4d8efa6f08f695205}{\_\_call\_\_}}(cls,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00100}00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cls\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ cls.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ace4e42af858d347e62c16bbbd20dd2ef}{\_instances}}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00101}00101\ \ \ \ \ \ \ \ \ \ \ \ \ instance\ =\ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ac373dd8bb1f4c7f4d8efa6f08f695205}{\_\_call\_\_}}(*args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00102}00102\ \ \ \ \ \ \ \ \ \ \ \ \ cls.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ace4e42af858d347e62c16bbbd20dd2ef}{\_instances}}[cls]\ =\ instance}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00103}00103\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cls.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1_singleton_meta_ace4e42af858d347e62c16bbbd20dd2ef}{\_instances}}[cls]}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00104}00104\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00105}00105\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00106}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{00106}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00107}00107\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00108}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_aacae16a61dc79b1f69de6770287dcd3a}{00108}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_aacae16a61dc79b1f69de6770287dcd3a}{\_\_init\_\_}}(self,\ master):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00109}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_af9d281cdc9a5ccfdd4fb0811b4ef3a80}{00109}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_af9d281cdc9a5ccfdd4fb0811b4ef3a80}{master}}\ =\ master}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00110}00110\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00111}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_afe2231dadba9bb4deb302e9748cb94dc}{00111}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_afe2231dadba9bb4deb302e9748cb94dc}{get\_root}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00112}00112\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_af9d281cdc9a5ccfdd4fb0811b4ef3a80}{master}}.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_afe2231dadba9bb4deb302e9748cb94dc}{get\_root}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00113}00113\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00114}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a879b97027caff8b62a01ae87bd263deb}{00114}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a879b97027caff8b62a01ae87bd263deb}{get\_master}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00115}00115\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_af9d281cdc9a5ccfdd4fb0811b4ef3a80}{master}}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00116}00116\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00117}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a192701acf951575dc671a960d8c695c3}{00117}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a192701acf951575dc671a960d8c695c3}{get\_self}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00118}00118\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00119}00119\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00120}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a1187b00d7717f96ecb90c279c3721105}{00120}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a1187b00d7717f96ecb90c279c3721105}{get}}(self,\ index=None,\ end=None)\ -\/>\ str:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00121}00121\ \ \ \ \ \ \ \ \ ctype\ =\ str(type(self))[:-\/2].split(\textcolor{stringliteral}{"{}."{}})[-\/1]}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00122}00122\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ctype\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{"{}cLabel"{}},\ \textcolor{stringliteral}{"{}cButton"{}}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00123}00123\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ index\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None}]\ \textcolor{keywordflow}{and}\ end\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00124}00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.cget(\textcolor{stringliteral}{"{}text"{}})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00125}00125\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00126}00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_ad39cbee8fd9e12fe52de4f3ed7a96d08}{\_\_getter}}(self.cget(\textcolor{stringliteral}{'text'}),\ index,\ end)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00127}00127\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ ctype\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{"{}cEntry"{}},\ \textcolor{stringliteral}{"{}cScrolledText"{}},\ \textcolor{stringliteral}{"{}reEntry"{}},\ \textcolor{stringliteral}{"{}MaxLengthEntry"{}},\ \textcolor{stringliteral}{"{}ValidatingEntry"{}}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00128}00128\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ index\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None}]\ \textcolor{keywordflow}{and}\ end\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00129}00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.var.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a1187b00d7717f96ecb90c279c3721105}{get}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00130}00130\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00131}00131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_ad39cbee8fd9e12fe52de4f3ed7a96d08}{\_\_getter}}(self.var.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a1187b00d7717f96ecb90c279c3721105}{get}}(),\ index,\ end)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00132}00132\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ ctype\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{"{}cCheckbutton"{}}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00133}00133\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.var.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a1187b00d7717f96ecb90c279c3721105}{get}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00134}00134\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ ctype\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{"{}cTreeview"{}}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00135}00135\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}This\ requires\ cusom\ get()\ method"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00136}00136\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00137}00137\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{raise}\ Exception(f\textcolor{stringliteral}{'\{type(self)\}\ :\ \{ctype\}\ has\ no\ get()\ method'})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00138}00138\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00139}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{00139}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{set}}(self,\ index=0,\ text="{}"{}):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00140}00140\ \ \ \ \ \ \ \ \ ctype\ =\ str(type(self))[:-\/2].split(\textcolor{stringliteral}{"{}."{}})[-\/1]}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00141}00141\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ctype\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{"{}cLabel"{}},\ \textcolor{stringliteral}{"{}cButton"{}}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00142}00142\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ index\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None},\ 0]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00143}00143\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(text=text)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00144}00144\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00145}00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ o\_text\ =\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_ad39cbee8fd9e12fe52de4f3ed7a96d08}{\_\_getter}}(self.cget(\textcolor{stringliteral}{'text'}),\ 0,\ index)\ \textcolor{keywordflow}{or}\ \textcolor{stringliteral}{''}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00146}00146\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(text=o\_text+text)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00147}00147\ \ \ \ \ \ \ \ \ \ \ \ \ self.update()}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00148}00148\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ ctype\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{"{}cEntry"{}},\ \textcolor{stringliteral}{"{}cScrolledText"{}},\ \textcolor{stringliteral}{"{}reEntry"{}},\ \textcolor{stringliteral}{"{}MaxLengthEntry"{}},\ \textcolor{stringliteral}{"{}ValidatingEntry"{}}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00149}00149\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ index\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None},\ 0]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00150}00150\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.var.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{set}}(text)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00151}00151\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00152}00152\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ o\_text\ =\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_ad39cbee8fd9e12fe52de4f3ed7a96d08}{\_\_getter}}(self.var.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a1187b00d7717f96ecb90c279c3721105}{get}}(),\ 0,\ index)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00153}00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.var.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{set}}(o\_text+text)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00154}00154\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#elif\ ctype\ in\ ["{}cCheckbutton"{}]:}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00155}00155\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ \ \ return\ self.var.get()}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00156}00156\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#elif\ ctype\ in\ ["{}cTreeview"{}]:}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00157}00157\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ \ \ return\ "{}This\ requires\ cusom\ get()\ method"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00158}00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00159}00159\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{raise}\ Exception(f\textcolor{stringliteral}{'\{type(self)\}\ :\ \{ctype\}\ has\ no\ set()\ method'})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00160}00160\ \ \ \ \ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00161}00161\ \ \ \ \ \textcolor{keyword}{def\ }\_\_getter(self,\ text,\ index,\ end)\ -\/>\ str:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00162}00162\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ end\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{'end'},\ \textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00163}00163\ \ \ \ \ \ \ \ \ \ \ \ \ end\ =\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00164}00164\ \ \ \ \ \ \ \ \ index\ =\ 0\ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ index\ \textcolor{keywordflow}{else}\ index}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00165}00165\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ text[int(index):int(end)\ \textcolor{keywordflow}{if}\ end\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None}]}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00166}00166\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00167}00167\ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00168}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_utils_a6b12ade7f7f77df18581ec284d90b4d9}{00168}}\ \textcolor{keyword}{def\ }cache(func):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00169}00169\ \ \ \ \ cached\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00170}00170\ \ \ \ \ \textcolor{preprocessor}{@wraps(func)}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00171}00171\ \ \ \ \ \textcolor{keyword}{def\ }wrapper(*args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00172}00172\ \ \ \ \ \ \ \ \ key\ =\ str(args)\ +\ str(kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00173}00173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ key\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ cached:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00174}00174\ \ \ \ \ \ \ \ \ \ \ \ \ cached[key]\ =\ func(*args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00175}00175\ \ \ \ \ \ \ \ \ \ \ \ \ logging.getLogger(\textcolor{stringliteral}{'rapidTk'}).rtkverbose(f\textcolor{stringliteral}{'Adding\ to\ cache\ \{args\},\ \{kwargs\}'})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00176}00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00177}00177\ \ \ \ \ \ \ \ \ \ \ \ \ logging.getLogger(\textcolor{stringliteral}{'rapidTk'}).rtkverbose(f\textcolor{stringliteral}{'Using\ cache\ \{args\},\ \{kwargs\}'})}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00178}00178\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cached[key]}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00179}00179\ \ \ \ \ \textcolor{keywordflow}{return}\ wrapper}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00180}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate}{00180}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate}{simpledate}}(datetime):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00181}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a654ca852a6e2598e912d6211fb9987f0}{00181}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a654ca852a6e2598e912d6211fb9987f0}{simplify}}(self,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00182}00182\ \ \ \ \ \ \ \ \ [kwargs.pop(key,\ \textcolor{keywordtype}{None})\ \textcolor{keywordflow}{for}\ key\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{'hour'},\ \textcolor{stringliteral}{'minute'},\ \textcolor{stringliteral}{'second'},\ \textcolor{stringliteral}{'microsecond'}]]}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00183}00183\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a9e37807ec048bf3c8ccff3539ac5ab84}{replace}}(**kwargs,\ hour=0,\ minute=0,\ second=0,\ microsecond=0)}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00184}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a9e37807ec048bf3c8ccff3539ac5ab84}{00184}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a9e37807ec048bf3c8ccff3539ac5ab84}{replace}}(self,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00185}00185\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a654ca852a6e2598e912d6211fb9987f0}{simplify}}(**kwargs)\ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00186}00186\ \ \ \ \ \textcolor{preprocessor}{@classmethod}}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00187}\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a1fac45d4a41cb41a82dc876dddbf264e}{00187}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a1fac45d4a41cb41a82dc876dddbf264e}{now}}(cls,\ tz=None):}
+\DoxyCodeLine{\Hypertarget{r_tk_utils_8py_source_l00188}00188\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a1fac45d4a41cb41a82dc876dddbf264e}{now}}(tz=tz).\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1simpledate_a654ca852a6e2598e912d6211fb9987f0}{simplify}}()}
+
+\end{DoxyCode}

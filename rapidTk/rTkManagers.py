@@ -1,71 +1,45 @@
+import logging
+from queue import Queue
 from tkinter import Event, TOP, LEFT, RIGHT, CENTER, BOTTOM, BOTH
 from .rTkErrors import *
-from .cWidgets import cCanvas
 from .rTkUtils import SingletonMeta
-from .flags import __scroll_manager__, __window_manager__, __popup_manager__, __tab_manager__
 
 class _ScrollManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
-		__scroll_manager__ = True
-		self.root = root
-		self.collections = {}
-		self.scrolls = {"0":None} #{id:scroll}
-		self.triggers = {} #{id:trigger}
-		self.default = "0"
-		self.active_id = "0"
-	def clear(self):
-		try:
-			self.scrolls[self.active_id].unbind("<MouseWheel>")
-		except:
-			pass
-		for i in self.triggers:
-			try:
-				i.unbind('<Enter>')
-				i.unbind('<Leave>')
-			except:
-				pass
-		self.scrolls = {"0":None}
-		self.triggers = {}
-		self.default = "0"
-		self.active_id = "0"
-	def add_tab(self, tab):
-		pass## add tab collection to collections
-	def add_window(self, window):
-		pass##add window/popup to collections
-	def add_collection(self, scroll):
-		pass## add item to collections based on current selected collection
-	def switch(self, collection):
-		pass##move between collections for when switching tab
+		self._current = None ##the current scrollable widget
+		self._current_o = None ##the current overriden scroll command
+		self.q = Queue() ##widget queue
+		self.q_o = Queue() ##override queue
+	def __set_current(self, event, widget, override):
+		if self._current is not None: ##if there is a current widget which has not triggered <Leave>
+			self.q.put(self._current) ##put the widget in the queue
+			self.q_o.put(self._current_o) ##put its override in the queue
+		self._current = widget ## set the new widget as current
+		self._current_o = override ##set its override to the current override
+		if self._current_o is None: ##if not overriden
+			self._current.bind_all('<MouseWheel>', self._on_mousescroll)
+		else: ## run bind to the overridden command
+			self._current.bind_all('<MouseWheel>', override)
+	def __unset_current(self, event, widget):
+		self._current.unbind_all('<MouseWheel>')
+		if not self.q.empty(): ##if there are widgets in the queue that have not been left with <Leave> event.
+			self._current = self.q.get() ##get the widget from the queue
+			override = self.q_o.get() ##with its override (function or None)
+			if override is None: ##if not overridden run the standard mousescroll binding
+				self._current.bind_all('<MouseWheel>', self._on_mousescroll)
+			else: ##bind the mouse scroll to the overriden function
+				self._current.bind_all('<MouseWheel>', override)
+		else: ##if the queue is empty then default everything
+			self._current = None
+			self._current_o = None
+	def _on_mousescroll(self, event): ##default mousescroll command
+		self._current.yview_scroll(int(-1 * (event.delta / 120)), "units")
+		self._current.update()
+	def add_widget(self, widget, override=None): ##adds the standard binding to scrollable widgets.
+		widget.bind('<Enter>', lambda e=Event(), w=widget, o=override: self.__set_current(e, w, o))
+		widget.bind('<Leave>', lambda e=Event(), w=widget: self.__unset_current(e, w))
 
-	def add(self, scroll, trigger=None, default=None):
-		uid = self.root.uid.new()
-		if default:
-			self.default = uid
-		self.scrolls[uid] = scroll
-		if trigger != None:
-			self.triggers[uid] = trigger
-		else:
-			self.triggers[uid] = scroll
-		self.triggers[uid].bind('<Enter>', lambda e=Event(), i=uid:self._entered(e, i))
-		self.triggers[uid].bind('<Leave>', lambda e=Event(), i=uid:self._leave(e, i))
-		return uid
-	def _entered(self, event, uid):#
-		if self.active_id != "0" and self.active_id in self.scrolls.keys():
-			self.scrolls[self.active_id].unbind("<MouseWheel>")
-		self.active_id = uid
-		self.root.bind_all('<MouseWheel>', self._on_mousescroll)
-	def _leave(self, event, uid):
-		if uid in self.scrolls.keys():
-			if uid == self.active_id:
-				self.active_id = self.default
-	def _unbind_all(self):
-		pass ## remove all binds from all collections
-	def _on_mousescroll(self, event):
-		if self.active_id in self.scrolls.keys() and self.scrolls[self.active_id] is not None:
-			self.scrolls[self.active_id].yview_scroll(int(-1 * (event.delta / 120)), "units")
-			self.scrolls[self.active_id].update()
-			self.root.update()
-			self.root.update_idletasks()
+
 class _WindowManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
 		__window_manager__ = True
@@ -114,18 +88,27 @@ class _PopupManager(object, metaclass=SingletonMeta):
 		pass # use movable window
 	def _manage_overlay(self):
 		pass #handel closing and opening overlays
+
 class _TabManager(object, metaclass=SingletonMeta):
 	def __init__(self, root):
 		__tab_manager__ = True
 		self.root = root
 		self.tabs = {}
+		self.names = {}
 		self.active_tab = None
-	def new(self, holder):
-		uid = self.root.uid.new()
-		self.tabs[uid] = cCanvas(holder)
-		return uid
+	def new(self, widget, **kwargs):
+		self.tabs[widget.uuid] = widget
+		if "name" in kwargs and kwargs['name'] not in self.names:
+			self.names[kwargs['name']] = widget.uuid
+		return widget.uuid
+	def get_by_name(self, name):
+		if name in self.names:
+			return self.names[name]
+		else:
+			logging.getLogger('rapidTk').rtkwarning(f'{name} is not in the list of tabs')
+			return None
 	def switch(self, event=None, uid=None):
-		self.root.sm.clear()
+		print(f"switching {uid=}")
 		if uid != None:
 			if self.active_tab != None:
 				self.tabs[self.active_tab].pack_forget()
@@ -136,4 +119,10 @@ class _TabManager(object, metaclass=SingletonMeta):
 			return self.tabs[uid]
 		else:
 			raise TabNotFoundError
+	def name(self, tab):
+		for n, t in self.names.items():
+			if t == tab:
+				return n
+		logging.getLogger('rapidTk').rtkwarning(f'{tab} is not in the list of tabs')
+		return None
 

@@ -1,0 +1,25 @@
+\hypertarget{r_tk_theme_8py_source}{}\doxysection{r\+Tk\+Theme.\+py}
+\label{r_tk_theme_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/rTkTheme.py@{C:/Python310/Lib/site-\/packages/rapidTk/rTkTheme.py}}
+\mbox{\hyperlink{r_tk_theme_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00001}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_theme}{00001}}\ \textcolor{keyword}{from}\ \mbox{\hyperlink{namespacetkinter_1_1ttk}{tkinter.ttk}}\ \textcolor{keyword}{import}\ Style}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00002}00002\ \textcolor{comment}{\#from\ ttk\ import\ Style}}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00003}00003\ \textcolor{keyword}{from}\ ttkthemes\ \textcolor{keyword}{import}\ ThemedStyle}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00004}00004\ }
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00005}00005\ \textcolor{keyword}{from}\ .rTkUtils\ \textcolor{keyword}{import}\ SingletonMeta}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00006}00006\ \textcolor{keyword}{from}\ .flags\ \textcolor{keyword}{import}\ \_\_theme\_manager\_\_}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00007}00007\ }
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00008}\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager}{00008}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager}{\_ThemeManager}}(object,\ metaclass=SingletonMeta):}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00009}\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a08253194cb2c813d85e974956a8ae99c}{00009}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a08253194cb2c813d85e974956a8ae99c}{\_\_init\_\_}}(self,\ root):}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00010}00010\ \ \ \ \ \ \ \ \ \_\_theme\_manager\_\_\ =\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00011}\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_ad48ca83673cfd674292d83466822ce09}{00011}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_ad48ca83673cfd674292d83466822ce09}{root}}\ =\ root}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00012}\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a7b744d72f4c51ab9cb30ce85a71535c6}{00012}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a7b744d72f4c51ab9cb30ce85a71535c6}{style}}\ =\ Style()}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00013}00013\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a8efed174e2ff965858302673ad9efc43}{set\_theme}}(\textcolor{stringliteral}{'clam'})}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00014}00014\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#self.style\ =\ ThemedStyle(root)}}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00015}\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a1f080d8b9eacc814b1c1987acb16976c}{00015}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a1f080d8b9eacc814b1c1987acb16976c}{add\_style}}(self,\ name,\ options):}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00016}00016\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a7b744d72f4c51ab9cb30ce85a71535c6}{style}}.configure(name,\ **options)}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00017}00017\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a7b744d72f4c51ab9cb30ce85a71535c6}{style}}}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00018}\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a8efed174e2ff965858302673ad9efc43}{00018}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a8efed174e2ff965858302673ad9efc43}{set\_theme}}(self,\ theme):}
+\DoxyCodeLine{\Hypertarget{r_tk_theme_8py_source_l00019}00019\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager_a7b744d72f4c51ab9cb30ce85a71535c6}{style}}.theme\_use(theme)}
+
+\end{DoxyCode}

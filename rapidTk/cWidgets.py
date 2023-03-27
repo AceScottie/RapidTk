@@ -1,116 +1,88 @@
-from tkinter import Frame, Label, Button, Entry, Checkbutton, OptionMenu, Radiobutton, Listbox, Scale
+import logging
+from tkinter import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale
 from tkinter import Canvas, Menu
-from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar
-from tkinter.ttk import Treeview, Combobox, Spinbox
+from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar, Event
+from tkinter.ttk import Treeview, Combobox
 from tkinter.scrolledtext import ScrolledText
+from .__main__ import rapidTk
+from .rTkOverrides import OptionMenu, Spinbox
 from .flags import __ttk_enabled__
 if __ttk_enabled__:
-	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton, OptionMenu
+	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton
 else:
 	from tkinter.ttk import Style
-from typing import overload
 
 from .rTkErrors import *
-from .rTkUtils import clipboard, widgetBase, time_it
-from .rTkTheme import _ThemeManager
-
-def pack_opts(**kwargs):
-	pak = ["side", "expand", "fill"]
-	if __ttk_enabled__:
-		style = ['bg', 'height', 'width', 'borderwidth', 'fg', 'padx', 'pady', 'relief', 'selectcolor', 'anchor']
-	else:
-		style = []
-	kw_wid = {}
-	kw_pak = {}
-	kw_style = {}
-	for k, v in kwargs.items():
-		if k in pak:
-			kw_pak[k] = v
-		elif k in style:
-			if k == "bg":
-				kw_style["background"] = v
-			elif k == "fg":
-				kw_style["foreground"] = v
-			elif k == "width": ##fix for picture lable width only
-				if "text" in kwargs.keys():
-					kw_style[k] = v
-				else:
-					kw_style[k] = int(v/10)
-			else:
-				kw_style[k] = v
-		else:
-			kw_wid[k] = v
-	return kw_wid, kw_pak, kw_style
-def style_widget(wd, st, t):
-	if st != {}:
-		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)
-		wd.configure(style=f"{str(wd.__repr__())}.{t}")
-		return style
-	else:
-		return None
+from .rTkUtils import clipboard, widgetBase, time_it, inline_layout, _UniqueIdentifiers
+from .rTkTheme import _ThemeManager, style_widget
 
 class cFrame(Frame, widgetBase):
 	@time_it
-	def __init__(self, master,  **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cFrame, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TFrame")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cFrame, self).__init__(master, **widget_args)
+		if layout.method is not None:
+			layout.inline(self)
+
+		
 
 class cLabel(Label, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cLabel, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TLabel")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
-	@time_it
-	def set(self, value):
-		self.configure(text=value)
+		self.uuid = _UniqueIdentifiers().new()
+		self.bg = kwargs.get('bg', kwargs.get('background', None))
+		self.fg = kwargs.get('fg', kwargs.get('foreground', None))
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cLabel, self).__init__(master, **widget_args)
+		if self.bg is None:
+			self.bg = self.cget('background')
+		if self.fg is None:
+			self.fg = self.cget('foreground')
+		
+		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
+		if layout.method is not None:
+			layout.inline(self)
+
 
 class cButton(Button, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cButton, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TButton")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		self.uuid = _UniqueIdentifiers().new()
+		kwargs['cursor'] = kwargs.pop('cursor', 'hand2')
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cButton, self).__init__(master, **widget_args)
+		logging.getLogger('rapidTk').rtkverbose(f"created widget {self} with args {widget_args}")
+		if layout.method is not None:
+			layout.inline(self)
 
 class cEntry(Entry, widgetBase):
 	@time_it
-	def __init__(self, master, value="", **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'value' in kw_wid:
-			del kw_wid['value']
-		super(cEntry, self).__init__(master)
-		if 'textvariable' not in kwargs.keys():
-			self.var = StringVar()
-			if value != "":
-				self.var.set(value)
-			kw_wid['textvariable'] = self.var
-		else:
-			self.var = kw_wid['textvariable']
-			self.var.set(value)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TEntry")
+	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
+		logging.getLogger('rapidTk').rtkverbose(f"cEntry got kwargs {kwargs}")
+		value = kwargs.pop('value', '')
+		kwargs['textvariable'], self.var = (kwargs.get('textvariable', StringVar()),)*2
+		self.var.set(value)
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		logging.getLogger('rapidTk').rtkverbose(f"cEntry got widget_args {widget_args} and {layout.method}")
+		super(cEntry, self).__init__(master, **widget_args)
+		logging.getLogger('rapidTk').rtkverbose(f"created cEntry {self} with args {widget_args}")
+		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		self.__menu = Menu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
 		self.__menu.add_command(label="Copy", command=self._copy)
 		self.__menu.add_command(label="Paste", command=self._paste)
 		self.__menu.add_command(label="Select All", command=self._select_all)
 		self.bind("<Button-3>", self._do_popup)
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		
+		if layout.method is not None:
+			layout.inline(self)
+
 	def get(self, *args):
 		return widgetBase.get(self, *args)
 	@time_it
@@ -146,44 +118,29 @@ class cEntry(Entry, widgetBase):
 class cCanvas(Canvas, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'bd' not in kw_wid or 'boarder' not in kw_wid:
-			kw_wid['bd'] = -2
-		super(cCanvas, self).__init__(master)
-		self.configure({**kw_wid, **kw_style})
-		#style_widget(self, kw_style, "TCanvas")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
-
+		self.uuid = _UniqueIdentifiers().new()
+		if 'bd' not in kwargs or 'boarder' not in kwargs:
+			kwargs['bd'] = -2
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cCanvas, self).__init__(master, **widget_args)
+		
+		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
+		if layout.method is not None:
+			layout.inline(self)
 class cTreeview(Treeview, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
 		self.master = master
-		self.__dict__.update(kwargs)
 		self.i = 0
 		self.detached_data = []
-		bg="#FFFFFF"
-		fg="#000000"
-		bgp = False
-		fgp = False
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'bg' in kw_wid.keys():
-			bbg = kw_wid['bg']
-			bgp = True
-			del kw_wid['bg']
-		else:
-			bbg = bg
-		if 'fg' in kw_wid.keys():
-			ffg = kw_wid['fg']
-			fgp = True
-			del kw_wid['fg']
-		else:
-			ffg = fg
-		rgb = [int(bbg.replace("#","")[i:i+2], 16) for i in (0, 2, 4)]
+		bg = kwargs.pop('bg', '#FFFFFF')
+		fg = kwargs.pop('fg', '#000000')
+
+		rgb = [int(bg.replace("#","")[i:i+2], 16) for i in (0, 2, 4)]
 		rgbt1 = []
 		rgbt2 = []
-		colours = ["black", "white"]
 		for i in range(len(rgb)):
 			if rgb[i] < 255/2:
 				rgb[i] += 30
@@ -193,27 +150,22 @@ class cTreeview(Treeview, widgetBase):
 				rgb[i] -= 30
 				rgbt1.append(rgb[i]-20)
 				rgbt2.append(rgb[i]-40)
-		colour1 = '#%02x%02x%02x'%(rgb[0], rgb[1], rgb[2])
-		colour2 = '#%02x%02x%02x'%(rgbt1[0], rgbt1[1], rgbt1[2])
-		colour3 = '#%02x%02x%02x'%(rgbt2[0], rgbt2[1], rgbt2[2])
+		colour1, colour2, colour3 = '#%02x%02x%02x'%(rgb[0], rgb[1], rgb[2]), '#%02x%02x%02x'%(rgbt1[0], rgbt1[1], rgbt1[2]), '#%02x%02x%02x'%(rgbt2[0], rgbt2[1], rgbt2[2])
 		self.style = self.get_root().thm.style
-		#self.style = Style()
-		
 		self.style.map(f"{str(self.__repr__())}.Treeview", foreground=self._fixed_map("foreground", self.style), background=self._fixed_map("background", self.style))
-		self.style.configure(f"{str(self.__repr__())}.Treeview", background=bbg, fieldbackground=bbg, foreground=ffg)
-		self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=ffg)
-		super(cTreeview, self).__init__(master)
-		self.configure(kw_wid)
-		if __ttk_enabled__:
-			style_widget(self, kw_style, "Treeview")
+		self.style.configure(f"{str(self.__repr__())}.Treeview", background=bg, fieldbackground=bg, foreground=fg)
+		self.style.configure(f"{str(self.__repr__())}.Treeview.Heading",background=colour1, foreground=fg)
+		kwargs['style'] = kwargs.pop('style', f"{str(self.__repr__())}.Treeview")
+		
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cTreeview, self).__init__(master, **widget_args)
 		self.tag_configure('highlight', background='lightblue', foreground="black")
-		if bgp and fgp:
-			self.tag_configure("t1", background=colour2, foreground=ffg)
-			self.tag_configure("t2", background=colour3, foreground=ffg)
-		self.configure(style=f"{str(self.__repr__())}.Treeview")
+		self.tag_configure("t1", background=colour2, foreground=fg)
+		self.tag_configure("t2", background=colour3, foreground=fg)
 		self['show'] = 'headings'
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		if layout.method is not None:
+			layout.inline(self)
 	@time_it
 	def _fixed_map(self, option, style):
 		return [elm for elm in style.map(f"{str(self.__repr__())}.Treeview", query_opt=option) if elm[:2] != ("!disabled", "!selected")]
@@ -248,13 +200,17 @@ class cTreeview(Treeview, widgetBase):
 			self.move(k, '', index)
 		self.heading(col, text=col, command=lambda _col=col:self._treeview_sort_column(_col, self._dir(rv)))
 	@time_it
+	def detach(self, a):
+		self.detached_data.append(a)
+		super().detach(a)
+	@time_it
 	def hide(self, a, b, c, event, ivar): # hides data based on input
 		if ivar.get() == 1:
 			for a in self.detached_data:
 				self.reattach(a,'',a)
 		else:
 			for a in self.detached_data:
-				self.detach(a)
+				super().detach(a)
 	@time_it
 	def insert(self, parent='', index='end', iid=None, tags=(), text="", values=[]):##adds new row 
 		self.i += 1
@@ -278,15 +234,17 @@ class cTreeview(Treeview, widgetBase):
 
 class cScrolledText(ScrolledText, widgetBase):
 	@time_it
-	def __init__(self, master, value="", **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cScrolledText, self).__init__(master)
-		self.configure(kw_wid)
-		if value != "":
+	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
+		value = kwargs.pop('value', '')
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cScrolledText, self).__init__(master, **widget_args)
+		if isinstance(self.get_root(), rapidTk):
+			self.get_root().sm.add_widget(self)
+		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
+		if value != '':
 			self.insert(1.0, value)
-		if kw_style != {}:
-			self.configure(kw_style)
 		#style_widget(self, kw_style, "TScrolledText")
 		self.__menu = Menu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
@@ -294,8 +252,8 @@ class cScrolledText(ScrolledText, widgetBase):
 		self.__menu.add_command(label="Paste", command=self._paste)
 		self.__menu.add_command(label="Select All", command=self._select_all)
 		self.bind("<Button-3>", self._do_popup)
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		if layout.method is not None:
+			layout.inline(self)
 	@time_it
 	def _hightlight(self):
 		pass
@@ -335,18 +293,13 @@ class cScrolledText(ScrolledText, widgetBase):
 class cCheckbutton(Checkbutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'variable' not in kw_wid.keys():
-			self.var = IntVar()
-			kw_wid['variable'] = self.var
-		else:
-			self.var = kw_wid['variable']
-		#if 'selectcolor' not in kw_style.keys() or kw_style['selectcolor'] is None:
-		#	kw_style['selectcolor'] = "#AAFFAA"
-		super(cCheckbutton, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TCheckbutton")
+		self.uuid = _UniqueIdentifiers().new()
+		kwargs['variable'] = self.var = kwargs.get('variable', IntVar())
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cCheckbutton, self).__init__(master, **widget_args)
+		if layout.method is not None:
+			layout.inline(self)
 	@time_it
 	def get(self, **kwargs):
 		return self.var.get()
@@ -354,43 +307,32 @@ class cCheckbutton(Checkbutton, widgetBase):
 	def set(self, value):
 		self.var.set(value)
 
-class cOptionMenu(OptionMenu, widgetBase):
+class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverrides
 	@time_it
-	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		self.options = []
-		if 'options' in kwargs.keys():
-			self.options = kwargs['options']
-			del kwargs['options']
-		self.var = StringVar()
-		if 'default' in kwargs.keys():
-			self.__value = kwargs['default']
-			selectable_options = [str(x) for x in self.options]
-			if kwargs['default'] in selectable_options:
-				del selectable_options[selectable_options.index(str(kwargs['default']))]
-			del kwargs['default']
-		else:
-			self.__value = self.options[0] if len(self.options) > 0 else None
-			if len(self.options) > 0:
-				selectable_options = [str(x) for x in self.options[1:]]
-			else:
-				selectable_options = [str(x) for x in self.options]
-		if 'non_valid' in kwargs.keys():
-			for item in kwargs['non_valid']:
-				if item in self.options:
-					del self.options[self.options.index(item)]
-			del kwargs['non_valid']
-		self.var.set(self.__value)
-		super(cOptionMenu, self).__init__(master, self.var, self.__value, *selectable_options)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		if 'takefocus' not in kw_wid.keys():
-			kw_wid['takefocus'] = 1
+	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
+		self.uuid = _UniqueIdentifiers().new()
+		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
+		self.selectable_options = [str(x) for x in self.options] ## modified options for display
+		kwargs['textvariable'] = self.var = kwargs.pop('variable', kwargs.pop('textvariable',StringVar()))
+		kwargs['value'] = self.__value = kwargs.pop('default', None) 
+		if self.__value is not None:
+			self.var.set(self.__value)
+			if self.__value in self.selectable_options:
+				self.selectable_options.remove(self.__value)
+		
+		#nv = kwargs.pop('non_valid', []) 
+		
+		kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
+		kwargs['values'] = self.selectable_options
+		
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cOptionMenu, self).__init__(master, **widget_args)
 		self['menu'].configure(activebackground="blue", activeforeground="white")
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TOptionMenu")
 		self.bind("<space>", self.open_option_menu)
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+
+		if layout.method is not None:
+			layout.inline(self)
 	@time_it
 	def set(self, value):
 		self.var.set(value)
@@ -408,29 +350,21 @@ class cOptionMenu(OptionMenu, widgetBase):
 class cCombobox(Combobox, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		if 'textvariable' in kwargs:
-			raise KeywordError('textvariable')
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		self.var = StringVar()
-		super(cCombobox, self).__init__(master)
+		self.uuid = _UniqueIdentifiers().new()
+		self.values, kwargs['values'] = (kwargs.pop('options', []),)*2
+		kwargs['textvariable']  = kwargs.get('textvariable', StringVar())
+		self.var = kwargs['textvariable']
+		kwargs['state'] = kwargs.pop('state', 'readonly')
+		default = kwargs.pop('default', None)
+		if default is not None:
+			self.var.set(default)
+		bg = kwargs.get('bg', 'white')
+		fg = kwargs.get('fg', 'black')
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		print(f'cCombobox {widget_args}')
+		super(cCombobox, self).__init__(master, **widget_args)
 
-		if 'state' not in kw_wid:
-			kw_wid['state'] = 'readonly'
-		if 'default' in kw_wid:
-			self.var.set(kw_wid['default'])
-			del kw_wid['default']
-		kw_wid['textvariable'] = self.var
-		self.configure(kw_wid)
-		if 'background' in kw_wid:
-			bg = kw_wid['background']
-		else:
-			bg = 'white'
-
-		if 'foreground' in kw_wid:
-			fg = kw_wid['foreground']
-		else:
-			fg = 'black'
 		self.style = self.get_root().thm.style
 		self.style.map(f'{str(self.__repr__())}.Main.TCombobox', selectbackground=[('readonly', 'blue')])
 		self.style.map(f'{str(self.__repr__())}.Main.TCombobox',fieldbackground=[('readonly', bg)])
@@ -440,13 +374,17 @@ class cCombobox(Combobox, widgetBase):
 		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', fieldbackground=[('readonly', 'red')])
 		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', background=[('readonly', 'red')])
 		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', foreground=[('readonly', 'white')])
-		self.configure(style=f'{str(self.__repr__())}.Main.TCombobox')
+		self.configure(style=kwargs.pop('style', f'{str(self.__repr__())}.Main.TCombobox'))
+
+		
+
 		self.bind("<FocusIn>", self.unselect)
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
 		self.var.trace("w", self.unselect)
+		if layout.method is not None:
+			layout.inline(self)
 	@time_it
 	def get(self):
+		print(f"getting cCombobox: {self.var.get()}.")
 		return self.var.get()
 	@time_it
 	def unselect(self, a=None, b=None, c=None, e=None):
@@ -459,7 +397,7 @@ class cCombobox(Combobox, widgetBase):
 class cMenu(Menu, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
+		self.uuid = _UniqueIdentifiers().new()
 		context = kwargs.pop('context', None) # get context builder or None
 		if not isinstance(context, dict):
 			raise MenuContexError 
@@ -512,43 +450,103 @@ class cMenu(Menu, widgetBase):
 class cRadiobutton(Radiobutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cRadioButton, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TRadioButton")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		self.uuid = _UniqueIdentifiers().new()
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cRadiobutton, self).__init__(master, **widget_args)
+		if layout.method is not None:
+			layout.inline(self)
 
 class cListbox(Listbox, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cListBox, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TListBox")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		self.uuid = _UniqueIdentifiers().new()
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cListbox, self).__init__(master, **widget_args)
+		if layout.method is not None:
+			layout.inline(self)
 
 class cScale(Scale, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cScale, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TScale")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		self.uuid = _UniqueIdentifiers().new()
+		self.var, kwargs['variable'] = (kwargs.pop('variable', IntVar()),)*2
+		vals = kwargs.pop('range', [0, 1])
+		kwargs['from_'] = vals[0]
+		kwargs['to'] = vals[-1]
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cScale, self).__init__(master, **widget_args)
+		if layout.method is not None:
+			layout.inline(self)
 
-class cSpinbox(Spinbox, widgetBase): ##incremental box
+
+class cSpinbox(Spinbox, widgetBase): ##Spinbox overrideen from rTkOverrides
 	@time_it
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
-		super(cSpinbox, self).__init__(master)
-		self.configure(kw_wid)
-		style_widget(self, kw_style, "TSpinbox")
-		if len(kw_pak) != 0:
-			self.pack(kw_pak)
+		self.uuid = _UniqueIdentifiers().new()
+		self.values = kwargs.get('values', ['0','1','2'])
+		kwargs['textvariable'] = self.var = kwargs.pop('textvariable', StringVar())
+		kwargs['value'] = kwargs.get('value', self.values[0])
+		self.wrap = kwargs.pop('wrap', 0)
+		root = master.nametowidget('.')
+		fn = root.register(self._on_command)
+		kwargs['command'] = kwargs.get('command', (fn, '%d')) ##on button
+		self._callback = kwargs.pop('callback', self.__void__)
+		self._inc = kwargs['increment'] = kwargs.get('increment', 1)
+		self.var.set(kwargs['value'])
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cSpinbox, self).__init__(master, **widget_args)
+		if isinstance(self.get_root(), rapidTk):
+			self.get_root().sm.add_widget(self, self._on_scroll)
+		if layout.method is not None:
+			layout.inline(self)
+	def __void__(self, *args):
+		pass
+	def _on_command(self, direction):
+		if direction == 'up': #button up click
+			self.spin(1, self.wrap)
+			self._callback(self, 1)
+		elif direction == 'down': #button down click
+			self.spin(0, self.wrap)
+			self._callback(self, 0)
+	def _on_scroll(self, event):
+		if event.delta >= 0: #mouse scroll up
+			self.spin(1, self.wrap)
+			self._callback(self, 1)
+		elif event.delta <= 0: #mouse scroll down
+			self.spin(0, self.wrap)
+			self._callback(self, 0)
+
+class cDate(cFrame, widgetBase):
+	def __init__(self, master, **kwargs):
+		self.uuid = _UniqueIdentifiers().new()
+		base_formats = [
+		'dd{sep}mm{sep}yyyy',
+		'dd{sep}mm{sep}yy',
+		'yyyy{sep}mm{sep}dd',
+		'yy{sep}mm{sep}dd',
+		'mm{sep}dd{sep}yyyy',
+		'mm{sep}dd{sep}yy'
+		]
+		seperators = ['/', '-', '.']
+		formats = []
+		formats.append([[x.format(sep=y) for y in seperators] for x in base_formats])
+		self.formats = [item for sub in formats[0] for item in sub]
+		self.d_format = kwargs.pop('format', 'dd/mm/yyyy')
+		if self.d_format not in self.formats:
+			local_formats = '\t\n'.join(self.formats)
+			raise ValueError(f"{self.d_format} is not a valid format, please select from one of the standard formats:\n{local_formats}")
+		self.seperator = self.d_format[2] if self.d_format[2] in seperators else self.d_format[4]
+		super(cDate, self).__init__(master)
+		
+	def _create_entries(self, **kwargs):
+		
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		
+
+		if layout.method is not None:
+			layout.inline(self)

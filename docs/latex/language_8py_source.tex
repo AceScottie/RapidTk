@@ -1,0 +1,39 @@
+\hypertarget{language_8py_source}{}\doxysection{language.\+py}
+\label{language_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/language.py@{C:/Python310/Lib/site-\/packages/rapidTk/language.py}}
+\mbox{\hyperlink{language_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00001}\mbox{\hyperlink{namespacerapid_tk_1_1language}{00001}}\ \textcolor{keyword}{from}\ pathlib\ \textcolor{keyword}{import}\ Path}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00002}00002\ \textcolor{keyword}{from}\ types\ \textcolor{keyword}{import}\ SimpleNamespace}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00003}00003\ \textcolor{keyword}{from}\ xml.etree\ \textcolor{keyword}{import}\ cElementTree\ \textcolor{keyword}{as}\ ElementTree}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00004}\mbox{\hyperlink{classrapid_tk_1_1language_1_1languages}{00004}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1language_1_1languages}{languages}}(SimpleNamespace):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00005}\mbox{\hyperlink{classrapid_tk_1_1language_1_1languages_a0302f28e35fec9675f2831d280486e70}{00005}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1language_1_1languages_a0302f28e35fec9675f2831d280486e70}{\_\_init\_\_}}(self,\ lang="{}en\_gb"{},\ localpath='./assets/local/'):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00006}00006\ \ \ \ \ \ \ \ \ langs\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00007}00007\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ language\ \textcolor{keywordflow}{in}\ list(Path(localpath).glob(\textcolor{stringliteral}{'*.xml'})):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00008}00008\ \ \ \ \ \ \ \ \ \ \ \ \ l\_name\ =\ Path(language).stem}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00009}00009\ \ \ \ \ \ \ \ \ \ \ \ \ tree\ =\ ElementTree.parse(f\textcolor{stringliteral}{"{}\{localpath\}\{l\_name\}.xml"{}})}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00010}00010\ \ \ \ \ \ \ \ \ \ \ \ \ d\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00011}00011\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ child\ \textcolor{keywordflow}{in}\ tree.getroot():}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00012}00012\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tmp\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00013}00013\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ c\ \textcolor{keywordflow}{in}\ child:}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00014}00014\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tmp[c.attrib[\textcolor{stringliteral}{'name'}]]\ =\ c.text}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00015}00015\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ d[child.tag]\ =\ SimpleNamespace(**tmp)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00016}00016\ \ \ \ \ \ \ \ \ \ \ \ \ langs[l\_name]\ =\ SimpleNamespace(**d)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00017}00017\ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classrapid_tk_1_1language_1_1languages_a0302f28e35fec9675f2831d280486e70}{\_\_init\_\_}}(**langs)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00018}\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization}{00018}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization}{localization}}(object):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00019}\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a5d44680eb653dd5e5a7cdc7dcb197852}{00019}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a5d44680eb653dd5e5a7cdc7dcb197852}{\_\_init\_\_}}(self,\ lang="{}en\_gb"{},\ localpath='./assets/local/'):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00020}\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a6c54bcd18b55364b049a912115475da4}{00020}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a6c54bcd18b55364b049a912115475da4}{languages}}\ =\ \mbox{\hyperlink{classrapid_tk_1_1language_1_1languages}{languages}}(lang=lang,\ localpath=localpath)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00021}\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_ae4ecb2c7221f65d9921cba589ad8e167}{00021}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_ae4ecb2c7221f65d9921cba589ad8e167}{set\_language}}\ =\ lang}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00022}\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a517e1cbb5aceaea4d99bf785829308d5}{00022}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a517e1cbb5aceaea4d99bf785829308d5}{set\_local}}(self,\ lang="{}en\_gb"{}):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00023}00023\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_ae4ecb2c7221f65d9921cba589ad8e167}{set\_language}}\ =\ lang}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00024}\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a98f7c417e352908c52e6ef7966c0d81d}{00024}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a98f7c417e352908c52e6ef7966c0d81d}{\_\_getattr\_\_}}(self,\ at):}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00025}00025\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ getattr(getattr(self.\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_a6c54bcd18b55364b049a912115475da4}{languages}},\ self.\mbox{\hyperlink{classrapid_tk_1_1language_1_1localization_ae4ecb2c7221f65d9921cba589ad8e167}{set\_language}}),\ at)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00026}00026\ }
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00027}00027\ }
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00028}00028\ \textcolor{keywordflow}{if}\ \_\_name\_\_\ ==\ \textcolor{stringliteral}{"{}\_\_main\_\_"{}}:}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00029}\mbox{\hyperlink{namespacerapid_tk_1_1language_a39ea8981e47537278a66ce23267215df}{00029}}\ \ \ \ \ language\ =\ \mbox{\hyperlink{classrapid_tk_1_1language_1_1localization}{localization}}()}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00030}00030\ \ \ \ \ print(language.base.hello)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00031}00031\ \ \ \ \ language.set\_local(\textcolor{stringliteral}{"{}ru"{}})}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00032}00032\ \ \ \ \ print(language.base.hello)}
+\DoxyCodeLine{\Hypertarget{language_8py_source_l00033}00033\ }
+
+\end{DoxyCode}

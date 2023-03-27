@@ -1,0 +1,40 @@
+\hypertarget{options__bug_8py_source}{}\doxysection{options\+\_\+bug.\+py}
+\label{options__bug_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/testing/options\_bug.py@{C:/Python310/Lib/site-\/packages/rapidTk/testing/options\_bug.py}}
+\mbox{\hyperlink{options__bug_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00001}\mbox{\hyperlink{namespaceoptions__bug}{00001}}\ \textcolor{keyword}{import}\ tkinter\ \textcolor{keyword}{as}\ tk}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00002}00002\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00003}\mbox{\hyperlink{namespaceoptions__bug_a12f417245bf20bcef202eb26c53fae81}{00003}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceoptions__bug_a12f417245bf20bcef202eb26c53fae81}{open\_option\_menu}}(event):}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00004}00004\ \ \ \ \ obj\ =\ event.widget}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00005}00005\ \ \ \ \ x\ =\ obj.winfo\_rootx()}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00006}00006\ \ \ \ \ y\ =\ obj.winfo\_rooty()\ +\ obj.winfo\_height()}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00007}00007\ \ \ \ \ obj[\textcolor{stringliteral}{"{}menu"{}}].post(x,\ y)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00008}00008\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}break"{}}}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00011}\mbox{\hyperlink{namespaceoptions__bug_a082387284e5cd0831f73678cd6396e2c}{00011}}\ root\ =\ tk.Tk()}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00012}\mbox{\hyperlink{namespaceoptions__bug_ab22a6aaeaafba3bcc235347771fc0ff5}{00012}}\ options\ =\ [\textcolor{stringliteral}{"{}Hello"{}},\ \textcolor{stringliteral}{"{}world"{}},\ \textcolor{stringliteral}{"{}How"{}},\ \textcolor{stringliteral}{"{}are"{}},\ \textcolor{stringliteral}{"{}you"{}}]}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00014}\mbox{\hyperlink{namespaceoptions__bug_a42e9c96b9795568413cddfbbb5ba1a7f}{00014}}\ v1\ =\ tk.StringVar(root)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00015}\mbox{\hyperlink{namespaceoptions__bug_a8d38f7eaf3034df658782f55f81977f5}{00015}}\ v2\ =\ tk.StringVar(root)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00016}\mbox{\hyperlink{namespaceoptions__bug_a77f13b4f687155f12e9161fc5ecdb585}{00016}}\ v3\ =\ tk.StringVar(root)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00017}00017\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00018}\mbox{\hyperlink{namespaceoptions__bug_a790206fa52a59524e44c1e3efd0d3c72}{00018}}\ o1\ =\ tk.OptionMenu(root,\ v1,\ *options)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00019}\mbox{\hyperlink{namespaceoptions__bug_a4634af8a775716c4ef736f310e80b258}{00019}}\ o2\ =\ tk.OptionMenu(root,\ v2,\ *options)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00020}\mbox{\hyperlink{namespaceoptions__bug_adad1adc6922bf5b0033ca8c8da4053e4}{00020}}\ o3\ =\ tk.OptionMenu(root,\ v3,\ *options)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00022}\mbox{\hyperlink{namespaceoptions__bug_a1ff98ff9be45a71cffa27a683f0d9b05}{00022}}\ o1.configure(takefocus=\textcolor{keyword}{True})}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00023}00023\ o2.configure(takefocus=\textcolor{keyword}{True})}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00024}00024\ o3.configure(takefocus=\textcolor{keyword}{True})}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00025}00025\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00026}00026\ o1.bind(\textcolor{stringliteral}{"{}<space>"{}},\ open\_option\_menu)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00027}00027\ o2.bind(\textcolor{stringliteral}{"{}<space>"{}},\ open\_option\_menu)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00028}00028\ o3.bind(\textcolor{stringliteral}{"{}<space>"{}},\ open\_option\_menu)}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00029}00029\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00030}00030\ o1.pack()}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00031}00031\ o2.pack()}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00032}00032\ o3.pack()}
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00033}00033\ }
+\DoxyCodeLine{\Hypertarget{options__bug_8py_source_l00034}00034\ root.mainloop()}
+
+\end{DoxyCode}

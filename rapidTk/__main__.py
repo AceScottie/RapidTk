@@ -1,16 +1,24 @@
+import logging
+
 from tkinter import Tk
-import tkinter.ttk as ttk
+
 from .rTkErrors import *
 from .rTkUtils import coord, _UniqueIdentifiers
 from .rTkManagers import _ScrollManager, _WindowManager, _PopupManager, _TabManager
 from .rTkTheme import _ThemeManager
 
-import logging
-
 from .rTkUtils import time_it
+
+
+
 class rapidTk(Tk):
 	@time_it
-	def __init__(self, with_managers=True, with_ttk=False):
+	def __init__(self, with_managers=True, with_ttk=False, log_level=0):
+		self.log = logging.getLogger('rapidTk')
+		if isinstance(log_level, int) and log_level > 0:
+			self.log.setLevel(log_level)
+		elif not isinstance(log_level, int):
+			raise Exception(f'log_level requires an interger value not type {type(log_level)}')
 		self.afters = {}
 		self.quitter = False
 		self.origin = [coord(0, 0), coord(0, 0)]
@@ -26,6 +34,15 @@ class rapidTk(Tk):
 		self.wm = _WindowManager(self)
 		self.after(1, self._schedule)
 		self.bind('<F12>',self._fullscreen)
+		self.bind('<Button-1>', self.__focus_shift)
+		self.bind('<Button-2>', self.__focus_shift)
+		self.bind('<Escape>', self.__focus_shift)
+	@time_it
+	def __focus_shift(self, event):
+		if event.keysym == "Escape":
+			self.get_root().focus_set()
+		elif event.widget != self.get_root().focus_get():
+			event.widget.focus_set()
 	@time_it
 	def _schedule(self):
 		if not self.quitter:
@@ -100,16 +117,59 @@ class rapidTk(Tk):
 	def get_root(self):
 		return self
 
-class PackProcess:
 	@time_it
-	def __init__(self):
-		self.widgets = []
-	@time_it
-	def add(self, widget, side=None, expand=0, fill=None):
-		self.widgets.append({"widget":widget, "side":side, "expand":expand, "fill":fill})
-		return widget
-	@time_it
-	def pack(self):
-		for element in self.widgets:
-			element['widget'].pack(side=element['side'], fill=element['fill'], expand=element['expand'])
+	def clear(self, widget=None):
+		w=self
+		if widget:
+			w=widget
+		for _c in w.winfo_children():
+			_c.destroy()
 
+	@time_it
+	def center_root(self, width=300, height=300, min_height=600, min_width=1200):
+		if width < min_width: width = min_width
+		if height < min_height: height = min_height
+		ws = self.winfo_screenwidth()
+		hs = self.winfo_screenheight()
+		posx, posy = int((ws/2) - (width/2)), int((hs/2) - (height/2))
+		self.geometry(f"{width}x{height}+{posx}+{posy}")
+		self.minsize(height=min_height, width=min_width)
+		self.update()
+		self.update_idletasks()
+	@time_it
+	def window_scale(self, percent:int) -> tuple[int, int]:
+		return int((self.winfo_screenwidth()/100)*percent), int((self.winfo_screenheight()/100)*percent)
+		
+
+class __processor:
+	@time_it
+	def __init__(self, method="pack"):
+		self.methods = {"pack":None, "place":None, "grid":None}
+		self.method = method
+		self.widgets = []
+		self.pack = self.place = self.grid = self.process
+	@time_it
+	def add(self, widget, **kwargs):
+		self.widgets.append({"widget":widget, "options":kwargs})
+		return widget
+	def process(self):
+		m = self.methods[self.method]
+		for element in self.widgets:
+			##Dirty fix
+			logging.getLogger('rapidTk').rtkverbose(f"packing element {element['widget']} with options {element['options']}")
+			if self.method == "pack":
+				element['widget'].pack(**element["options"])
+			elif self.method == "grid":
+				element['widget'].grid(**element["options"])
+			elif self.method == "place":
+				element['widget'].place(**element["options"])
+
+class PackProcess(__processor):
+	def __init__(self):
+		super().__init__(method="pack")
+class GridProcess(__processor):
+	def __init__(self):
+		super().__init__(method="grid")
+class PlaceProcess(__processor):
+	def __init__(self):
+		super().__init__(method="place")

@@ -1,0 +1,285 @@
+\hypertarget{examples__basic_8py_source}{}\doxysection{examples\+\_\+basic.\+py}
+\label{examples__basic_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/examples/examples\_basic.py@{C:/Python310/Lib/site-\/packages/rapidTk/examples/examples\_basic.py}}
+\mbox{\hyperlink{examples__basic_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00001}\mbox{\hyperlink{namespaceexamples__basic}{00001}}\ \textcolor{keyword}{import}\ sys}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00002}00002\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ Scrollbar,\ Event}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00003}00003\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00004}00004\ \textcolor{keyword}{from}\ rapidTk\ \textcolor{keyword}{import}\ *}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00005}00005\ \textcolor{keyword}{import}\ logging}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00006}00006\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00007}00007\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00008}00008\ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00009}00009\ \textcolor{stringliteral}{rapdTk\ Log\ Levels:}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00010}00010\ \textcolor{stringliteral}{|\ \ \ 1|\ Standard\ User\ Logging\ (meant\ }\textcolor{keywordflow}{for}\ user\ code)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00011}00011\ |\ \ \ 9|\ Dedug\ Logging}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00012}00012\ |\ \ 19|\ Information\ Logging}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00013}00013\ |\ \ 29|\ Warning\ Logs}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00014}00014\ |\ \ 39|\ Error\ Logs}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00015}00015\ |\ \ 49|\ Critical\ Logs}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00016}00016\ |\ \ 99|\ Verbose\ Logs\ (all\ logs,\ all\ timers,\ all\ function\ calls)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00017}00017\ |\ 100|\ Unit\ Logs\ (used\ \textcolor{keywordflow}{for}\ unit\ testing\ to\ \textcolor{keyword}{assert}\ \textcolor{keyword}{True}\ \textcolor{keywordflow}{if}\ test\ succees)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00018}00018\ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00019}00019\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00020}00020\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00021}\mbox{\hyperlink{namespaceexamples__basic_af5e59c52e06ea3668a234820b01386b4}{00021}}\ \textcolor{stringliteral}{def\ example\_basic\_objects():}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00022}00022\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00023}00023\ \ \ \ \ To\ create\ a\ rapidTk\ instance\ use\ the\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()\ method\ which\ overwires\ the\ Tk()\ method\ \textcolor{keywordflow}{and}\ returns\ the\ Tk()\ method.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00024}00024\ \ \ \ \ As\ it\ returns\ the\ Tk()\ method\ all\ commands\ on\ root\ are\ still\ valid\ \textcolor{keywordflow}{if}\ they\ are\ valid\ on\ a\ Tk()\ object.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00025}00025\ \ \ \ \ rTk\ only\ uses\ Pack()\ methods\ over\ grid()\ \textcolor{keywordflow}{and}\ place().\ grid()\ may\ be\ added\ \textcolor{keywordflow}{in}\ the\ future\ however\ place()\ will\ \textcolor{keywordflow}{not}\ be\ supported\ due\ to\ bad\ design\ useage.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00026}00026\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00027}00027\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1_pack_process}{PackProcess}}()\ \textcolor{keywordflow}{is}\ a\ \textcolor{keyword}{class\ }that\ lets\ you\ create\ all\ objecst\ in\ the\ correct\ order\ and\ the\ pack\ them\ in\ that\ order\ later.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00028}00028\ \ \ \ \ to\ use,\ initilise\ the\ \textcolor{keyword}{class\ }and\ use\ the\ add()\ method\ to\ add\ widgets\ to\ the\ list\ and\ finally\ call\ the\ pack()\ method.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00029}00029\ \ \ \ \ add()\ acceps\ all\ standard\ .pack()\ options\ \textcolor{keywordflow}{and}\ returns\ the\ widget\ unlike\ the\ original\ pack()\ method.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00030}00030\ \ \ \ \ e.g.\ myFrame\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root),\ side=TOP)\ \textcolor{comment}{\#accepts\ rapidTk\ Widgets}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00031}00031\ \ \ \ \ \ \ \ \ \ myFrame2\ =\ pp.add(Frame(root),\ side=TOP)\ \textcolor{comment}{\#accepts\ Tkinter\ Widgets}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00032}00032\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00033}00033\ \ \ \ \ c(Widget)\ \textcolor{keywordflow}{is}\ a\ \textcolor{keyword}{class\ }that\ overwites\ the\ original\ widget\ while\ keeping\ the\ widget\ accessible.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00034}00034\ \ \ \ \ There\ may\ be\ addition\ options\ avaibleble\ \textcolor{keywordflow}{in}\ the\ cWidget\ however\ all\ original\ options\ are\ kept\ too\ keep\ it\ \textcolor{keyword}{as}\ compatible\ \textcolor{keyword}{as}\ possible.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00035}00035\ \ \ \ \ All\ cWidgets,\ reWidgets\ \textcolor{keywordflow}{and}\ extended\ Widgets\ will\ have\ the\ methods\ of\ get\_self(),\ get\_parent()\ \textcolor{keywordflow}{and}\ get\_root().}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00036}00036\ \ \ \ \ These\ methods\ will\ \textcolor{keywordflow}{return}\ the\ Widget,\ the\ widgets\ parent\ \textcolor{keywordflow}{or}\ the\ root\ Widget.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00038}00038\ \ \ \ \ cLabel\ has\ 2\ additional\ methods\ of\ get()\ \textcolor{keywordflow}{and}\ set()\ which\ get\ \textcolor{keywordflow}{and}\ set\ the\ text\ option.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00039}00039\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00040}00040\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}()\ has\ an\ addition\ option\ of\ value\ which\ automatically\ sets\ up\ a\ StringVar\ textvariable\ \textcolor{keywordflow}{and}\ sets\ that\ to\ the\ value.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00041}00041\ \ \ \ \ It\ also\ creates\ a\ popup\ rightclick\ menu\ \textcolor{keywordflow}{for}\ cut,\ copy,\ select\ all\ \textcolor{keywordflow}{and}\ paste.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00042}00042\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00043}00043\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00044}00044\ \textcolor{stringliteral}{\ \ \ \ root\ =\ rapidTk()}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00045}00045\ \textcolor{stringliteral}{\ \ \ \ pp\ =\ PackProcess()}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00046}00046\ \textcolor{stringliteral}{\ \ \ \ main\ =\ pp.add(cFrame(root),\ side=TOP,\ fill=BOTH,\ expand=1)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00047}00047\ \textcolor{stringliteral}{\ \ \ \ pp.add(cLabel(main,\ text="{}This\ is\ a\ basic\ rapidTk\ Label."{}),\ side=TOP,\ fill=X)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00048}00048\ \textcolor{stringliteral}{\ \ \ \ pp.add(cButton(main,\ text="{}This\ is\ an\ Example\ Button"{}),\ side=TOP)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00049}00049\ \textcolor{stringliteral}{\ \ \ \ pp.add(cEntry(main,\ value="{}Some\ Default\ Text"{}),\ side=TOP,\ fill=X)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00050}00050\ \textcolor{stringliteral}{\ \ \ \ pp.pack()}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00051}00051\ \textcolor{stringliteral}{\ \ \ \ root.mainloop()}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00052}00052\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00053}00053\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00054}\mbox{\hyperlink{namespaceexamples__basic_a7e2f8e60523585bd55ce604401852ee4}{00054}}\ \textcolor{stringliteral}{def\ example\_basic\_objects2():}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00055}00055\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00056}00056\ \ \ \ \ cCanvas\ (WIP)\ \textcolor{keywordflow}{is}\ just\ a\ canvas\ widget\ \textcolor{keyword}{with}\ no\ special\ functions\ yet.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00057}00057\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00058}00058\ \ \ \ \ cTreeview\ \textcolor{keywordflow}{is}\ an\ TreeView\ widget\ \textcolor{keyword}{with}\ automatic\ row-\/highligh,\ colour\ options\ \textcolor{keywordflow}{and}\ sort\ options.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00059}00059\ \ \ \ \ It\ can\ also\ be\ linked\ to\ a\ checkbox\ to\ hide\ data\ automatically,\ this\ \textcolor{keywordflow}{is}\ shown\ \textcolor{keywordflow}{in}\ the\ opts.var.trace\ method.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00060}00060\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00061}00061\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_scrolled_text}{cScrolledText}}()\ has\ a\ default\ value\ that\ can\ be\ set.\ It\ also\ has\ the\ same\ menu\ \textcolor{keyword}{as}\ cEntry\ \textcolor{keyword}{with}\ cut,\ copy,\ selectall\ \textcolor{keywordflow}{and}\ paste\ options}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00062}00062\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00063}00063\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_checkbutton}{cCheckbutton}}()\ has\ get()\ \textcolor{keywordflow}{and}\ set()\ methods\ which\ use\ the\ IntVar\ built\ into\ the\ \textcolor{keyword}{class}.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00064}00064\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00065}00065\ \ \ \ \ cOptionMeny()\ has\ a\ defautl\ value,\ a\ list\ of\ valid\ options\ \textcolor{keywordflow}{and}\ a\ list\ of\ none\ valid\ options\ \textcolor{keywordflow}{if}\ needed.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00066}00066\ \ \ \ \ If\ the\ default\ value\ \textcolor{keywordflow}{is}\ part\ of\ the\ options\ it\ will\ \textcolor{keywordflow}{not}\ duplicate\ it\ \textcolor{keywordflow}{in}\ the\ options.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00067}00067\ \ \ \ \ non\_valid\ \textcolor{keywordflow}{is}\ just\ a\ safe\ way\ to\ remove\ options\ over\ time\ without\ adjusting\ code.\ This\ can\ be\ used\ \textcolor{keywordflow}{if}\ options\ \textcolor{keywordflow}{is}\ gathered\ \textcolor{keyword}{from}\ an\ external\ source.}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00068}00068\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00069}00069\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00070}00070\ \textcolor{stringliteral}{\ \ \ \ root\ =\ rapidTk()}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00071}00071\ \textcolor{stringliteral}{\ \ \ \ pp\ =\ PackProcess()}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00072}00072\ \textcolor{stringliteral}{\ \ \ \ }}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00073}00073\ \textcolor{stringliteral}{\ \ \ \ cv\ =\ pp.add(cCanvas(root),\ side=TOP,\ fill=BOTH,\ expand=1)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00074}00074\ \textcolor{stringliteral}{\ \ \ \ \#\#example\ TreeView}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00075}00075\ \textcolor{stringliteral}{\ \ \ \ treeFrame\ =\ pp.add(cFrame(cv),\ side=TOP,\ fill=X,\ expand=1)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00076}00076\ \textcolor{stringliteral}{\ \ \ \ myTree\ =\ pp.add(cTreeview(treeFrame),\ side=LEFT,\ fill=X)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00077}00077\ \textcolor{stringliteral}{\ \ \ \ vsb\ =\ pp.add(Scrollbar(treeFrame,\ orient="{}vertical"{},command=myTree.yview),\ side=LEFT,\ fill=Y)\ }}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00078}00078\ \textcolor{stringliteral}{\ \ \ \ myTree.configure(yscrollcommand=vsb.set)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00079}00079\ \textcolor{stringliteral}{\ \ \ \ myTree.set\_cols(['Test1',\ 'Test2'])}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00080}00080\ \textcolor{stringliteral}{\ \ \ \ for\ i\ in\ range(0,\ 30,\ 2):}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00081}00081\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ rc\ =\ myTree.insert(values=[str(i),\ str(i+1)])}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00082}00082\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ }\textcolor{keywordflow}{if}\ i\%3\ ==\ 0\ \textcolor{keywordflow}{and}\ i\ !=\ 0:}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00083}00083\ \ \ \ \ \ \ \ \ \ \ \ \ myTree.detached\_data.append(rc)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00084}00084\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00085}00085\ \ \ \ \ myText\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_scrolled_text}{cScrolledText}}(cv,\ value=\textcolor{stringliteral}{"{}This\ is\ a\ test\ Value\(\backslash\)nWith\ Multiple\(\backslash\)nLines"{}}),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00086}00086\ \ \ \ \ f2\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(cv),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00087}00087\ \ \ \ \ myCheck\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_checkbutton}{cCheckbutton}}(f2),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00088}00088\ \ \ \ \ myOptions\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu}{cOptionMenu}}(f2,\ default=\textcolor{stringliteral}{'Hello'},\ options=[\textcolor{stringliteral}{'Hello'},\ \textcolor{stringliteral}{'World'},\ \textcolor{stringliteral}{'How'},\ \textcolor{stringliteral}{'are'},\ \textcolor{stringliteral}{'you'},\ \textcolor{stringliteral}{'?'}],\ non\_valid=[\textcolor{stringliteral}{'are'}]),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00089}00089\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00090}00090\ \ \ \ \ myCheck.var.trace(\textcolor{stringliteral}{'w'},\ \textcolor{keyword}{lambda}\ a,\ b,\ c,\ e=Event(),\ v=myCheck:myTree.hide(a,\ b,\ c,\ e,\ v))}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00091}00091\ \ \ \ \ pp.pack()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00092}00092\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00093}00093\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00094}00094\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00095}\mbox{\hyperlink{namespaceexamples__basic_ad836802f10176d815a2e467fee58ced5}{00095}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_ad836802f10176d815a2e467fee58ced5}{example\_no\_PackProcess}}():}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00096}00096\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00097}00097\ \textcolor{stringliteral}{\ \ \ \ PackProcess()\ is\ an\ optional\ extra,\ all\ cWidgets\ support\ inline\ packing\ and\ also\ the\ .pack()\ method.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00098}00098\ \textcolor{stringliteral}{\ \ \ \ This\ can\ be\ extended\ to\ use\ .grid()\ and\ .place()\ if\ required.]}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00099}00099\ \textcolor{stringliteral}{\ \ \ \ The\ down\ side\ to\ inline\ packing\ is\ it\ creates\ and\ packs\ widgets\ 1\ at\ a\ time\ making\ layouts\ be\ created\ in\ the\ order\ coded.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00100}00100\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00101}00101\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00102}00102\ \ \ \ \ main\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root,\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00103}00103\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(main,\ text=\textcolor{stringliteral}{"{}This\ is\ a\ basic\ rapidTk\ Label."{}},\ side=TOP,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00104}00104\ \ \ \ \ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(main,\ text=\textcolor{stringliteral}{"{}cButton"{}},\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00105}00105\ \ \ \ \ myEntry\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(main,\ value=\textcolor{stringliteral}{"{}Some\ Default\ Text"{}}).pack(side=TOP,\ fill=X)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00106}00106\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00107}00107\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00108}00108\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00109}00109\ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00110}\mbox{\hyperlink{namespaceexamples__basic_a44203126b285043881544aacb50163f2}{00110}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_a44203126b285043881544aacb50163f2}{example\_basic\_logging\_timed\_widgets}}(pp,\ master,\ count):\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00111}00111\ \ \ \ \ widgets\ =\ []}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00112}00112\ \ \ \ \ \textcolor{keywordflow}{for}\ i\ \textcolor{keywordflow}{in}\ range(count):}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00113}00113\ \ \ \ \ \ \ \ \ widgets.append(pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(master,\ text=f\textcolor{stringliteral}{'\{i\}\ ::\ \{\_\_name\_\_\}'}),\ side=TOP))}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00114}00114\ \ \ \ \ \textcolor{keywordflow}{return}\ widgets}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00115}00115\ \textcolor{preprocessor}{@time\_it}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00116}\mbox{\hyperlink{namespaceexamples__basic_adfe49e3e2997951cc0096beaa52e6b83}{00116}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_adfe49e3e2997951cc0096beaa52e6b83}{example\_basic\_logging}}():}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00117}00117\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00118}00118\ \textcolor{stringliteral}{\ \ \ \ rapidTk\ contains\ its\ own\ logging\ options.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00119}00119\ \textcolor{stringliteral}{\ \ \ \ To\ enable\ logging\ simply\ call\ logging.getLogger('rapidTk').setLevel(level)\ with\ level\ >\ 0}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00120}00120\ \textcolor{stringliteral}{\ \ \ \ To\ disable\ logging\ set\ level\ to\ 0}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00121}00121\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00122}00122\ \textcolor{stringliteral}{\ \ \ \ most\ logging\ will\ be\ handled\ internally\ by\ rapidTk,\ however\ a\ custom\ log\ method\ has\ been\ included\ to\ replace\ normal\ print()\ statements.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00123}00123\ \textcolor{stringliteral}{\ \ \ \ to\ use\ simply\ get\ the\ logger\ and\ use\ the\ rtklog('message')\ method\ as\ shown\ in\ the\ below\ example.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00124}00124\ \textcolor{stringliteral}{\ \ \ \ rapidTk\ also\ implements\ a\ performance\ timer\ wrapper\ to\ easlily\ identify\ how\ long\ widget\ creating\ is\ taking.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00125}00125\ \textcolor{stringliteral}{\ \ \ \ add\ the\ @time\_it\ wrapper\ to\ any\ function\ and\ set\ log\ level\ to\ 99\ to\ start\ collecting\ timers.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00126}00126\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00127}00127\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00128}00128\ \ \ \ \ rtklogger\ =\ logging.getLogger(\textcolor{stringliteral}{'rapidTk'})\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00129}00129\ \ \ \ \ rtklogger.setLevel(99)\ \textcolor{comment}{\#\ sets\ log\ level\ to\ 99\ for\ verbose\ logging.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00130}00130\ \ \ \ \ \textcolor{comment}{\#rtklogger.setLevel(1)\ \#\ sets\ log\ level\ to\ \ 1\ for\ user\ logging}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00131}00131\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00132}00132\ \ \ \ \ \textcolor{comment}{\#Create\ a\ basic\ window}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00133}00133\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00134}00134\ \ \ \ \ root.geometry(\textcolor{stringliteral}{'320x150'})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00135}00135\ \ \ \ \ pp\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1_pack_process}{PackProcess}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00136}00136\ \ \ \ \ main\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00137}00137\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00138}00138\ \ \ \ \ widgets\ =\ \mbox{\hyperlink{namespaceexamples__basic_a44203126b285043881544aacb50163f2}{example\_basic\_logging\_timed\_widgets}}(pp,\ main,\ 100)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00139}00139\ \ \ \ \ \textcolor{comment}{\#rtklogger.rtklog(widgets)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00140}00140\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00141}00141\ \ \ \ \ rtklogger.rtklog(\textcolor{stringliteral}{'all\ widgets\ have\ been\ created,\ starting\ packing'})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00142}00142\ \ \ \ \ pp.pack()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00143}00143\ \ \ \ \ rtklogger.rtklog(\textcolor{stringliteral}{'widgets\ have\ been\ packed\ |\ starting\ mainloop'})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00144}00144\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00145}00145\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00146}00146\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00147}\mbox{\hyperlink{namespaceexamples__basic_ac623279cfc78d5e9f98cb08fe2f15c5d}{00147}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_ac623279cfc78d5e9f98cb08fe2f15c5d}{example\_basic\_menu}}():}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00148}00148\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00149}00149\ \textcolor{stringliteral}{\ \ \ \ cMenu\ is\ a\ quick\ and\ efficent\ way\ to\ make\ simple\ menus.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00150}00150\ \textcolor{stringliteral}{\ \ \ \ The\ only\ thing\ you\ need\ to\ provide\ is\ context\ on\ creation.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00151}00151\ \textcolor{stringliteral}{\ \ \ \ context\ is\ a\ dictionary\ of\ \{Menu(.submenu(s)).Label\ :\ command\}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00152}00152\ \textcolor{stringliteral}{\ \ \ \ example:}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00153}00153\ \textcolor{stringliteral}{\ \ \ \ context=\{"{}Menu.Submenu1.Submenu2.options"{}:lambda\ m="{}test"{}:print(m)\}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00154}00154\ \textcolor{stringliteral}{\ \ \ \ will\ create\ a\ main\ menu\ called\ "{}Menu"{}\ with\ a\ submenu\ called\ Submenu1\ with\ a\ submenu\ called\ "{}Submenu2"{}\ with\ an\ option\ called\ "{}options"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00155}00155\ \textcolor{stringliteral}{\ \ \ \ The\ "{}options"{}\ option\ will\ run\ the\ command\ when\ clicked.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00156}00156\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00157}00157\ \textcolor{stringliteral}{\ \ \ \ Note:\ subtree\ paths\ do\ not\ stack.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00158}00158\ \textcolor{stringliteral}{\ \ \ \ "{}Menu.Submenu1.Submenu2"{}\ is\ not\ the\ same\ as\ "{}Submenu1.Submenu2"{}.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00159}00159\ \textcolor{stringliteral}{\ \ \ \ This\ will\ create\ 2\ menus\ called\ "{}Menu"{}\ and\ "{}Submenu1"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00160}00160\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00161}00161\ \textcolor{stringliteral}{\ \ \ \ all\ submenus\ and\ options\ can\ be\ accessed\ though\ the\ cMenu.sub\_menus\ and\ cMenu.options\ dictionarys.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00162}00162\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00163}00163\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00164}00164\ \ \ \ \ root.geometry(\textcolor{stringliteral}{'320x150'})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00165}00165\ \ \ \ \ main\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root,\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00166}00166\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00167}00167\ \ \ \ \ menu\_context\ =\ \{}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00168}00168\ \ \ \ \ \textcolor{stringliteral}{'File.Open'}:\ \textcolor{keyword}{lambda}\ m=\textcolor{stringliteral}{"{}Open"{}}:print(m),}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00169}00169\ \ \ \ \ \textcolor{stringliteral}{'File.System.Advanced.Close'}:\ \textcolor{keyword}{lambda}\ m=\textcolor{stringliteral}{"{}Close"{}}:print(m),}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00170}00170\ \ \ \ \ \textcolor{stringliteral}{'File.Quit'}:\ \textcolor{keyword}{lambda}\ m=\textcolor{stringliteral}{"{}Quit"{}}:print(m),}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00171}00171\ \ \ \ \ \textcolor{stringliteral}{'System.Kill'}:\ \textcolor{keyword}{lambda}\ m=\textcolor{stringliteral}{"{}Kill"{}}:print(m),}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00172}00172\ \ \ \ \ \textcolor{stringliteral}{'Exit'}:\ \textcolor{keyword}{lambda}\ m=\textcolor{stringliteral}{"{}Exit"{}}:print(m)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00173}00173\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00174}00174\ \ \ \ \ myMenu\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_menu}{cMenu}}(root,\ context=menu\_context)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00175}00175\ \ \ \ \ log\ =\ logging.getLogger(\textcolor{stringliteral}{'rapidTk'})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00176}00176\ \ \ \ \ log.rtklog(myMenu.sub\_menus)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00177}00177\ \ \ \ \ log.rtklog(myMenu.options)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00178}00178\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00179}00179\ \ \ \ \ root.config(menu=myMenu)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00180}00180\ \ \ \ \ root.bind(\textcolor{stringliteral}{"{}<Button-\/3>"{}},\ myMenu.\_do\_popup)\ \textcolor{comment}{\#bind\ to\ right\ click\ when\ widget\ clicked.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00181}00181\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00182}00182\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00183}00183\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00184}\mbox{\hyperlink{namespaceexamples__basic_ae43f9021ce0bcebb3417d85be416fd3b}{00184}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_ae43f9021ce0bcebb3417d85be416fd3b}{example\_get\_runner}}(event,\ options,\ start,\ end,\ widgets,\ out):\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00185}00185\ \ \ \ \ out.configure(text=widgets[options.get()].get(start.get(),\ end.get()))}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00186}\mbox{\hyperlink{namespaceexamples__basic_a55f98c285b7aca224ddc7c9cd67f52b3}{00186}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_a55f98c285b7aca224ddc7c9cd67f52b3}{example\_get}}():}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00187}00187\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00188}00188\ \textcolor{stringliteral}{\ \ \ \ cWidgets\ that\ have\ text\ values\ support\ the\ get()\ method.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00189}00189\ \textcolor{stringliteral}{\ \ \ \ get(start,\ end)\ or\ get()\ are\ both\ valid\ options\ for\ all\ widgets\ that\ support\ the\ get()\ method.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00190}00190\ \textcolor{stringliteral}{\ \ \ \ !This\ overwrites\ the\ standard\ tk\ get()\ method.\ }}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00191}00191\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00192}00192\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00193}00193\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}(log\_level=0)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00194}00194\ \ \ \ \ pp\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1_pack_process}{PackProcess}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00195}00195\ \ \ \ \ main\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00196}00196\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00197}00197\ \ \ \ \ config\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(main,\ borderwidth=3,\ relief=\textcolor{stringliteral}{'raised'}),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00198}00198\ \ \ \ \ holder\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(main,\ borderwidth=3,\ relief=\textcolor{stringliteral}{'groove'}),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00199}00199\ \ \ \ \ w=\{\}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00200}00200\ \ \ \ \ w[\textcolor{stringliteral}{'cLabel'}]\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(holder,\ text=\textcolor{stringliteral}{"{}This\ is\ a\ basic\ rapidTk\ Label."{}}),\ side=TOP,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00201}00201\ \ \ \ \ w[\textcolor{stringliteral}{'cButton'}]\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(holder,\ text=\textcolor{stringliteral}{"{}This\ is\ an\ Example\ Button"{}}),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00202}00202\ \ \ \ \ w[\textcolor{stringliteral}{'cEntry'}]\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(holder,\ value=\textcolor{stringliteral}{"{}Some\ Default\ Text"{}}),\ side=TOP,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00203}00203\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00204}00204\ \ \ \ \ options\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu}{cOptionMenu}}(config,\ options=[\textcolor{stringliteral}{'cLabel'},\ \textcolor{stringliteral}{'cButton'},\ \textcolor{stringliteral}{'cEntry'}]),\ side=LEFT,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00205}00205\ \ \ \ \ start\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(config,\ value=\textcolor{stringliteral}{"{}"{}}),\ side=LEFT,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00206}00206\ \ \ \ \ start.set(\textcolor{keywordtype}{None},\ \textcolor{stringliteral}{"{}Some\ Text"{}})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00207}00207\ \ \ \ \ end\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(config,\ value=\textcolor{stringliteral}{"{}"{}}),\ side=LEFT,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00208}00208\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00209}00209\ \ \ \ \ output\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(holder,\ text=\textcolor{stringliteral}{"{}This\ will\ be\ the\ output"{}}),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00210}00210\ \ \ \ \ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(config,\ text=\textcolor{stringliteral}{"{}Check\ Output"{}},\ command=\textcolor{keyword}{lambda}\ e=Event,\ o=options,\ s=start,\ ed=end,\ w=w,\ out=output:\ \mbox{\hyperlink{namespaceexamples__basic_ae43f9021ce0bcebb3417d85be416fd3b}{example\_get\_runner}}(e,\ o,\ s,\ ed,\ w,\ out)),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00211}00211\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00212}00212\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00213}00213\ \ \ \ \ pp.pack()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00214}00214\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00215}\mbox{\hyperlink{namespaceexamples__basic_a753b9ee614f91cbb231537c603223bb8}{00215}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_a753b9ee614f91cbb231537c603223bb8}{example\_set\_runner}}(event,\ options,\ index,\ inp,\ widgets,\ out):\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00216}00216\ \ \ \ \ widgets[options.get()].set(index.get(),\ inp.get())}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00217}\mbox{\hyperlink{namespaceexamples__basic_aad103d88a15c556e4512a75fc17f22f5}{00217}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_aad103d88a15c556e4512a75fc17f22f5}{example\_basic\_set}}():}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00218}00218\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00219}00219\ \textcolor{stringliteral}{\ \ \ \ !WIP!\ This\ feature\ is\ currently\ a\ WIP\ and\ only\ works\ for\ cButton,\ cLable,\ cEntry,\ cScrolledText\ and\ their\ subclasses\ (e.g.\ reEntry,\ ImageLabel,\ iButton)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00220}00220\ \textcolor{stringliteral}{\ \ \ \ As\ with\ get()\ all\ widgets\ with\ text\ values\ will\ support\ the\ set()\ method.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00221}00221\ \textcolor{stringliteral}{\ \ \ \ set(index,\ text)\ and\ set(text)\ are\ both\ valid\ options.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00222}00222\ \textcolor{stringliteral}{\ \ \ \ set(index,\ text)\ will\ get\ the\ origial\ text\ valie\ and\ append\ the\ text\ from\ the\ index\ position\ (this\ will\ remove\ any\ additional\ text\ beyond\ index+text\ length)}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00223}00223\ \textcolor{stringliteral}{\ \ \ \ set(text)\ will\ clear\ the\ current\ text\ and\ replace\ it\ with\ the\ specified\ text}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00224}00224\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00225}00225\ \textcolor{stringliteral}{\ \ \ \ !This\ overwrites\ the\ tkinter\ set()\ method.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00226}00226\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00227}00227\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}(log\_level=0)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00228}00228\ \ \ \ \ pp\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1_pack_process}{PackProcess}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00229}00229\ \ \ \ \ main\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(root),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00230}00230\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00231}00231\ \ \ \ \ config\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(main,\ borderwidth=3,\ relief=\textcolor{stringliteral}{'raised'}),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00232}00232\ \ \ \ \ holder\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_frame}{cFrame}}(main,\ borderwidth=3,\ relief=\textcolor{stringliteral}{'groove'}),\ side=TOP,\ fill=BOTH,\ expand=1)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00233}00233\ \ \ \ \ w=\{\}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00234}00234\ \ \ \ \ w[\textcolor{stringliteral}{'cLabel'}]\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(holder,\ text=\textcolor{stringliteral}{"{}This\ is\ a\ basic\ rapidTk\ Label."{}}),\ side=TOP,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00235}00235\ \ \ \ \ w[\textcolor{stringliteral}{'cButton'}]\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(holder,\ text=\textcolor{stringliteral}{"{}This\ is\ an\ Example\ Button"{}}),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00236}00236\ \ \ \ \ w[\textcolor{stringliteral}{'cEntry'}]\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(holder,\ value=\textcolor{stringliteral}{"{}Some\ Default\ Text"{}}),\ side=TOP,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00237}00237\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00238}00238\ \ \ \ \ options\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu}{cOptionMenu}}(config,\ options=[\textcolor{stringliteral}{'cLabel'},\ \textcolor{stringliteral}{'cButton'},\ \textcolor{stringliteral}{'cEntry'}]),\ side=LEFT,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00239}00239\ \ \ \ \ ind\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(config,\ value=\textcolor{stringliteral}{"{}"{}}),\ side=LEFT,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00240}00240\ \ \ \ \ set\_input\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}}(config,\ value=\textcolor{stringliteral}{"{}"{}}),\ side=LEFT,\ fill=X)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00241}00241\ \ \ \ \ set\_input.set(\textcolor{keywordtype}{None},\ \textcolor{stringliteral}{"{}Some\ Text"{}})}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00242}00242\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00243}00243\ \ \ \ \ output\ =\ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(holder,\ text=\textcolor{stringliteral}{"{}This\ will\ be\ the\ output"{}}),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00244}00244\ \ \ \ \ pp.add(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(config,\ text=\textcolor{stringliteral}{"{}Set\ text"{}},\ command=\textcolor{keyword}{lambda}\ e=Event,\ o=options,\ i=ind,\ inp=set\_input,\ w=w,\ out=output:\ \mbox{\hyperlink{namespaceexamples__basic_a753b9ee614f91cbb231537c603223bb8}{example\_set\_runner}}(e,\ o,\ i,\ inp,\ w,\ out)),\ side=TOP)}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00245}00245\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00246}00246\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00247}00247\ \ \ \ \ pp.pack()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00248}00248\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00249}00249\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00250}\mbox{\hyperlink{namespaceexamples__basic_ae6d2801d11d59f36b6cd0db64ca71084}{00250}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_ae6d2801d11d59f36b6cd0db64ca71084}{switch\_language}}(e:Event,\ \_l:localization,\ b:cButton,\ lb:cLabel):\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00251}00251\ \ \ \ \ \_l.set\_local(\textcolor{stringliteral}{'fr'})\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00252}00252\ \ \ \ \ lb.configure(text=\_l.example.hello)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00253}00253\ \ \ \ \ b.configure(text=\_l.example.changeLanguage)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00254}00254\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00255}00255\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00256}\mbox{\hyperlink{namespaceexamples__basic_a24ad576842ec8b866bb5f0502c8e160c}{00256}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespaceexamples__basic_a24ad576842ec8b866bb5f0502c8e160c}{example\_baisc\_language}}():}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00257}00257\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00258}00258\ \textcolor{stringliteral}{\ \ \ \ A\ global\ language\ string\ subsystem.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00259}00259\ \textcolor{stringliteral}{\ \ \ \ This\ allows\ you\ to\ configure\ xml\ files\ (format\ found\ in\ assets/local/)\ and\ create\ a\ sequence\ of\ strings.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00260}00260\ \textcolor{stringliteral}{\ \ \ \ having\ multiple\ xml\ files\ allows\ the\ user\ to\ switch\ between\ different\ string\ definitions\ or\ languages\ by\ calling\ the\ set\_local()\ method\ with\ the\ filename\ of\ the\ xml.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00261}00261\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00262}00262\ \textcolor{stringliteral}{\ \ \ \ it\ is\ recommended\ to\ set\ the\ call\ on\ a\ global\ scope\ and\ use\ \_l\ or\ similar\ to\ access\ it\ throughout\ your\ code.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00263}00263\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00264}00264\ \textcolor{stringliteral}{\ \ \ \ this\ can\ also\ be\ used\ to\ replace\ long\ string\ values\ into\ simple\ dot\ notated\ refrences\ making\ code\ look\ cleaner.}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00265}00265\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00266}00266\ \ \ \ \ \_l\ =\ \mbox{\hyperlink{classrapid_tk_1_1language_1_1localization}{localization}}(lang=\textcolor{stringliteral}{'en\_gb'},\ localpath=\textcolor{stringliteral}{'../assets/local/'})\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00267}00267\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00268}00268\ \ \ \ \ root\ =\ \mbox{\hyperlink{classrapid_tk_1_1____main_____1_1rapid_tk}{rapidTk}}()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00269}00269\ \ \ \ \ lb\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_label}{cLabel}}(root,\ text=\_l.example.hello,\ side=TOP)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00270}00270\ \ \ \ \ change\ =\ \mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_button}{cButton}}(root,\ text=\_l.example.changeLanguage,\ side=TOP)\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00271}00271\ \ \ \ \ change.configure(command=\textcolor{keyword}{lambda}\ e=Event(),\ \_l=\_l,\ lb=lb,\ b=change:\mbox{\hyperlink{namespaceexamples__basic_ae6d2801d11d59f36b6cd0db64ca71084}{switch\_language}}(e,\ \_l,\ b,\ lb))\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00272}00272\ \ \ \ \ root.mainloop()}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00273}00273\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00274}00274\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00275}00275\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00276}00276\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00277}00277\ }
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00278}00278\ \textcolor{keywordflow}{if}\ \_\_name\_\_\ ==\ \textcolor{stringliteral}{"{}\_\_main\_\_"{}}:}
+\DoxyCodeLine{\Hypertarget{examples__basic_8py_source_l00279}00279\ \ \ \ \ \mbox{\hyperlink{namespaceexamples__basic_aad103d88a15c556e4512a75fc17f22f5}{example\_basic\_set}}()}
+
+\end{DoxyCode}

@@ -1,0 +1,83 @@
+\hypertarget{r_tk_logging_8py_source}{}\doxysection{r\+Tk\+Logging.\+py}
+\label{r_tk_logging_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/rTkLogging.py@{C:/Python310/Lib/site-\/packages/rapidTk/rTkLogging.py}}
+\mbox{\hyperlink{r_tk_logging_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00001}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging}{00001}}\ \textcolor{keyword}{import}\ logging}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00002}00002\ \textcolor{keyword}{import}\ inspect\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00003}00003\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00004}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_a27766fc0ad076a1693d6346dd61f596e}{00004}}\ RTKLOG\ =\ 1}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00005}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_ad6758cd0278eab5811109a48f8aa7009}{00005}}\ RTKDEBUG\ =\ 9}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00006}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_abed57acd7e6f7c9cbc84768dd88bc9b7}{00006}}\ RTKNFO\ =\ 19}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00007}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_a17b85fbf1a212d7b43b1b70a266b9da6}{00007}}\ RTKWARNING\ =\ 29}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00008}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_ac04e72de5b41a9702adda1705eba3193}{00008}}\ RTKERROR\ =\ 39}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00009}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_a87ecd987dc5cd15d2bf2d027b853be1b}{00009}}\ RTKCRITICAL\ =\ 49}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00010}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_af214bdd7ee18d422d6e114a8aee34a69}{00010}}\ RTKVERBOSE\ =\ 99}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00011}\mbox{\hyperlink{namespacerapid_tk_1_1r_tk_logging_a1c1510006352cac11b772128f36bfaa1}{00011}}\ RTKUNITS\ =\ 100}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00013}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger}{00013}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger}{rTkLogger}}(logging.Logger):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00014}00014\ \ \ \ \ logging.addLevelName(RTKLOG,\ \textcolor{stringliteral}{'rTk\_Log'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00015}00015\ \ \ \ \ logging.addLevelName(RTKDEBUG,\ \textcolor{stringliteral}{'rTk\_Debug'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00016}00016\ \ \ \ \ logging.addLevelName(RTKNFO,\ \textcolor{stringliteral}{'rTk\_Info'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00017}00017\ \ \ \ \ logging.addLevelName(RTKWARNING,\ \textcolor{stringliteral}{'rTk\_Warning'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00018}00018\ \ \ \ \ logging.addLevelName(RTKERROR,\ \textcolor{stringliteral}{'rTk\_Error'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00019}00019\ \ \ \ \ logging.addLevelName(RTKCRITICAL,\ \textcolor{stringliteral}{'rTk\_CRITICAL'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00020}00020\ \ \ \ \ logging.addLevelName(RTKVERBOSE,\ \textcolor{stringliteral}{'rapidTk'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00021}00021\ \ \ \ \ logging.addLevelName(RTKUNITS,\ \textcolor{stringliteral}{'unit'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00022}00022\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00023}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_afb2c8d3bf3ba986b14129aa50d640996}{00023}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_afb2c8d3bf3ba986b14129aa50d640996}{\_\_init\_\_}}(self,\ name):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00024}00024\ \ \ \ \ \ \ \ \ super(rTkLogger,\ self).\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_afb2c8d3bf3ba986b14129aa50d640996}{\_\_init\_\_}}(name)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00025}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aa082074e99c653783f7be71fc228b818}{00025}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aa082074e99c653783f7be71fc228b818}{logLevel}}\ =\ 0}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00026}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{00026}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}}\ =\ logging.NullHandler()}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00027}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ac4bfa9e5dec89ada69e74038883bb517}{00027}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ac4bfa9e5dec89ada69e74038883bb517}{fmat}}\ =\ logging.Formatter(\textcolor{stringliteral}{'\%(asctime)s\ \%(levelname)s\ \%(filename)s(\%(lineno)d)\ -\/\ \%(message)s'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00028}00028\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}}.setFormatter(self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ac4bfa9e5dec89ada69e74038883bb517}{fmat}})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00029}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_af519dfada0e2007a3495394927e14345}{00029}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_af519dfada0e2007a3495394927e14345}{hndlr}}\ =\ self.addHandler(self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00030}00030\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00031}00031\ \ \ \ \ \textcolor{keyword}{def\ }\_\_state(self,\ s,\ mod):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00032}00032\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00033}00033\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ s:}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00034}00034\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}}\ =\ logging.StreamHandler()}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00035}00035\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00036}00036\ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{'rapidTk\ Logging\ disabled'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00037}00037\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}}\ =\ logging.NullHandler()}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00038}00038\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}}.setFormatter(self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ac4bfa9e5dec89ada69e74038883bb517}{fmat}})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00039}00039\ \ \ \ \ \ \ \ \ self.addHandler(self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab529f5456f1d1e6efd86c2db237c3253}{handler}})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00040}00040\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_add7d050cb279a11772b482188f10bae4}{rtklog}}(f\textcolor{stringliteral}{'rapidTk\ Logging\ enabled\ at\ level\ \{self.logLevel\}\ set\ by\ \{mod\}'})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00041}00041\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00042}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_af12cad478ffe6523d99da03875e34c43}{00042}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_af12cad478ffe6523d99da03875e34c43}{setLevel}}(self,\ level:\ int):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00043}00043\ \ \ \ \ \ \ \ \ frm\ =\ inspect.stack()[1]}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00044}00044\ \ \ \ \ \ \ \ \ mod\ =\ inspect.getmodule(frm[0])}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00045}00045\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aa082074e99c653783f7be71fc228b818}{logLevel}}\ =\ level}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00046}00046\ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_af12cad478ffe6523d99da03875e34c43}{setLevel}}(self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aa082074e99c653783f7be71fc228b818}{logLevel}})}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00047}00047\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ level\ <\ 0:}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00048}00048\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a867c6e19dfe2acbe2dd5216462b63fc7}{\_\_state}}(\textcolor{keyword}{False},\ mod)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00049}00049\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00050}00050\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a867c6e19dfe2acbe2dd5216462b63fc7}{\_\_state}}(\textcolor{keyword}{True},\ mod)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00051}00051\ }
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00052}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_add7d050cb279a11772b482188f10bae4}{00052}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_add7d050cb279a11772b482188f10bae4}{rtklog}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00053}00053\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKLOG\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00054}00054\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKLOG,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00055}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a741e40cde78e42ab2ac0d8b5e7e90622}{00055}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a741e40cde78e42ab2ac0d8b5e7e90622}{rtkdebug}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00056}00056\ \ \ \ \ \ \ \ \ print(self.getEffectiveLevel())}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00057}00057\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKDEBUG\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00058}00058\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKDEBUG,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00059}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a5cc5acef29fc2fe12dc2f266f3ce0765}{00059}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a5cc5acef29fc2fe12dc2f266f3ce0765}{rtkinfo}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00060}00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKNFO\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00061}00061\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKNFO,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00062}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab1f8faf01cb00e3e7c65f30c4bf85241}{00062}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_ab1f8faf01cb00e3e7c65f30c4bf85241}{rtkwarning}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00063}00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKWARNING\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00064}00064\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKWARNING,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00065}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a8ef25305fc1b7f3e65f9d8da1bb15f0c}{00065}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a8ef25305fc1b7f3e65f9d8da1bb15f0c}{rtkerror}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00066}00066\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKERROR\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00067}00067\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKERROR,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00068}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aa8407cb2ef8b1f85b2601f3849dd47f5}{00068}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aa8407cb2ef8b1f85b2601f3849dd47f5}{rtkcritical}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00069}00069\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKCRITICAL\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00070}00070\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKCRITICAL,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00071}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aebd067b6a108ac7c580cf891f2c275c1}{00071}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_aebd067b6a108ac7c580cf891f2c275c1}{rtkverbose}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00072}00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKVERBOSE\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00073}00073\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKVERBOSE,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00074}\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a5b66d64fab83675a780c15abf63e98e2}{00074}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1r_tk_logging_1_1r_tk_logger_a5b66d64fab83675a780c15abf63e98e2}{rtkunit}}(self,\ msg,\ *args,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00075}00075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.getEffectiveLevel()\ >=\ RTKUNITS\ \textcolor{keywordflow}{and}\ self.isEnabledFor(self.getEffectiveLevel()):}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00076}00076\ \ \ \ \ \ \ \ \ \ \ \ \ super().\_log(RTKUNITS,\ msg,\ args,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_logging_8py_source_l00077}00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{assert}\ msg\ ==\ \textcolor{stringliteral}{'pass'}}
+
+\end{DoxyCode}

@@ -1,0 +1,203 @@
+\hypertarget{r_tk_calendar_8py_source}{}\doxysection{r\+Tk\+Calendar.\+py}
+\label{r_tk_calendar_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/rTkCalendar/rTkCalendar.py@{C:/Python310/Lib/site-\/packages/rapidTk/rTkCalendar/rTkCalendar.py}}
+\mbox{\hyperlink{r_tk_calendar_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00001}\mbox{\hyperlink{namespacer_tk_calendar}{00001}}\ \textcolor{keyword}{from}\ overrides\ \textcolor{keyword}{import}\ override}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00002}00002\ \textcolor{keyword}{from}\ tkcalendar\ \textcolor{keyword}{import}\ DateEntry}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00003}00003\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ StringVar}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00004}00004\ \textcolor{keyword}{import}\ re}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00005}00005\ \textcolor{keyword}{from}\ datetime\ \textcolor{keyword}{import}\ datetime,\ date}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00006}00006\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00007}00007\ \textcolor{keyword}{from}\ ..flags\ \textcolor{keyword}{import}\ \_\_ttk\_enabled\_\_}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00008}00008\ \textcolor{keyword}{from}\ ..rTkTheme\ \textcolor{keyword}{import}\ \_ThemeManager}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00009}00009\ \textcolor{keyword}{from}\ ..rTkUtils\ \textcolor{keyword}{import}\ widgetBase,\ \_UniqueIdentifiers}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00011}\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry}{00011}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry}{DateEntry}}(\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry}{DateEntry}},\ widgetBase):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00012}00012\ \ \ \ \ \textcolor{preprocessor}{@override}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00013}\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a6c6327348d99df2c1c0743699cc853ee}{00013}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a6c6327348d99df2c1c0743699cc853ee}{\_validate\_date}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00014}00014\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}Date\ entry\ validation:\ only\ dates\ in\ locale\ '\%x'\ format\ are\ accepted."{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00015}00015\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00016}00016\ \ \ \ \ \ \ \ \ \ \ \ \ date\ =\ self.parse\_date(super().get())}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00017}\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a22849a17997a05b782e0c87b8d4cb37b}{00017}}\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a22849a17997a05b782e0c87b8d4cb37b}{\_date}}\ =\ self.\_calendar.check\_date\_range(date)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00018}00018\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a22849a17997a05b782e0c87b8d4cb37b}{\_date}}\ !=\ date:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00019}00019\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_ae12e364de1dc1f6da45ec2f3b21674d6}{\_set\_text}}(self.format\_date(self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a22849a17997a05b782e0c87b8d4cb37b}{\_date}}))}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00020}00020\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00021}00021\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00022}00022\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00023}00023\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ (ValueError,\ IndexError):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00024}00024\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_ae12e364de1dc1f6da45ec2f3b21674d6}{\_set\_text}}(self.format\_date(self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a22849a17997a05b782e0c87b8d4cb37b}{\_date}}))}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00025}00025\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00026}00026\ \ \ \ \ \textcolor{preprocessor}{@override}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00027}\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_ae12e364de1dc1f6da45ec2f3b21674d6}{00027}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_ae12e364de1dc1f6da45ec2f3b21674d6}{\_set\_text}}(self,\ txt):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00028}00028\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}Insert\ text\ in\ the\ entry."{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00029}00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'readonly'}\ \textcolor{keywordflow}{in}\ self.state():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00030}00030\ \ \ \ \ \ \ \ \ \ \ \ \ readonly\ =\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00031}00031\ \ \ \ \ \ \ \ \ \ \ \ \ self.state((\textcolor{stringliteral}{'!readonly'},))}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00032}00032\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00033}00033\ \ \ \ \ \ \ \ \ \ \ \ \ readonly\ =\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00034}00034\ \ \ \ \ \ \ \ \ super().delete(0,\ \textcolor{stringliteral}{'end'})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00035}00035\ \ \ \ \ \ \ \ \ super().insert(0,\ txt)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00036}00036\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ readonly:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00037}00037\ \ \ \ \ \ \ \ \ \ \ \ \ self.state((\textcolor{stringliteral}{'readonly'},))}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00038}00038\ \ \ \ \ \textcolor{preprocessor}{@override}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00039}\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_abef0711b87f6c42bddc74dda4d024ab6}{00039}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_abef0711b87f6c42bddc74dda4d024ab6}{drop\_down}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00040}00040\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}Display\ or\ withdraw\ the\ drop-\/down\ calendar\ depending\ on\ its\ current\ state."{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00041}00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\_calendar.winfo\_ismapped():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00042}00042\ \ \ \ \ \ \ \ \ \ \ \ \ self.\_top\_cal.withdraw()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00043}00043\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00044}00044\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a6c6327348d99df2c1c0743699cc853ee}{\_validate\_date}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00045}00045\ \ \ \ \ \ \ \ \ \ \ \ \ date\ =\ self.parse\_date(super().get())}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00046}00046\ \ \ \ \ \ \ \ \ \ \ \ \ x\ =\ self.winfo\_rootx()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00047}00047\ \ \ \ \ \ \ \ \ \ \ \ \ y\ =\ self.winfo\_rooty()\ +\ self.winfo\_height()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00048}00048\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.winfo\_toplevel().attributes(\textcolor{stringliteral}{'-\/topmost'}):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00049}00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.\_top\_cal.attributes(\textcolor{stringliteral}{'-\/topmost'},\ \textcolor{keyword}{True})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00050}00050\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00051}00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.\_top\_cal.attributes(\textcolor{stringliteral}{'-\/topmost'},\ \textcolor{keyword}{False})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00052}00052\ \ \ \ \ \ \ \ \ \ \ \ \ self.\_top\_cal.geometry(\textcolor{stringliteral}{'+\%i+\%i'}\ \%\ (x,\ y))}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00053}00053\ \ \ \ \ \ \ \ \ \ \ \ \ self.\_top\_cal.deiconify()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00054}00054\ \ \ \ \ \ \ \ \ \ \ \ \ self.\_calendar.focus\_set()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00055}00055\ \ \ \ \ \ \ \ \ \ \ \ \ self.\_calendar.selection\_set(date)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00056}00056\ \ \ \ \ \textcolor{preprocessor}{@override}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00057}\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a4862233786c8084c640b31752fa37a2a}{00057}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a4862233786c8084c640b31752fa37a2a}{get\_date}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00058}00058\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}Return\ the\ content\ of\ the\ DateEntry\ as\ a\ datetime.date\ instance."{}"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00059}00059\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry_a6c6327348d99df2c1c0743699cc853ee}{\_validate\_date}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00060}00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.parse\_date(super().get())}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00061}00061\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00062}\mbox{\hyperlink{namespacer_tk_calendar_a072d24137bec463a234ddfab0574583f}{00062}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacer_tk_calendar_a072d24137bec463a234ddfab0574583f}{pack\_opts}}(**kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00063}00063\ \ \ \ \ pak\ =\ [\textcolor{stringliteral}{"{}side"{}},\ \textcolor{stringliteral}{"{}expand"{}},\ \textcolor{stringliteral}{"{}fill"{}}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00064}00064\ \ \ \ \ \textcolor{keywordflow}{if}\ \_\_ttk\_enabled\_\_:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00065}00065\ \ \ \ \ \ \ \ \ style\ =\ [\textcolor{stringliteral}{'bg'},\ \textcolor{stringliteral}{'height'},\ \textcolor{stringliteral}{'width'},\ \textcolor{stringliteral}{'borderwidth'},\ \textcolor{stringliteral}{'fg'},\ \textcolor{stringliteral}{'padx'},\ \textcolor{stringliteral}{'pady'},\ \textcolor{stringliteral}{'relief'},\ \textcolor{stringliteral}{'selectcolor'},\ \textcolor{stringliteral}{'anchor'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00066}00066\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00067}00067\ \ \ \ \ \ \ \ \ style\ =\ []}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00068}00068\ \ \ \ \ kw\_wid\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00069}00069\ \ \ \ \ kw\_pak\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00070}00070\ \ \ \ \ kw\_style\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00071}00071\ \ \ \ \ \textcolor{keywordflow}{for}\ k,\ v\ \textcolor{keywordflow}{in}\ kwargs.items():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00072}00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ k\ \textcolor{keywordflow}{in}\ pak:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00073}00073\ \ \ \ \ \ \ \ \ \ \ \ \ kw\_pak[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00074}00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ k\ \textcolor{keywordflow}{in}\ style:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00075}00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ k\ ==\ \textcolor{stringliteral}{"{}bg"{}}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00076}00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[\textcolor{stringliteral}{"{}background"{}}]\ =\ v}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00077}00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ k\ ==\ \textcolor{stringliteral}{"{}fg"{}}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00078}00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[\textcolor{stringliteral}{"{}foreground"{}}]\ =\ v}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00079}00079\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ k\ ==\ \textcolor{stringliteral}{"{}width"{}}:\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00080}00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{"{}text"{}}\ \textcolor{keywordflow}{in}\ kwargs.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00081}00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00082}00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00083}00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[k]\ =\ int(v/10)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00084}00084\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00085}00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00086}00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00087}00087\ \ \ \ \ \ \ \ \ \ \ \ \ kw\_wid[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00088}00088\ \ \ \ \ \textcolor{keywordflow}{return}\ kw\_wid,\ kw\_pak,\ kw\_style}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00089}\mbox{\hyperlink{namespacer_tk_calendar_acd36623da3c1d0805c79bd1e00d11a5b}{00089}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacer_tk_calendar_acd36623da3c1d0805c79bd1e00d11a5b}{style\_widget}}(wd,\ st,\ uuid=None,\ t=''):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00090}00090\ \ \ \ \ \textcolor{keywordflow}{if}\ st\ !=\ \{\}\ \textcolor{keywordflow}{or}\ uuid\ \textcolor{keywordflow}{is}\ \textcolor{keywordtype}{None}\ \textcolor{keywordflow}{or}\ t\ ==\ \textcolor{stringliteral}{''}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00091}00091\ \ \ \ \ \ \ \ \ style\ =\ \_ThemeManager().add\_style(f\textcolor{stringliteral}{"{}\{uuid\}.\{t\}"{}},\ st)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00092}00092\ \ \ \ \ \ \ \ \ wd.configure(style=f\textcolor{stringliteral}{"{}\{uuid\}.\{t\}"{}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00093}00093\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ style}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00094}00094\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00095}00095\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00096}00096\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00097}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry}{00097}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry}{cDateEntry}}(\mbox{\hyperlink{classr_tk_calendar_1_1_date_entry}{DateEntry}},\ widgetBase):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00098}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_af318770de5515a7b7ef0f2f1e993519b}{00098}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_af318770de5515a7b7ef0f2f1e993519b}{\_\_init\_\_}}(self,\ master,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00099}00099\ \ \ \ \ \ \ \ \ self.\_\_dict\_\_.update(kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00100}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_aaf8753c88dd16ad2ee13bba6afa31de2}{00100}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_aaf8753c88dd16ad2ee13bba6afa31de2}{\_myid}}\ =\ \_UniqueIdentifiers().new()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00101}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{00101}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}}\ =\ f\textcolor{stringliteral}{'\{self.\_myid\}.DateEntry'}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00102}00102\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'textvariable'}\ \textcolor{keywordflow}{in}\ kwargs.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00103}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{00103}}\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}\ =\ kwargs[\textcolor{stringliteral}{'textvariable'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00104}00104\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'text'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00105}00105\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00106}00106\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}\ =\ StringVar()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00107}00107\ \ \ \ \ \ \ \ \ \ \ \ \ kwargs[\textcolor{stringliteral}{'textvariable'}]\ =\ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00108}00108\ \ \ \ \ \ \ \ \ kw\_wid,\ kw\_pak,\ kw\_style\ =\ \mbox{\hyperlink{namespacer_tk_calendar_a072d24137bec463a234ddfab0574583f}{pack\_opts}}(**kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00109}00109\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'date\_pattern'}\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00110}00110\ \ \ \ \ \ \ \ \ \ \ \ \ kw\_wid[\textcolor{stringliteral}{'date\_pattern'}]\ =\ \textcolor{stringliteral}{"{}dd/mm/yyyy"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00111}00111\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'text'}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00112}00112\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.set(kw\_wid[\textcolor{stringliteral}{'text'}])}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00113}00113\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'text'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00114}00114\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00115}00115\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.set(\textcolor{stringliteral}{'01/01/1970'})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00116}00116\ \ \ \ \ \ \ \ \ super(cDateEntry,\ self).\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_af318770de5515a7b7ef0f2f1e993519b}{\_\_init\_\_}}(master,\ style=self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00117}00117\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00118}00118\ \ \ \ \ \ \ \ \ self.configure(kw\_wid)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00119}00119\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#self.style\ =\ style\_widget(self,\ kw\_style,\ self.\_myid,\ "{}TDateEntry"{})}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00120}00120\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ len(kw\_pak)\ !=\ 0:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00121}00121\ \ \ \ \ \ \ \ \ \ \ \ \ self.pack(kw\_pak)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00122}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a76b703a5d275e59913a45bc41aa39274}{00122}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a76b703a5d275e59913a45bc41aa39274}{detele}}(ind=0,\ end='end'):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00123}00123\ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_ac5040a5056fa94ad0fe73fc8af89f39f}{insert}}(0,\ \textcolor{stringliteral}{''})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00124}\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_ac5040a5056fa94ad0fe73fc8af89f39f}{00124}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_ac5040a5056fa94ad0fe73fc8af89f39f}{insert}}(self,\ ind=0,\ data=''):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00125}00125\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00126}00126\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ isinstance(data,\ datetime)\ \textcolor{keywordflow}{or}\ isinstance(data,\ date):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00127}00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_ac5040a5056fa94ad0fe73fc8af89f39f}{insert}}(ind,\ data.strftime(\textcolor{stringliteral}{"{}\%d/\%m/\%Y"{}}))}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00128}00128\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00129}00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_ac5040a5056fa94ad0fe73fc8af89f39f}{insert}}(ind,\ data)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00130}00130\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00131}00131\ \ \ \ \ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_ac5040a5056fa94ad0fe73fc8af89f39f}{insert}}(ind,\ data)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00132}00132\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00133}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_af90f71009beb40407d8902bb56cb5e9a}{00133}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry}{reDateEntry}}(\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry}{cDateEntry}},\ widgetBase):\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00134}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_aa193f0ee79f8903fd7a5a9d0cf412d21}{00134}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_af90f71009beb40407d8902bb56cb5e9a}{\_\_init\_\_}}(self,\ master,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00135}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{00135}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_aa193f0ee79f8903fd7a5a9d0cf412d21}{regex}}\ =\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00136}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a4d975a48484a48f59e6fe01acab38fab}{00136}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{bg}}\ =\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00137}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a7b8493f63b04fd5048d40d41783170b4}{00137}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a4d975a48484a48f59e6fe01acab38fab}{fg}}\ =\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00138}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a503425da4e148bd87d6ab3b88309c2eb}{00138}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a7b8493f63b04fd5048d40d41783170b4}{min}}\ =\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00139}00139\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a503425da4e148bd87d6ab3b88309c2eb}{max}}\ =\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00140}00140\ \ \ \ \ \ \ \ \ super(reDateEntry,\ self).\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_af90f71009beb40407d8902bb56cb5e9a}{\_\_init\_\_}}(master)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00141}00141\ \ \ \ \ \ \ \ \ kw\_wid,\ kw\_pak,\ kw\_style\ =\ \mbox{\hyperlink{namespacer_tk_calendar_a072d24137bec463a234ddfab0574583f}{pack\_opts}}(**kwargs)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00142}00142\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'fieldbackground'}\ \textcolor{keywordflow}{in}\ kw\_wid:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00143}00143\ \ \ \ \ \ \ \ \ \ \ \ \ self.style.configure(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ fieldbackground=kw\_wid[\textcolor{stringliteral}{'fieldbackground'}])}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00144}00144\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{bg}}\ =\ kw\_wid[\textcolor{stringliteral}{'fieldbackground'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00145}00145\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'fieldbackground'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00146}00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00147}00147\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{bg}}\ =\ self.style.lookup(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ \textcolor{stringliteral}{"{}fieldbackground"{}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00148}00148\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'foreground'}\ \textcolor{keywordflow}{in}\ kw\_wid:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00149}00149\ \ \ \ \ \ \ \ \ \ \ \ \ self.style.configure(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ fieldbackground=kw\_wid[\textcolor{stringliteral}{'foreground'}])}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00150}00150\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a4d975a48484a48f59e6fe01acab38fab}{fg}}\ =\ kw\_wid[\textcolor{stringliteral}{'foreground'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00151}00151\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'foreground'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00152}00152\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00153}00153\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{bg}}\ =\ self.style.lookup(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ \textcolor{stringliteral}{"{}foreground"{}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00154}00154\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'text'}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00155}00155\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.set(kw\_wid[\textcolor{stringliteral}{'text'}])}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00156}00156\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'text'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00157}00157\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00158}00158\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.set(\textcolor{stringliteral}{'01/01/1970'})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00159}00159\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'re'}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00160}00160\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_aa193f0ee79f8903fd7a5a9d0cf412d21}{regex}}\ =\ kw\_wid[\textcolor{stringliteral}{'re'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00161}00161\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'re'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00162}00162\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00163}00163\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_aa193f0ee79f8903fd7a5a9d0cf412d21}{regex}}\ =\ \textcolor{stringliteral}{'.*'}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00164}00164\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'min'}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00165}00165\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a7b8493f63b04fd5048d40d41783170b4}{min}}\ =\ kw\_wid[\textcolor{stringliteral}{'min'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00166}00166\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'min'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00167}00167\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'max'}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00168}00168\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a503425da4e148bd87d6ab3b88309c2eb}{max}}\ =\ kw\_wid[\textcolor{stringliteral}{'max'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00169}00169\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'max'}]}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00170}00170\ }
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00171}00171\ \ \ \ \ \ \ \ \ kw\_wid[\textcolor{stringliteral}{'textvariable'}]\ =\ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00172}00172\ \ \ \ \ \ \ \ \ self.configure(kw\_wid)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00173}00173\ \ \ \ \ \ \ \ \ self.style.configure(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ fieldbackground=self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{bg}},\ foreground=self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a4d975a48484a48f59e6fe01acab38fab}{fg}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00174}00174\ \ \ \ \ \ \ \ \ self.update()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00175}00175\ \ \ \ \ \ \ \ \ self.update\_idletasks()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00176}00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ len(kw\_pak)\ !=\ 0:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00177}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_afd67162f3db3932f7b2852a4eec7060b}{00177}}\ \ \ \ \ \ \ \ \ \ \ \ \ self.pack(kw\_pak)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00178}00178\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_afd67162f3db3932f7b2852a4eec7060b}{insert}}(self,\ pos,\ date="{}01/01/1970"{}):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00179}00179\ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_afd67162f3db3932f7b2852a4eec7060b}{insert}}(pos,\ date)}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00180}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ab1c09ff27c7700c2443475ede4b8093a}{00180}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ade6e73f57ab3d4c1057bff09c7b92f2c}{\_isvalid}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00181}00181\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ab1c09ff27c7700c2443475ede4b8093a}{get}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00182}\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ade6e73f57ab3d4c1057bff09c7b92f2c}{00182}}\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ab1c09ff27c7700c2443475ede4b8093a}{get}}(),\ self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ade6e73f57ab3d4c1057bff09c7b92f2c}{\_isvalid}}()}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00183}00183\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ade6e73f57ab3d4c1057bff09c7b92f2c}{\_isvalid}}(self):}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00184}00184\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00185}00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ab1c09ff27c7700c2443475ede4b8093a}{get}}()\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ [\textcolor{stringliteral}{''},\ \textcolor{keywordtype}{None}]:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00186}00186\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ match\ =\ re.match(self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_aa193f0ee79f8903fd7a5a9d0cf412d21}{regex}},\ self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ab1c09ff27c7700c2443475ede4b8093a}{get}}())}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00187}00187\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ match\ \textcolor{keywordflow}{or}\ self.parse\_date(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a42717dbd8a724d4dc0151efe8e2be167}{stvar}}.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ab1c09ff27c7700c2443475ede4b8093a}{get}}())\ >\ datetime.now().date():}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00188}00188\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.style.configure(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ fieldbackground=\textcolor{stringliteral}{"{}red"{}},\ foreground=\textcolor{stringliteral}{"{}white"{}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00189}00189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00190}00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00191}00191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.style.configure(self.\mbox{\hyperlink{classr_tk_calendar_1_1c_date_entry_a4e6b14693a291d938fc387b19330d16c}{\_mystyle\_name}},\ fieldbackground=self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_ad5bd5f73c46ec9746d1389d4df96187f}{bg}},\ foreground=self.\mbox{\hyperlink{classr_tk_calendar_1_1re_date_entry_a4d975a48484a48f59e6fe01acab38fab}{fg}})}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00192}00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00193}00193\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00194}00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00195}00195\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00196}00196\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{raise}}
+\DoxyCodeLine{\Hypertarget{r_tk_calendar_8py_source_l00197}00197\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+
+\end{DoxyCode}

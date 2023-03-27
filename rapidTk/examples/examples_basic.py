@@ -1,9 +1,10 @@
-import logging
-
 import sys
 from tkinter import Scrollbar, Event
 
 from rapidTk import *
+import logging
+rtklog = logging.getLogger('rapidTk')
+rtklog.setLevel(0)
 
 """
 rapdTk Log Levels:
@@ -62,7 +63,7 @@ def example_basic_objects2():
 
 	cCheckbutton() has get() and set() methods which use the IntVar built into the class.
 
-	cOptionMeny() has a defautl value, a list of valid options and a list of none valid options if needed.
+	cOptionMenu() has a defautl value, a list of valid options and a list of none valid options if needed.
 	If the default value is part of the options it will not duplicate it in the options.
 	non_valid is just a safe way to remove options over time without adjusting code. This can be used if options is gathered from an external source.
 
@@ -92,10 +93,9 @@ def example_basic_objects2():
 	root.mainloop()
 
 
-def example_no_PackProcess():
+def example_no_Process():
 	"""
-	PackProcess() is an optional extra, all cWidgets support inline packing and also the .pack() method.
-	This can be extended to use .grid() and .place() if required.]
+	PackProcess(), GridProcess() and PlaceProcess() are an optional extra, all cWidgets support inline layouts along with the standard layout methods.
 	The down side to inline packing is it creates and packs widgets 1 at a time making layouts be created in the order coded.
 	"""
 	root = rapidTk()
@@ -181,14 +181,16 @@ def example_basic_menu():
 	root.mainloop()
 
 
-def example_get_runner(event, options, start, end, widgets):
-	print(widgets[options.get()].get(start.get(), end.get()))
+def example_get_runner(event, options, start, end, widgets, out): ##used as part of example_get()
+	out.configure(text=widgets[options.get()].get(start.get(), end.get()))
 def example_get():
 	"""
-	
-	"""
+	cWidgets that have text values support the get() method.
+	get(start, end) or get() are both valid options for all widgets that support the get() method.
+	!This overwrites the standard tk get() method. 
 
-	root = rapidTk()
+	"""
+	root = rapidTk(log_level=0)
 	pp = PackProcess()
 	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
 
@@ -201,13 +203,128 @@ def example_get():
 
 	options = pp.add(cOptionMenu(config, options=['cLabel', 'cButton', 'cEntry']), side=LEFT, fill=X)
 	start = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	start.set(None, "Some Text")
 	end = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
-	pp.add(cButton(config, text="run", command=lambda e=Event, o=options, s=start, ed=end, w=w: example_get_runner(e, o, s, ed, w)), side=TOP)
+
+	output = pp.add(cLabel(holder, text="This will be the output"), side=TOP)
+	pp.add(cButton(config, text="Check Output", command=lambda e=Event, o=options, s=start, ed=end, w=w, out=output: example_get_runner(e, o, s, ed, w, out)), side=TOP)
+
+	
+	pp.pack()
+	root.mainloop()
+def example_set_runner(event, options, index, inp, widgets, out): ##used as part of example_set()
+	widgets[options.get()].set(index.get(), inp.get())
+def example_basic_set():
+	"""
+	!WIP! This feature is currently a WIP and only works for cButton, cLable, cEntry, cScrolledText and their subclasses (e.g. reEntry, ImageLabel, iButton)
+	As with get() all widgets with text values will support the set() method.
+	set(index, text) and set(text) are both valid options.
+	set(index, text) will get the origial text valie and append the text from the index position (this will remove any additional text beyond index+text length)
+	set(text) will clear the current text and replace it with the specified text
+
+	!This overwrites the tkinter set() method.
+	"""
+	root = rapidTk(log_level=0)
+	pp = PackProcess()
+	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
+
+	config = pp.add(cFrame(main, borderwidth=3, relief='raised'), side=TOP, fill=BOTH, expand=1)
+	holder = pp.add(cFrame(main, borderwidth=3, relief='groove'), side=TOP, fill=BOTH, expand=1)
+	w={}
+	w['cLabel'] = pp.add(cLabel(holder, text="This is a basic rapidTk Label."), side=TOP, fill=X)
+	w['cButton'] = pp.add(cButton(holder, text="This is an Example Button", cursor='@../assets/cur.cur'), side=TOP)
+	w['cEntry'] = pp.add(cEntry(holder, value="Some Default Text"), side=TOP, fill=X)
+
+	options = pp.add(cOptionMenu(config, options=['cLabel', 'cButton', 'cEntry']), side=LEFT, fill=X)
+	ind = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	set_input = pp.add(cEntry(config, value=""), side=LEFT, fill=X)
+	set_input.set(None, "Some Text")
+
+	output = pp.add(cLabel(holder, text="This will be the output"), side=TOP)
+	pp.add(cButton(config, text="Set text", command=lambda e=Event, o=options, i=ind, inp=set_input, w=w, out=output: example_set_runner(e, o, i, inp, w, out)), side=TOP)
 
 	
 	pp.pack()
 	root.mainloop()
 
+def switch_language(e:Event, _l:localization, b:cButton, lb:cLabel): ##used as part of example_basic_language
+	_l.set_local('fr') ##sets the local language strings present in fr.xml
+	lb.configure(text=_l.example.hello) ##changes the string to the new fr.xml -> resource.example.hello string
+	b.configure(text=_l.example.changeLanguage) ##changes the string to the new fr.xml -> resource.example.changeLanguage string
+
+
+def example_baisc_language():
+	"""
+	A global language string subsystem.
+	This allows you to configure xml files (format found in assets/local/) and create a sequence of strings.
+	having multiple xml files allows the user to switch between different string definitions or languages by calling the set_local() method with the filename of the xml.
+
+	it is recommended to set the call on a global scope and use _l or similar to access it throughout your code.
+
+	this can also be used to replace long string values into simple dot notated refrences making code look cleaner.
+	"""
+	_l = localization(lang='en_gb', localpath='../assets/local/') ## initilise the string resources using the en_gb.xml file found in the ../assets/local/ path.
+	
+	root = rapidTk()
+	lb = cLabel(root, text=_l.example.hello, side=TOP) ## use the string found in en_gb.xml -> resrouces.example.hello 
+	change = cButton(root, text=_l.example.changeLanguage, side=TOP) ## use the string found in en_gb.xml -> resrouces.example.changeLanguage 
+	change.configure(command=lambda e=Event(), _l=_l, lb=lb, b=change:switch_language(e, _l, b, lb)) 
+	root.mainloop()
+
+def uuid_printer(event, widget):
+	print(f"This button has the UUID: {widget.uuid}")
+def uuid_print_all(event, widget):
+	print(widget.get_root().uid)
+def example_uuids():
+	"""
+	All basic widgets in rapidTk have a Unique Identifier which is stored in the metaclass _UniqueIdentifiers()
+	You can generate a new uuid by calling `uuid = _UniqueIdentifiers().new()
+	Also you can add your own unique identifieds with `_UniqueIdentifiers().append('[UniqueIdentifier]')`
+	Attemping to manually add an existing identifier will raise a duiplicateIDError
+	You can see all used UUIDs by calling get_root().uid on any widget to get a list of UUIDs
+	"""
+	root = rapidTk()
+	pp = PackProcess()
+	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
+	b1 = pp.add(cButton(main, text="Button 1"), side=TOP, fill=X)
+	b2 = pp.add(cButton(main, text="Button 2"), side=TOP)
+	b3 = pp.add(cButton(main, text="Button 3"), side=TOP, fill=X)
+
+	b4 = pp.add(cButton(main, text="Print all UUID"), side=TOP, fill=X)
+
+	b1.configure(command=lambda e=Event(), w=b1:uuid_printer(e, w))
+	b2.configure(command=lambda e=Event(), w=b2:uuid_printer(e, w))
+	b3.configure(command=lambda e=Event(), w=b3:uuid_printer(e, w))
+	b4.configure(command=lambda e=Event(), w=b3:uuid_print_all(e, w))
+	pp.pack()
+	root.mainloop()
+
+def example_spinbox_trigger(event, widget):
+	print(f"current: {widget.get()}, next:{widget.next()}, previous:{widget.previous()}")
+def example_spinbox_callback(widget, direction:bool):
+	print(f"value={widget.get()}")
+	print(f"stringvar={widget.var.get()}")
+	print(f"{direction=}")
+def example_spinbox():
+	"""
+	cSpinbox is modified version of the overridden Spinbox (see rTkOverrides).
+	It automatically binds the mousewheel if root is an instance of rapidTk.
+	It automatically sets the `command` keyword to perform the same action as the mousewheel (which can be overriden by the user).
+	It automatically handels wrapping if the `wrap` keyword is set to 1 or True.
+	The 'callback' keyword acceps a function with widget and direction args which will be called after a (scroll/button) event is performed.
+	"""
+	root = rapidTk()
+	sp1 = cSpinbox(root, values=[str(x) for x in range(10)], wrap=1, callback=example_spinbox_callback, side=TOP)
+	sp1.bind('<Return>', lambda e=Event(), w=sp1: example_spinbox_trigger(e, w))
+	root.mainloop()
+	"""
+	The overriden Spinbox has a few additional methods.
+	next(wrap:bool) -> returns the next item in the values (if not wrap and item is last index returns last index item).
+	previous(wrap:bool) -> returns the previous item in the values (if not wrap and item is 0th index returns 0th index item).
+	spin(direction:bool) -> configures the Spinbox to the next/previous item based on the input direction (True:up, False:down)
+	configure(**kwargs) -> calls the configure() method of the super class. if one of the keywords is `values` sets the attribute values to the keyword `values`
+	"""
+
 
 if __name__ == "__main__":
-	example_get()
+	example_spinbox()

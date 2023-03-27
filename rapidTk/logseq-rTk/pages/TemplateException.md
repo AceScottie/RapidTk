@@ -1,0 +1,6 @@
+- -> (message)
+- Description:
+	- A base class for rTk Errors
+	- This should be the perant class for all other Errors
+- Example:
+	- raise TemplateException('This is a custom Error') >>> TemplateException: This is a custom Error

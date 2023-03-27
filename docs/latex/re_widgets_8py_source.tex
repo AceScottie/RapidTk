@@ -1,0 +1,214 @@
+\hypertarget{re_widgets_8py_source}{}\doxysection{re\+Widgets.\+py}
+\label{re_widgets_8py_source}\index{C:/Python310/Lib/site-\/packages/rapidTk/reWidgets.py@{C:/Python310/Lib/site-\/packages/rapidTk/reWidgets.py}}
+\mbox{\hyperlink{re_widgets_8py}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00001}\mbox{\hyperlink{namespacerapid_tk_1_1re_widgets}{00001}}\ \textcolor{keyword}{from}\ .cWidgets\ \textcolor{keyword}{import}\ cEntry,\ cOptionMenu,\ cCombobox}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00002}00002\ \textcolor{keyword}{from}\ .cWidgets\_extended\ \textcolor{keyword}{import}\ autoEntry}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00003}00003\ \textcolor{keyword}{from}\ .rTkUtils\ \textcolor{keyword}{import}\ widgetBase}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00004}00004\ \textcolor{keyword}{from}\ .flags\ \textcolor{keyword}{import}\ \_\_ttk\_enabled\_\_}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00006}00006\ \textcolor{keyword}{from}\ tkinter\ \textcolor{keyword}{import}\ StringVar}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00007}00007\ \textcolor{keyword}{import}\ re}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00008}00008\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00010}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a303033854deb1273ece6f4b37e8b84ca}{00010}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry}{ValidatingEntry}}(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}},\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}):\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00011}00011\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a303033854deb1273ece6f4b37e8b84ca}{\_\_init\_\_}}(self,\ master,\ value="{}"{},\ **kw):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00012}00012\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#apply(Entry.\_\_init\_\_,\ (self,\ master),\ kw)}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00013}00013\ \ \ \ \ \ \ \ \ cEntry.\_\_init\_\_(*(self,\ master),\ **kw)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00014}00014\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a0ee7c5af47d14192675ad42ca18ad899}{\_\_value}}\ =\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00015}00015\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}}\ =\ StringVar()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00016}00016\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}}.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{set}}(value)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00017}00017\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}}.trace(\textcolor{stringliteral}{"{}w"{}},\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a99a3db32f9218a4e56e24d928d126208}{\_\_callback}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00018}00018\ \ \ \ \ \ \ \ \ self.config(textvariable=self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00019}00019\ \ \ \ \ \textcolor{keyword}{def\ }\_\_callback(self,\ *dummy):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00020}00020\ \ \ \ \ \ \ \ \ value\ =\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}}.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry_aa3191c96a9ae84c4fc2ae8238942bae8}{get}}()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00021}00021\ \ \ \ \ \ \ \ \ newvalue\ =\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_acfe4b0d0b42e87917f99fd1d90627a78}{validate}}(value)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00022}00022\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ newvalue\ \textcolor{keywordflow}{is}\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00023}00023\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}}.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{set}}(self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a0ee7c5af47d14192675ad42ca18ad899}{\_\_value}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00024}00024\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ newvalue\ !=\ value:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00025}00025\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a0ee7c5af47d14192675ad42ca18ad899}{\_\_value}}\ =\ newvalue}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00026}00026\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a605885c06e66dcea09fe436fe0e31d52}{\_\_variable}}.\mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base_a7159555b69e72a0275e0362349440f7c}{set}}(newvalue)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00027}00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00028}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_acfe4b0d0b42e87917f99fd1d90627a78}{00028}}\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_a0ee7c5af47d14192675ad42ca18ad899}{\_\_value}}\ =\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00029}00029\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry_acfe4b0d0b42e87917f99fd1d90627a78}{validate}}(self,\ value):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00030}00030\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ override:\ return\ value,\ new\ value,\ or\ None\ if\ invalid}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00031}00031\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00032}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a3182e26b13f46a51d426a79be96b0050}{00032}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry}{MaxLengthEntry}}(\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_validating_entry}{ValidatingEntry}},\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}):\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00033}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_acbdab51e4f61b2a87e4cf280bdded278}{00033}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a3182e26b13f46a51d426a79be96b0050}{\_\_init\_\_}}(self,\ master,\ value="{}"{},\ maxlength=None,\ valtype=None,\ **kw):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00034}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{00034}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_acbdab51e4f61b2a87e4cf280bdded278}{maxlength}}\ =\ maxlength}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00035}00035\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ =\ valtype}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00036}00036\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#apply(ValidatingEntry.\_\_init\_\_,\ (self,\ master),\ kw)}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00037}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a6110a79b6c7f9bdcaf79b452164f4a02}{00037}}\ \ \ \ \ \ \ \ \ ValidatingEntry.\_\_init\_\_(*(self,\ master),\ **kw)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00038}00038\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a6110a79b6c7f9bdcaf79b452164f4a02}{validate}}(self,\ value):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00039}00039\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_acbdab51e4f61b2a87e4cf280bdded278}{maxlength}}\ \textcolor{keywordflow}{is}\ \textcolor{keywordtype}{None}\ \textcolor{keywordflow}{or}\ len(value)\ <=\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_acbdab51e4f61b2a87e4cf280bdded278}{maxlength}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00040}00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ !=\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00041}00041\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ ==\ \textcolor{stringliteral}{"{}int"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00042}00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00043}00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ x=int(value)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00044}00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00045}00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00046}00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00047}00047\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ ==\ \textcolor{stringliteral}{"{}int/hour"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00048}00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00049}00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ x=int(value)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00050}00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ x\ <\ 24:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00051}00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00052}00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00053}00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00054}00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00055}00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00056}00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ ==\ \textcolor{stringliteral}{"{}int/minute"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00057}00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00058}00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ x=int(value)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00059}00059\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ x\ <\ 60:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00060}00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00061}00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00062}00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00063}00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00064}00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00065}00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ ==\ \textcolor{stringliteral}{"{}int/currency"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00066}00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00067}00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#x\ =\ float(value)}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00068}00068\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ len(value.split(\textcolor{stringliteral}{"{}."{}}))\ ==\ 2:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00069}00069\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ len(value.split(\textcolor{stringliteral}{"{}."{}})[1])\ >\ 2:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00070}00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value[:-\/1]}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00071}00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00072}00072\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00073}00073\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ len(value.split(\textcolor{stringliteral}{"{}."{}}))\ >\ 2:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00074}00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00075}00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00076}00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00077}00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00078}00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00079}00079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1_max_length_entry_a74c20d605400fc1891f1ba4492a7ada5}{valtype}}\ ==\ \textcolor{stringliteral}{"{}str"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00080}00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00081}00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ x=int(value)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00082}00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00083}00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00084}00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00085}00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00086}00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00087}00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00088}00088\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00089}00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00090}00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keywordtype}{None}\ \textcolor{comment}{\#\ new\ value\ too\ long}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00091}00091\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00092}\mbox{\hyperlink{namespacerapid_tk_1_1re_widgets_aafcca249b80d8d3f45da59f98bc10d55}{00092}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacerapid_tk_1_1re_widgets_aafcca249b80d8d3f45da59f98bc10d55}{pack\_opts}}(**kwargs):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00093}00093\ \ \ \ \ pak\ =\ [\textcolor{stringliteral}{"{}side"{}},\ \textcolor{stringliteral}{"{}expand"{}},\ \textcolor{stringliteral}{"{}fill"{}}]}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00094}00094\ \ \ \ \ \textcolor{keywordflow}{if}\ \_\_ttk\_enabled\_\_:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00095}00095\ \ \ \ \ \ \ \ \ style\ =\ [\textcolor{stringliteral}{'bg'},\ \textcolor{stringliteral}{'height'},\ \textcolor{stringliteral}{'width'},\ \textcolor{stringliteral}{'borderwidth'},\ \textcolor{stringliteral}{'fg'},\ \textcolor{stringliteral}{'padx'},\ \textcolor{stringliteral}{'pady'},\ \textcolor{stringliteral}{'relief'},\ \textcolor{stringliteral}{'selectcolor'},\ \textcolor{stringliteral}{'anchor'}]}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00096}00096\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00097}00097\ \ \ \ \ \ \ \ \ style\ =\ []}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00098}00098\ \ \ \ \ kw\_wid\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00099}00099\ \ \ \ \ kw\_pak\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00100}00100\ \ \ \ \ kw\_style\ =\ \{\}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00101}00101\ \ \ \ \ \textcolor{keywordflow}{for}\ k,\ v\ \textcolor{keywordflow}{in}\ kwargs.items():}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00102}00102\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ k\ \textcolor{keywordflow}{in}\ pak:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00103}00103\ \ \ \ \ \ \ \ \ \ \ \ \ kw\_pak[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00104}00104\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ k\ \textcolor{keywordflow}{in}\ style:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00105}00105\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ k\ ==\ \textcolor{stringliteral}{"{}bg"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00106}00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[\textcolor{stringliteral}{"{}background"{}}]\ =\ v}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00107}00107\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ k\ ==\ \textcolor{stringliteral}{"{}fg"{}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00108}00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[\textcolor{stringliteral}{"{}foreground"{}}]\ =\ v}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00109}00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ k\ ==\ \textcolor{stringliteral}{"{}width"{}}:\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00110}00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{"{}text"{}}\ \textcolor{keywordflow}{in}\ kwargs.keys():}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00111}00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00112}00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00113}00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[k]\ =\ int(v/10)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00114}00114\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00115}00115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kw\_style[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00116}00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00117}00117\ \ \ \ \ \ \ \ \ \ \ \ \ kw\_wid[k]\ =\ v}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00118}00118\ \ \ \ \ \textcolor{keywordflow}{return}\ kw\_wid,\ kw\_pak,\ kw\_style}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00119}\mbox{\hyperlink{namespacerapid_tk_1_1re_widgets_a88d80f3c7b3ce59032eb2e1e241588c3}{00119}}\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacerapid_tk_1_1re_widgets_a88d80f3c7b3ce59032eb2e1e241588c3}{style\_widget}}(wd,\ st,\ t):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00120}00120\ \ \ \ \ \textcolor{keywordflow}{if}\ st\ !=\ \{\}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00121}00121\ \ \ \ \ \ \ \ \ style\ =\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_theme_1_1___theme_manager}{\_ThemeManager}}().add\_style(f\textcolor{stringliteral}{"{}\{str(wd.\_\_repr\_\_())\}.\{t\}"{}},\ st)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00122}00122\ \ \ \ \ \ \ \ \ wd.configure(style=f\textcolor{stringliteral}{"{}\{str(wd.\_\_repr\_\_())\}.\{t\}"{}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00123}00123\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ style}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00124}00124\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00125}00125\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00126}00126\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00127}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry}{00127}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry}{reEntry}}(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_entry}{cEntry}},\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00128}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ae59887b19618bc8f4536f105563ef2e8}{00128}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ae59887b19618bc8f4536f105563ef2e8}{\_\_init\_\_}}(self,\ master,\ value="{}"{},\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00129}00129\ \ \ \ \ \ \ \ \ super(reEntry,\ self).\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ae59887b19618bc8f4536f105563ef2e8}{\_\_init\_\_}}(master)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00130}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afb8bb9a4de8643e3bff87d2f5a600bd2}{00130}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afb8bb9a4de8643e3bff87d2f5a600bd2}{stvar}}\ =\ StringVar()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00131}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a6e8d1a445c229e3d71d8f090d825fc08}{00131}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a6e8d1a445c229e3d71d8f090d825fc08}{regex}}\ =\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00132}00132\ \ \ \ \ \ \ \ \ kw\_wid,\ kw\_pak,\ kw\_style\ =\ \mbox{\hyperlink{namespacerapid_tk_1_1re_widgets_aafcca249b80d8d3f45da59f98bc10d55}{pack\_opts}}(**kwargs)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00133}00133\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'value'}\ \textcolor{keywordflow}{in}\ kw\_wid:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00134}00134\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'value'}]}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00135}00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{stringliteral}{'re'}\ \textcolor{keywordflow}{in}\ kw\_wid.keys():}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00136}00136\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a6e8d1a445c229e3d71d8f090d825fc08}{regex}}\ =\ kw\_wid[\textcolor{stringliteral}{'re'}]}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00137}00137\ \ \ \ \ \ \ \ \ \ \ \ \ del\ kw\_wid[\textcolor{stringliteral}{'re'}]}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00138}00138\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00139}00139\ \ \ \ \ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a6e8d1a445c229e3d71d8f090d825fc08}{regex}}\ =\ \textcolor{stringliteral}{'.*'}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00140}00140\ \ \ \ \ \ \ \ \ kw\_wid[\textcolor{stringliteral}{'textvariable'}]\ =\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afb8bb9a4de8643e3bff87d2f5a600bd2}{stvar}}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00141}00141\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00142}00142\ \ \ \ \ \ \ \ \ self.configure(kw\_wid)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00143}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_aa25ad14b18fd8bd9da872f9f7cf7ef7b}{00143}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_aa25ad14b18fd8bd9da872f9f7cf7ef7b}{bg}}\ =\ self.cget(\textcolor{stringliteral}{'background'})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00144}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a0f37b45dd0fc06e2664d295c90c84879}{00144}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a0f37b45dd0fc06e2664d295c90c84879}{fg}}\ =\ self.cget(\textcolor{stringliteral}{'foreground'})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00145}00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ len(kw\_pak)\ !=\ 0:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00146}00146\ \ \ \ \ \ \ \ \ \ \ \ \ self.pack(kw\_pak)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00147}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_abde149e6e8d4d8b1ba43a34c9d596e8f}{00147}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_abde149e6e8d4d8b1ba43a34c9d596e8f}{insert}}(self,\ pos,\ text="{}"{}):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00148}00148\ \ \ \ \ \ \ \ \ super().\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_abde149e6e8d4d8b1ba43a34c9d596e8f}{insert}}(pos,\ text)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00149}00149\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afe5a75c9ba43829a7d5d0d2277d44012}{\_isvalid}}()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00150}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ade635acf92030ecabd0b0189821d8a91}{00150}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ade635acf92030ecabd0b0189821d8a91}{get}}(self):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00151}00151\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ super().\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ade635acf92030ecabd0b0189821d8a91}{get}}(),\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afe5a75c9ba43829a7d5d0d2277d44012}{\_isvalid}}()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00152}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afe5a75c9ba43829a7d5d0d2277d44012}{00152}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afe5a75c9ba43829a7d5d0d2277d44012}{\_isvalid}}(self):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00153}00153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00154}00154\ \ \ \ \ \ \ \ \ \ \ \ \ match\ =\ re.match(self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a6e8d1a445c229e3d71d8f090d825fc08}{regex}},\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_afb8bb9a4de8643e3bff87d2f5a600bd2}{stvar}}.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_ade635acf92030ecabd0b0189821d8a91}{get}}())}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00155}00155\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ match:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00156}00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(bg=\textcolor{stringliteral}{"{}red"{}},\ fg=\textcolor{stringliteral}{"{}white"{}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00157}00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00158}00158\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00159}00159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(bg=self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_aa25ad14b18fd8bd9da872f9f7cf7ef7b}{bg}},\ fg=self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_entry_a0f37b45dd0fc06e2664d295c90c84879}{fg}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00160}00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00161}00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00162}00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{raise}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00163}00163\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00164}00164\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00165}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu}{00165}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu}{reOptionMenu}}(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu}{cOptionMenu}},\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00166}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a9d84dc824e8cc68a4166a35f25eb71bf}{00166}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a9d84dc824e8cc68a4166a35f25eb71bf}{\_\_init\_\_}}(self,\ master,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00167}00167\ \ \ \ \ \ \ \ \ super(reOptionMenu,\ self).\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a9d84dc824e8cc68a4166a35f25eb71bf}{\_\_init\_\_}}(master,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00168}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aec8e700ad89b13206f9c9bbef7fbabf9}{00168}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aec8e700ad89b13206f9c9bbef7fbabf9}{bg}}\ =\ self.cget(\textcolor{stringliteral}{'background'})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00169}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_add0cd028c74d602e7ebdfa89f3150516}{00169}}\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_add0cd028c74d602e7ebdfa89f3150516}{fg}}\ =\ self.cget(\textcolor{stringliteral}{'foreground'})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00170}00170\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu_a64cc840b86ea7ac4f9367ff54d749dd0}{var}}.trace(\textcolor{stringliteral}{'w'},\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aaa17a54caadb678832ffd4d9780eb0b7}{\_isvalid}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00171}00171\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00172}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aaa17a54caadb678832ffd4d9780eb0b7}{00172}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aaa17a54caadb678832ffd4d9780eb0b7}{\_isvalid}}(self,\ a=None,\ b=None,\ c=None,\ e=None):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00173}00173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ super().\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a1efa22556135d138c0f49d697c0c5a3e}{get}}()\ \textcolor{keywordflow}{in}\ [str(x)\ \textcolor{keywordflow}{for}\ x\ \textcolor{keywordflow}{in}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu_ae6bb4932d9674ca2e3f4e96879fa2cba}{options}}]:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00174}00174\ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(bg=self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aec8e700ad89b13206f9c9bbef7fbabf9}{bg}},\ fg=self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_add0cd028c74d602e7ebdfa89f3150516}{fg}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00175}00175\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00176}00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00177}00177\ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(bg=\textcolor{stringliteral}{"{}red"{}},\ fg=\textcolor{stringliteral}{"{}white"{}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00178}00178\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00179}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a1efa22556135d138c0f49d697c0c5a3e}{00179}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a1efa22556135d138c0f49d697c0c5a3e}{get}}(self):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00180}00180\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_option_menu_a64cc840b86ea7ac4f9367ff54d749dd0}{var}}.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_a1efa22556135d138c0f49d697c0c5a3e}{get}}(),\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_option_menu_aaa17a54caadb678832ffd4d9780eb0b7}{\_isvalid}}()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00181}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox}{00181}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox}{reCombobox}}(\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_combobox}{cCombobox}},\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00182}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a034154019a0782c475e00c1622450e83}{00182}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a034154019a0782c475e00c1622450e83}{\_\_init\_\_}}(self,\ master,\ **kwargs):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00183}00183\ \ \ \ \ \ \ \ \ super(reCombobox,\ self).\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a034154019a0782c475e00c1622450e83}{\_\_init\_\_}}(master,\ **kwargs)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00184}00184\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#self.style.configure('Fail.TCombobox',\ fieldbackground='red',\ background='red',\ foreground='white')}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00185}00185\ \ \ \ \ \ \ \ \ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_combobox_ad2770a37af17d9045dc0bbd04499d597}{var}}.trace(\textcolor{stringliteral}{'w'},\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a29a4b93fa68f02d549c81464a9c00260}{\_isvalid}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00186}00186\ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00187}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a29a4b93fa68f02d549c81464a9c00260}{00187}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a29a4b93fa68f02d549c81464a9c00260}{\_isvalid}}(self,\ a=None,\ b=None,\ c=None,\ e=None):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00188}00188\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#self.get\_master().focus\_set()}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00189}00189\ \ \ \ \ \ \ \ \ self.selection\_clear()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00190}00190\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_combobox_ad2770a37af17d9045dc0bbd04499d597}{var}}.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a4aac760439e4785c569df82ab060a24c}{get}}()\ \textcolor{keywordflow}{in}\ [str(x)\ \textcolor{keywordflow}{for}\ x\ \textcolor{keywordflow}{in}\ self.values]:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00191}00191\ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(style=f\textcolor{stringliteral}{'\{str(self.\_\_repr\_\_())\}.Main.TCombobox'})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00192}00192\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00193}00193\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00194}00194\ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(style=f\textcolor{stringliteral}{'\{str(self.\_\_repr\_\_())\}.Fail.TCombobox'})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00195}00195\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00196}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a4aac760439e4785c569df82ab060a24c}{00196}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a4aac760439e4785c569df82ab060a24c}{get}}(self):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00197}00197\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets_1_1c_combobox_ad2770a37af17d9045dc0bbd04499d597}{var}}.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a4aac760439e4785c569df82ab060a24c}{get}}(),\ self.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1re_combobox_a29a4b93fa68f02d549c81464a9c00260}{\_isvalid}}()}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00198}00198\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00199}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry}{00199}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry}{reautoEntry}}(\mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1auto_entry}{autoEntry}},\ \mbox{\hyperlink{classrapid_tk_1_1r_tk_utils_1_1widget_base}{widgetBase}}):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00200}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a971fedd009b404b025b91bd6f466806a}{00200}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a971fedd009b404b025b91bd6f466806a}{isvalid}}(self):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00201}00201\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1auto_entry_a889e97b527758f8b5f563152ecfca958}{sv}}.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a7e15bf3a0ad79af5f97244e36b64f72b}{get}}()\ \textcolor{keywordflow}{in}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1auto_entry_a92965f122cbd18d37f7328b3ff430975}{options}}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00202}00202\ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(bg=self.bg,\ fg=self.fg)}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00203}00203\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00204}00204\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00205}00205\ \ \ \ \ \ \ \ \ \ \ \ \ self.configure(bg=\textcolor{stringliteral}{"{}red"{}},\ fg=\textcolor{stringliteral}{"{}white"{}})}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00206}00206\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00207}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a7e15bf3a0ad79af5f97244e36b64f72b}{00207}}\ \ \ \ \ \textcolor{keyword}{def\ }\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a7e15bf3a0ad79af5f97244e36b64f72b}{get}}(self):}
+\DoxyCodeLine{\Hypertarget{re_widgets_8py_source_l00208}00208\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1auto_entry_a889e97b527758f8b5f563152ecfca958}{sv}}.\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a7e15bf3a0ad79af5f97244e36b64f72b}{get}}(),\ self.\mbox{\hyperlink{classrapid_tk_1_1c_widgets__extended_1_1auto_entry_afc69a39019bd7fdb90e53363340e1fb2}{isvalid}}\mbox{\hyperlink{classrapid_tk_1_1re_widgets_1_1reauto_entry_a971fedd009b404b025b91bd6f466806a}{isvalid}}()}
+
+\end{DoxyCode}

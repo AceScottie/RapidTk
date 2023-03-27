@@ -1,0 +1,16 @@
+<resource>
+	<section1>
+		<string name="hello">Bonjour</string>
+		<string name="goodbye">Au revoir</string>
+	</section1>
+
+	<section2>
+		<string name="hello">Bonjour</string>
+		<string name="goodbye">Au revoir</string>
+	</section2>
+
+	<example>
+		<string name="hello">Bonjour</string>
+		<string name="changeLanguage">Changer de langue</string>
+	</example>
+</resource>
