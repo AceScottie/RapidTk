@@ -161,7 +161,7 @@ class reCombobox(cCombobox, widgetBase):
 		
 class reautoEntry(autoEntry, widgetBase):
 	def _isvalid(self):
-		if self.sv.get() in self.options:
+		if self.sv.get() in self.options or self.sv.get() == '':
 			self.configure(bg=self.bg, fg=self.fg)
 			return True
 		else:
