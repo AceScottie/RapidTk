@@ -17,15 +17,14 @@ import win32con
 import win32api
 
 #rtk imports
-from .flags import __ttk_enabled__, __window_manager__
-from .__main__ import PackProcess, GridProcess, rapidTk
-from .cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
-from .rTkErrors import *
-from .rTkUtils import coord, widgetBase, widgetBase_override, simpledate, cache
-from .rTkUtils import time_it, inline_layout
-from .rTkManagers import _WindowManager
-from .rTkTheme import _ThemeManager
-
+from rapidTk.__main__ import PackProcess, GridProcess, rapidTk
+from rapidTk.cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
+from rapidTk.rTkErrors import *
+from rapidTk.rTkUtils import coord, widgetBase, widgetBase_override, simpledate, cache
+from rapidTk.rTkUtils import time_it, inline_layout
+from rapidTk.rTkManagers import _WindowManager
+from rapidTk.rTkTheme import _ThemeManager
+import rapidTk.types as rtktypes
 try:
 	import tkcalendar
 	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
@@ -452,7 +451,7 @@ class Tooltip(cLabel, widgetBase):
 				y1 = 0
 			return x1, y1
 		pad = self.pad
-		widget = self.widget
+		#widget = self.widget
 		self.tw = Toplevel(widget)
 		self.tw.wm_overrideredirect(True)
 		win = cFrame(self.tw,background=self.bg,borderwidth=0)

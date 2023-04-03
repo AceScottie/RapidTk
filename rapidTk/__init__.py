@@ -1,13 +1,13 @@
-from .__main__ import *
-from .rTkUtils import *
-from .rTkUtils import _UniqueIdentifiers
-from .cWidgets import *
-from .cWidgets_extended import *
-from .reWidgets import *
-from .rTkForm import qForm
-from .matchart import Chart
-from .flags import *
-from .language import localization
+from rapidTk.__main__ import *
+from rapidTk.rTkUtils import *
+from rapidTk.rTkUtils import _UniqueIdentifiers
+from rapidTk.cWidgets import *
+from rapidTk.cWidgets_extended import *
+from rapidTk.reWidgets import *
+from rapidTk.rTkForm import qForm
+from rapidTk.matchart import Chart
+from rapidTk.flags import *
+from rapidTk.language import localization
 try:
 	import tkcalendar
 	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry

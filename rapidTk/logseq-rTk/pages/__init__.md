@@ -1,5 +1,0 @@
-public:: true
-
-- #TkCalendar
-- #rTkCalendar
--

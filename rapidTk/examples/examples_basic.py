@@ -327,4 +327,4 @@ def example_spinbox():
 
 
 if __name__ == "__main__":
-	example_spinbox()
+	example_basic_objects()

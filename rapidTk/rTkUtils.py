@@ -7,7 +7,8 @@ if sys.platform == 'win32':
 from functools import wraps, singledispatchmethod
 from datetime import datetime
 from time import perf_counter
-from .rTkErrors import *
+from rapidTk.rTkErrors import *
+import rapidTk.types as rtktypes
 import logging
 
 class SingletonMeta(type):
@@ -103,12 +104,11 @@ class clipboard(object):
 		except:
 			return ""
 
-
-
-
 class widgetBase:
 	@time_it
 	def __init__(self, master, **kwargs):
+		print("widgetBase initilised")
+		super().__init__()
 		self.master = master
 		self.uid = _UniqueIdentifiers().new()
 		if kwargs.pop('rtkwb_override', 0):
@@ -134,23 +134,33 @@ class widgetBase:
 		return self
 	@time_it
 	def get(self, index=None, end=None) -> str:
-		ctype = str(type(self))[:-2].split(".")[-1]
-		if ctype in ["cLabel", "cButton"]:
-			if index in ['', None] and end in ['', None]:
-				return self.cget("text")
-			else:
-				return self.__getter(self.cget('text'), index, end)
-		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry", "typedEntry", "vEntry"]:
-			if index in ['', None] and end in ['', None]:
+		#ctype = str(type(self))[:-2].split(".")[-1]
+		print(type(self))
+		ctype = self.__widget_type
+		print(isinstance(ctype, rtktypes.singleget))
+		#if ctype in ["cLabel", "cButton"]:
+		match ctype:
+			case rtktypes.noget:
+				return None
+			case rtktypes.disget:
+				if index in ['', None] and end in ['', None]:
+					return self.cget("text")
+				else:
+					return self.__getter(self.cget('text'), index, end)
+			#elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry", "typedEntry", "vEntry"]:
+			case rtktypes.singleget:
+				if index in ['', None] and end in ['', None]:
+					return self.var.get()
+				else:
+					return self.__getter(self.var.get(), index, end)
+			case rtktypes.multiget:
+				return set.__getter(self.var.get('1.0', 'end'), index, end)
+			case rtktypes.strget | rtktypes.intget | rtktypes.doubleget:
 				return self.var.get()
-			else:
-				return self.__getter(self.var.get(), index, end)
-		elif ctype in ["cCheckbutton"]:
-			return self.var.get()
-		elif ctype in ["cTreeview"]:
-			return "This requires cusom get() method"
-		else:
-			raise Exception(f'{type(self)} : {ctype} has no get() method')
+			case rtktypes.treeget:
+				return "This requires cusom get() method"
+			case _:
+				raise Exception(f'{type(self)} : {ctype} has no get() method')
 	@time_it
 	def set(self, index=0, text=""):
 		ctype = str(type(self))[:-2].split(".")[-1]
@@ -161,7 +171,7 @@ class widgetBase:
 				o_text = self.__getter(self.cget('text'), 0, index) or ''
 				self.configure(text=o_text+text)
 			self.update()
-		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry"]:
+		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry", "reautoEntry"]:
 			if index in ['', None, 0]:
 				return self.var.set(text)
 			else:
@@ -179,6 +189,23 @@ class widgetBase:
 			end = None
 		index = 0 if not index else index
 		return text[int(index):int(end) if end else None]
+	@time_it
+	def clear(self, event=None):
+		try:
+			self.var.set(text='')
+			return
+		except:
+			pass
+		try:
+			self.delete(0, 'end')
+			return
+		except:
+			pass
+		try:
+			self.configure(text='')
+			return
+		except:
+			pass
 
 class widgetBase_override(widgetBase):
 	"""
