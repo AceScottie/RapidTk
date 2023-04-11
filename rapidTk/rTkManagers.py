@@ -97,10 +97,10 @@ class _TabManager(object, metaclass=SingletonMeta):
 		self.names = {}
 		self.active_tab = None
 	def new(self, widget, **kwargs):
-		self.tabs[widget.uuid] = widget
+		self.tabs[widget.uid] = widget
 		if "name" in kwargs and kwargs['name'] not in self.names:
-			self.names[kwargs['name']] = widget.uuid
-		return widget.uuid
+			self.names[kwargs['name']] = widget.uid
+		return widget.uid
 	def get_by_name(self, name):
 		if name in self.names:
 			return self.names[name]

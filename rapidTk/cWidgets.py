@@ -1,17 +1,16 @@
 import logging
-from tkinter import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale
-from tkinter import Canvas, Menu
+#tkinter overrides
+from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu
+#tkinter imports
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar, Event
+from tkinter import Menu as tkMenu
 from tkinter.ttk import Treeview, Combobox
 from tkinter.scrolledtext import ScrolledText
+from tkinter.ttk import Style
+#rapidTk imports
 from rapidTk.__main__ import rapidTk
 from rapidTk.rTkOverrides import OptionMenu, Spinbox
 from rapidTk.flags import __ttk_enabled__
-if __ttk_enabled__:
-	from tkinter.ttk import Frame, Label, Button, Entry, Checkbutton
-else:
-	from tkinter.ttk import Style
-
 from rapidTk.rTkErrors import *
 from rapidTk.rTkUtils import clipboard, widgetBase, time_it, inline_layout, _UniqueIdentifiers
 from rapidTk.rTkTheme import _ThemeManager, style_widget
@@ -19,17 +18,18 @@ import rapidTk.types as rtktypes
 
 class cFrame(Frame, widgetBase):
 	_widgetBase__widget_type = rtktypes.noget
-	@time_it
-	def __xinit__(self, master, **kwargs):
-		super(cFrame, self).__init__(master, **kwargs)
-		widgetBase.__init__(self, master, **kwargs)
+	#@time_it
+	#def __xinit__(self, master, **kwargs):
+	#	super(cFrame, self).__init__(master, **kwargs)
+	#	widgetBase.__init__(self, master, **kwargs)
 	@time_it
 	def __init__(self, master, **kwargs):
 		#self.uuid = _UniqueIdentifiers().new()
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		print("calling super method")
-		self.__xinit__(master, **widget_args)
+		#self.__xinit__(master, **widget_args)
+		super(cFrame, self).__init__(master, **kwargs)
 		print("super complete")
 		if layout.method is not None:
 			layout.inline(self)
@@ -80,10 +80,6 @@ class cButton(Button, widgetBase):
 class cEntry(Entry, widgetBase):
 	_widgetBase__widget_type = rtktypes.singleget
 	@time_it
-	def __xinit__(self, master, **kwargs):
-		super(cEntry, self).__init__(master, **kwargs)
-		widgetBase.__init__(self, master, **kwargs)
-	@time_it
 	def __init__(self, master, **kwargs):
 		#self.uuid = _UniqueIdentifiers().new()
 		logging.getLogger('rapidTk').rtkverbose(f"cEntry got kwargs {kwargs}")
@@ -93,10 +89,10 @@ class cEntry(Entry, widgetBase):
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		logging.getLogger('rapidTk').rtkverbose(f"cEntry got widget_args {widget_args} and {layout.method}")
-		self.__xinit__(master, **widget_args)
+		super(cEntry, self).__init__(master, **widget_args)
 		logging.getLogger('rapidTk').rtkverbose(f"created cEntry {self} with args {widget_args}")
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
-		self.__menu = Menu(self, tearoff=0)
+		self.__menu = tkMenu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
 		self.__menu.add_command(label="Copy", command=self._copy)
 		self.__menu.add_command(label="Paste", command=self._paste)

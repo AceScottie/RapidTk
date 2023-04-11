@@ -1,8 +1,10 @@
+#tkinter overrides
+from rapidTk.tkoverride import Scrollbar, Misc
 #tkinter imports
-from tkinter import StringVar, IntVar, Event, INSERT, END, Misc, Toplevel
+from tkinter import StringVar, IntVar, Event, INSERT, END, Toplevel
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, SOLID
 from tkinter import N, E, S, W, NW, NE, SE, SW, NSEW
-from tkinter import Scrollbar, VERTICAL, HORIZONTAL 
+from tkinter import VERTICAL, HORIZONTAL 
 from tkinter.simpledialog import askstring, askinteger
 ##additional imports
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps

@@ -1,0 +1,248 @@
+<resource>
+	<generic>
+		<string name="g_save">Save</string>
+		<string name="g_notice">Notice</string>
+		<string name="g_submit">Submit</string>
+		<string name="g_warn">Warning</string>
+		<!-- Days -->
+		<string name="mon_s">Mon</string>
+		<string name="tue_s">Tue</string>
+		<string name="wed_s">Wed</string>
+		<string name="thu_s">Thu</string>
+		<string name="fri_s">Fri</string>
+		<string name="sat_s">Sat</string>
+		<string name="sun_s">Sun</string>
+		<string name="mon_l">Monday</string>
+		<string name="tue_l">Tuesday</string>
+		<string name="wed_l">Wednesday</string>
+		<string name="thu_l">Thursday</string>
+		<string name="fri_l">Friday</string>
+		<string name="sat_l">Saturday</string>
+		<string name="sun_l">Sunday</string>
+		<string name="g_time">Time</string>
+
+	</generic>
+	<errors>
+		<!-- Errors -->
+		<string name="e">Error</string>
+		<string name="egeneric">There was an issue. Please see log</string>
+		<string name="e1001">Error 1001</string>
+		<string name="e1002">'Error 1002: The application is already Running.\n\nProcess id: {pid}</string>
+		<string name="e1003">Error 1003</string>
+		<string name="e1004">Error 1004</string>
+		<string name="e1005">Error 1005</string>
+		<string name="e1006">Error 1006</string>
+		<string name="e1007">Error 1007</string>
+		<string name="e1008">Error 1008</string>
+		<string name="e1009">Error 1009</string>
+		<string name="e1010">Error 1010</string>
+		<string name="e1011">Error 1011</string>
+		<string name="e1012">Error 1012</string>
+		<string name="e1013">Error 1013</string>
+		<string name="e1014">Error 1014</string>
+		<string name="e1015">Error 1015</string>
+		<string name="e1016">Error 1016</string>
+		<string name="e1017">Error 1017</string>
+		<string name="e1018">Error 1018</string>
+		<string name="e1019">Error 1019</string>
+		<string name="e1020">Error 1020</string>
+		<string name="e1021">There was an issue setting this licence</string>
+		<string name="e1022">This licence has already been used</string>
+		<string name="e1023">This is not a Valid Licence</string>
+		<string name="e1024">Could Not Start Logging Proccess.\nPlease Speak to your Administrator.\nError ID: 1024</string>
+		<string name="e1025">Error 1025</string>
+	</errors>
+	<launcher>
+		<string name="App_Title">OEPR-Launcher</string>
+		
+
+		<!-- Misc -->
+		<string name="settings_restart">Application will need to restart to show changes.\nWould you like to restart now?</string>
+		<string name="colour_chooser">Color Chooser</string>
+		<string name="NYI">Not Yet Implemented</string>
+
+		<!-- States -->
+		<string name="s_ipc">IPC</string>
+		<string name="s_file">FileCheck</string>
+		<string name="s_update">Updates</string>
+		<string name="s_inter">Internet</string>
+		<string name="s_ipv">IP Version</string>
+		<string name="s_sql">SQL Connection</string>
+		<string name="s_drive">Drive</string>
+		<string name="s_api">API</string>
+
+		<!-- Waits -->
+		<string name="wait">Waiting</string>
+		<string name="wait_sql">Waiting For Login to check SQL Connection</string>
+		<string name="wait_drive">Waiting For Login to check Google Drive</string>
+
+		<!-- Launching States -->
+		<string name="l_ipc">Launching IPC Server</string>
+		<string name="l_ipc_run">IPC Server Running on port {port}</string>
+		<string name="l_ipc_fail">IPC Server Failed to launch</string>
+		<string name="l_drive">Checking Google Drive Services</string>
+		<string name="l_drive_run">Google Drive Services are working</string>
+		<string name="l_drive_fail">Google Drive Services have failed</string>
+		<string name="l_drive_dis">Google Drive has been Disabled</string>
+		<string name="l_drive_nr">Drive is not able to run.</string>
+		<string name="l_drive_tcr">Testing Drive Credentials</string>
+		<string name="l_drive_crf">Could Not Assign those Credentials</string>
+		<string name="l_fc">Checking File Integrity {p}% complete, checking:{f}</string>
+		<string name="l_fc_run">Files Verified</string>
+		<string name="l_fc_fail">File Verification Failed</string>
+		<string name="l_up">Checking for updates</string>
+		<string name="l_up_run_up">An Update is required Running version {v}, Latest:{l}</string>
+		<string name="l_up_run_pt">A Patch is available. Running version {v}, Latest:{l}</string>
+		<string name="l_up_run_bt">A Beta Patch is available. Running version {v}, Latest:{l}</string>
+		<string name="l_up_run">No Updates are needed. Running version {v}</string>
+		<string name="l_up_fail">Could Not connect to the Update Server. Please try again later</string>
+		<string name="l_ip">Checking IP version compatibility</string>
+		<string name="l_ip_run">IP version has been set to IPv{ipv}</string>
+		<string name="l_ip_fail">Could Not determine IP state, Check Network Settings</string>
+		<string name="l_int">Running Service Checks</string>
+		<string name="l_int_run">All Services are available</string>
+		<string name="l_int_fail">No Services are available</string>
+		<string name="l_int_int">Some Services are Restricted</string>
+		<string name="l_sql">Testing Connection to DataCore</string>
+		<string name="l_sql_run">DataCore Has Loaded</string>
+		<string name="l_sql_fail">DataCore Has Failed</string>
+
+		<!-- Logging In -->
+		<string name="login">Please Log In.</string>
+		<string name="user">Username:</string>
+		<string name="passwd">Password:</string>
+		<string name="licence_fail">The Licence Key is not Valid. Please try again.</string>
+		<string name="user_fail">Wrong Username or Password</string>
+		<string name="t_licence">Licence Key:</string>
+		<string name="t_email">Registerd Email:</string>
+		<string name="t_name">Register Name:</string>
+		<string name="t_drive">Please enter your Google Drive Credentials</string>
+		<string name="t_client">Client ID:</string>
+		<string name="t_secret">Client Secret:</string>
+		<string name="t_project">Project ID:</string>
+
+		<!-- Validation-->
+		<string name="v_email_name">Email and Name cannot be left blank</string>
+	</launcher>
+
+	<main>
+		<string name="App_Title">OEPR</string>
+		<!-- addresses -->
+		<string name="address1">Address 1:</string>
+		<string name="address2">Address 2:</string>
+		<string name="addresspost">PostCode:</string>
+		<string name="addresscounty">County:</string>
+		
+		<string name="launcerr">Single Launch Error</string>
+		<string name="load_casenote">Please wait while we load your caseload.</string>
+		<string name="wait">This may take a minute.</string>
+		<string name="rmuser">Removed User</string>
+		<string name="neterr">There was a networ connection issue.\nPlease wait while we try re-establish a connection</string>
+
+		<!-- New School form -->
+		<string name="baseschool">Base School Information</string>
+		<string name="schoolname">School Name*:</string>
+		<string name="contactinfo">{type} Contact Information</string>
+		<string name="contactname">{type} Contact Name*:</string>
+		<string name="contactphone">{type} Contact Number*:</string>
+		<string name="contactemail">{type} Email Address*:</string>
+		<string name="type_s">School</string>
+		<string name="type_p">Primary</string>
+		<string name="type_e">Emergency</string>
+		<string name="type_h">Head</string>
+		<string name="type_o">Other Person(s)</string>
+		<string name="type_sen">SENCO</string>
+		<string name="type_gov">Governor</string>
+		<string name="int_f_url">Internal Folder URL:</string>
+		<string name="ext_f_url">External Folder URL:</string>
+
+
+		<!-- Sections -->
+		<string name="caseload">Caseload</string>
+		<string name="account">Account</string>
+		<string name="admin">Admin</string>
+		<string name="pendingClients">Pending Clients</string>
+		<string name="newClient">New Client</string>
+		<string name="newSchool">New School</string>
+		<string name="setting">Settings</string>
+		<!-- Settings -->
+		<string name="changepw">Change Password</string>
+		<string name="currentpw">Current Password:</string>
+		<string name="newpw">New Password:</string>
+		<string name="valnewpw">Retype Password:</string>
+		<string name="status">Current Status</string>
+		<string name="connection_s">Conncetion Status:</string>
+		<string name="user">User:</string>
+		<string name="role">Role:</string>
+		<string name="appv">Application Version:</string>
+		<string name=""></string>
+		<string name=""></string>
+		<!-- Tooltips -->
+		<string name="refreshtooltip">Refreshes the Caseload using the Latest Data.\nPlease only use if required.</string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<!--  -->
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+		<string name=""></string>
+
+
+
+
+	</main>
+
+</resource>
