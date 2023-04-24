@@ -1,4 +1,4 @@
-from overrides import override
+#from overrides import override
 from tkcalendar import DateEntry
 from tkinter import StringVar
 import re
@@ -9,7 +9,7 @@ from ..rTkTheme import _ThemeManager
 from ..rTkUtils import widgetBase, _UniqueIdentifiers, inline_layout
 
 class DateEntry(DateEntry, widgetBase):
-	@override
+	#@override
 	def _validate_date(self):
 		"""Date entry validation: only dates in locale '%x' format are accepted."""
 		try:
@@ -23,7 +23,7 @@ class DateEntry(DateEntry, widgetBase):
 		except (ValueError, IndexError):
 			self._set_text(self.format_date(self._date))
 			return False
-	@override
+	#@override
 	def _set_text(self, txt):
 		"""Insert text in the entry."""
 		if 'readonly' in self.state():
@@ -35,7 +35,7 @@ class DateEntry(DateEntry, widgetBase):
 		super().insert(0, txt)
 		if readonly:
 			self.state(('readonly',))
-	@override
+	#@override
 	def drop_down(self):
 		"""Display or withdraw the drop-down calendar depending on its current state."""
 		if self._calendar.winfo_ismapped():
@@ -53,7 +53,7 @@ class DateEntry(DateEntry, widgetBase):
 			self._top_cal.deiconify()
 			self._calendar.focus_set()
 			self._calendar.selection_set(date)
-	@override
+	#@override
 	def get_date(self):
 		"""Return the content of the DateEntry as a datetime.date instance."""
 		self._validate_date()

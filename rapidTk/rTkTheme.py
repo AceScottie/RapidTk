@@ -1,9 +1,9 @@
 from tkinter.ttk import Style
 #from ttk import Style
-from ttkthemes import ThemedStyle
+#from ttkthemes import ThemedStyle
 
 from .rTkUtils import SingletonMeta
-from .flags import __theme_manager__
+#from .flags import __theme_manager__
 def style_widget(wd, st, t):
 	if st != {}:
 		style = _ThemeManager().add_style(f"{str(wd.__repr__())}.{t}", st)

@@ -107,7 +107,7 @@ class clipboard(object):
 class widgetBase:
 	@time_it
 	def __init__(self, master, *args, **kwargs):
-		print("widgetBase initilised")
+		#print("widgetBase initilised")
 		super().__init__()
 		self.master = master
 		self.uid = _UniqueIdentifiers().new()
