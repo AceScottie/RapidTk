@@ -44,7 +44,7 @@ def switch_language(e:Event, _l:localization, b:cButton, lb:cLabel): ##used as p
 	lb.configure(text=_l.example.hello) ##changes the string to the new fr.xml -> resource.example.hello string
 	b.configure(text=_l.example.changeLanguage) ##changes the string to the new fr.xml -> resource.example.changeLanguage string
 def uuid_printer(event, widget):##used as part of example_uuids()
-	print(f"This button has the UUID: {widget.uuid}")
+	print(f"This button has the UUID: {widget.uid}")
 def uuid_print_all(event, widget):##used as part of example_uuids()
 	print(widget.get_root().uid)
 def example_spinbox_trigger(event, widget):##used as part of example_spinbox()
@@ -140,7 +140,32 @@ def example_no_Process():
 	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
 	cLabel(main, text="This is a basic rapidTk Label.", side=TOP, fill=X)
 	cButton(main, text="cButton", side=TOP)
-	myEntry = cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
+	cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
+	root.mainloop()
+
+
+def example_basic_global_get(event, widget):
+	print(widget.get())
+def example_basic_global_set(event, widget):
+	print(widget.set(0, 'hello'))
+def example_basic_global_insert(event, widget):
+	print(widget.insert(2, 'insert test'))
+def example_basic_global_delete(event, widget):
+	print(widget.delete())
+def example_basic_global_functions():
+	doc = """
+
+	"""
+	print(f"-----\n\n{doc}\n\n-----")
+
+	root = rapidTk()
+	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
+	#myEntry = cEntry(main, value="Some Default Text", side=TOP, fill=X)
+	myEntry = cScrolledText(main, value="Some Default Text", side=TOP, fill=X)
+	cButton(main, text="get", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_get(e, w))
+	cButton(main, text="set", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_set(e, w))
+	cButton(main, text="insert", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_insert(e, w))
+	cButton(main, text="delete", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_delete(e, w))
 	root.mainloop()
 
 @time_it
@@ -294,7 +319,7 @@ def example_baisc_language():
 	change.configure(command=lambda e=Event(), _l=_l, lb=lb, b=change:switch_language(e, _l, b, lb)) 
 	root.mainloop()
 
-def example_uuids():##buttons have no attribute uuid?
+def example_uuids():
 	doc = """
 	All basic widgets in rapidTk have a Unique Identifier which is stored in the metaclass _UniqueIdentifiers()
 	You can generate a new uuid by calling `uuid = _UniqueIdentifiers().new()
@@ -340,11 +365,23 @@ def example_spinbox():
 	configure(**kwargs) -> calls the configure() method of the super class. if one of the keywords is `values` sets the attribute values to the keyword `values`
 	"""
 
+def example_text_print(event, a, b, c, sv):
+	print(sv.get())
+def example_text():
+	root = Tk()
+	sv = StringVar()
+	f = cFrame(root)
+	f.pack(side=TOP)
+	t = cText(f, textvariable=sv)
+	sv.trace('w', lambda  a, b, c, e=Event, v=sv:example_text_print(e, a, b, c, sv))
+	t.pack(side=TOP)
+	root.mainloop()
 
 if __name__ == "__main__":
 	#example_basic_objects()
 	#example_basic_objects2()
 	#example_no_Process()
+	#example_basic_global_functions()
 	#example_basic_logging()
 	#example_basic_menu()
 	#example_get()
@@ -352,4 +389,5 @@ if __name__ == "__main__":
 	#example_baisc_language()
 	#example_uuids()
 	#example_spinbox()
+	example_text()
 	pass

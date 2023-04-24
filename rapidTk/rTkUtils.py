@@ -107,7 +107,6 @@ class clipboard(object):
 class widgetBase:
 	@time_it
 	def __init__(self, master, *args, **kwargs):
-		#print("widgetBase initilised")
 		super().__init__()
 		self.master = master
 		self.uid = _UniqueIdentifiers().new()
@@ -134,6 +133,7 @@ class widgetBase:
 		return self
 	@time_it
 	def get(self, index=None, end=None) -> str:
+		print("wb get")
 		#ctype = str(type(self))[:-2].split(".")[-1]
 		print(type(self))
 		ctype = self.__widget_type
@@ -154,7 +154,7 @@ class widgetBase:
 				else:
 					return self.__getter(self.var.get(), index, end)
 			case rtktypes.multiget:
-				return set.__getter(self.var.get('1.0', 'end'), index, end)
+				return self.__getter(self.var.get(), index, end)
 			case rtktypes.strget | rtktypes.intget | rtktypes.doubleget:
 				return self.var.get()
 			case rtktypes.treeget:
@@ -163,6 +163,10 @@ class widgetBase:
 				raise Exception(f'{type(self)} : {ctype} has no get() method')
 	@time_it
 	def set(self, index=0, text=""):
+		"""
+		sets the text of a widget to the `text` value, replacing the current text starting at the `index` position
+		"""
+		print("wb set")
 		ctype = str(type(self))[:-2].split(".")[-1]
 		if ctype in ["cLabel", "cButton"]:
 			if index in ['', None, 0]:
@@ -183,12 +187,27 @@ class widgetBase:
 		#	return "This requires cusom get() method"
 		else:
 			raise Exception(f'{type(self)} : {ctype} has no set() method')
+	def insert(self, index=0, text=""):
+		print("wb insert")
+		"""
+		inserts the `text` into the widget at the `index` position, shifting all other text by `len(text)` to the left.
+		"""
+
+		pass
+	def delete(self, index=0, end=-1):
+		print("wb delete")
+		"""
+		deletes the text between `index` position and `end` position
+		"""
+		pass
 	@time_it
 	def __getter(self, text, index, end) -> str:
 		if end in ['end', '', None]:
 			end = None
 		index = 0 if not index else index
-		return text[int(index):int(end) if end else None]
+		end = len(text) if isinstance(end, str) else end
+		end = len(text) if end >= 0 else end
+		return text[int(float(index)):int(end) if end else None]
 	@time_it
 	def clear(self, event=None):
 		try:

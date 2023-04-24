@@ -1,6 +1,6 @@
 import logging
 #tkinter overrides
-from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu
+from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu, Text
 #tkinter imports
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar, Event
 from tkinter import Menu as tkMenu
@@ -82,9 +82,15 @@ class cEntry(Entry, widgetBase):
 		
 		if layout.method is not None:
 			layout.inline(self)
-	@time_it
+	
 	def get(self, *args):
 		return widgetBase.get(self, *args)
+	def set(self, *args):
+		return widgetBase.set(self, *args)
+	def insert(self, *args):
+		return widgetBase.insert(self, *args)
+	def delete(self, *args):
+		return widgetBase.delete(self, *args)
 	@time_it
 	def _do_popup(self, event):
 		try:
@@ -240,11 +246,13 @@ class cScrolledText(ScrolledText, widgetBase):
 	_widgetBase__widget_type = rtktypes.multiget
 	@time_it
 	def __init__(self, master, **kwargs):
-		#self.uuid = _UniqueIdentifiers().new()
 		value = kwargs.pop('value', '')
+		self.var = kwargs.pop('textvariable', StringVar())
+		self.var.set(value)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cScrolledText, self).__init__(master, **widget_args)
+		#self.trace('w', self.__wright)
 		if isinstance(self.get_root(), rapidTk):
 			self.get_root().sm.add_widget(self)
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
@@ -291,9 +299,18 @@ class cScrolledText(ScrolledText, widgetBase):
 	@time_it
 	def _select_all(self):
 		self.select_range(0,END)
-	@time_it
-	def get(self, **args):
-		return super().get('1.0', END)
+
+	def __wright(self, *args):
+		print(args)
+	
+	def get(self, *args):
+		return widgetBase.get(self, *args)
+	def set(self, *args):
+		return widgetBase.set(self, *args)
+	def insert(self, *args):
+		return widgetBase.insert(self, *args)
+	def delete(self, *args):
+		return widgetBase.delete(self, *args)
 
 
 class cCheckbutton(Checkbutton, widgetBase):
@@ -520,3 +537,12 @@ class cDate(cFrame, widgetBase):
 
 		if layout.method is not None:
 			layout.inline(self)
+
+
+class cText(Text, widgetBase):
+	'''A text widget that accepts a 'textvariable' option'''
+	_widgetBase__widget_type = rtktypes.multiget
+	def __init__(self, master=None, **kwargs):
+		self.var = kwargs['textvariable'] = kwargs.pop("textvariable", StringVar())
+		super(cText, self).__init__(master, **kwargs)
+
