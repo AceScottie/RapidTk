@@ -1,8 +1,14 @@
-from tkinter.__init__ import Pack, Place, Grid, _cnfmerge
+from tkinter.__init__ import Pack, Place, Grid, _cnfmerge, XView, YView
+from tkinter.constants import RIGHT, LEFT, Y, BOTH
 from tkinter.__init__ import Frame, Button, Canvas, Checkbutton, Entry, Label, Listbox, Menu, Menubutton, Message 
 from tkinter.__init__ import Radiobutton, Scale, Scrollbar, Text, Scale, Spinbox, LabelFrame, PanedWindow
 from tkinter.__init__ import Misc as tkMisc
+
+from tkinter.scrolledtext import ScrolledText
 ##Base Classes
+def misc__init__(self, *args, **kwargs):
+    pass
+tkMisc.__init__ = misc__init__
 class Misc(tkMisc):
     def __init__(self, master, widgetName, cnf={}, extra=(), **kw):
         super(Misc, self).__init__(master, widgetName, cnf, extra, **kw)
@@ -35,7 +41,7 @@ class BaseWidget(Misc):
         if self._name in self.master.children:
             self.master.children[self._name].destroy()
         self.master.children[self._name] = self
-    def __init__(self, master, widgetName, cnf={}, extra=(),  **kw):
+    def __init__(self, master, widgetName, cnf={}, extra=(), **kw):
         ##PATCH++
         super(BaseWidget, self).__init__(master, widgetName, cnf, extra, **kw)
         ##PATCH--
@@ -48,8 +54,7 @@ class BaseWidget(Misc):
         classes = [(k, v) for k, v in cnf.items() if isinstance(k, type)]
         for k, v in classes:
             del cnf[k]
-        self.tk.call(
-            (widgetName, self._w) + extra + self._options(cnf))
+        self.tk.call((widgetName, self._w) + extra + self._options(cnf))
         for k, v in classes:
             k.configure(self, v)
     def destroy(self):
@@ -152,19 +157,12 @@ PanedWindow.__bases__ = (Widget,)
 PanedWindow.__init__ = pw__init__
 
 
-class Text(Widget):
-    '''A text widget that accepts a 'textvariable' option'''
+class Text(Widget, XView, YView):
     def __init__(self, master=None, cnf={}, **kw):
-        self._textvariable = kw.pop("textvariable")
+        self._textvariable = kw.pop("textvariable", None)
         super(Text, self).__init__(master, 'text', cnf, (), **kw)
-
-        # if the variable has data in it, use it to initialize
-        # the widget
         if self._textvariable is not None:
-            self.insert("1.0", self._textvariable.get())
-
-        # this defines an internal proxy which generates a
-        # virtual event whenever text is inserted or deleted
+            self.tk.call(self._w, 'insert', '1.0', self._textvariable.get())
         self.tk.eval('''
             proc widget_proxy {widget widget_command args} {
 
@@ -179,35 +177,67 @@ class Text(Widget):
                 return $result
             }
             ''')
-
-        # this replaces the underlying widget with the proxy
         self.tk.eval('''
-            rename {widget} _{widget}
-            interp alias {{}} ::{widget} {{}} widget_proxy {widget} _{widget}
+            rename {widget} _TEXT_{widget}
+            interp alias {{}} ::{widget} {{}} widget_proxy {widget} _TEXT_{widget}
         '''.format(widget=str(self)))
-
-        # set up a binding to update the variable whenever
-        # the widget changes
         self.bind("<<Change>>", self._on_widget_change)
-
-        # set up a trace to update the text widget when the
-        # variable changes
         if self._textvariable is not None:
             self._textvariable.trace("wu", self._on_var_change)
-
     def _on_var_change(self, *args):
-        '''Change the text widget when the associated textvariable changes'''
-
-        # only change the widget if something actually
-        # changed, otherwise we'll get into an endless
-        # loop
-        text_current = self.get("1.0", "end-1c")
+        text_current = self.tk.call(self._w, 'get', "1.0", "end-1c")
         var_current = self._textvariable.get()
         if text_current != var_current:
             self.delete("1.0", "end")
             self.insert("1.0", var_current)
-
     def _on_widget_change(self, event=None):
-        '''Change the variable when the widget changes'''
         if self._textvariable is not None:
-            self._textvariable.set(self.get("1.0", "end-1c"))
+            self._textvariable.set(self.tk.call(self._w, 'get', "1.0", "end-1c"))
+
+
+class ScrolledText(Text):
+    def __init__(self, master=None, **kw):
+        self._textvariable = kw.get('textvariable', None)
+        self.frame = Frame(master)
+        self.vbar = Scrollbar(self.frame)
+        self.vbar.pack(side=RIGHT, fill=Y, expand=True)
+        kw.update({'yscrollcommand': self.vbar.set})
+        super(ScrolledText, self).__init__(self.frame, {}, **kw)
+        self.pack(side=LEFT, fill=BOTH, expand=True)
+        self.vbar['command'] = self.yview
+        text_meths = vars(Text).keys()
+        methods = vars(Pack).keys() | vars(Grid).keys() | vars(Place).keys()
+        methods = methods.difference(text_meths)
+        for m in methods:
+            if m[0] != '_' and m != 'config' and m != 'configure':
+                setattr(self, m, getattr(self.frame, m))
+        self.tk.eval('''
+            proc widget_proxy {widget widget_command args} {
+
+                # call the real tk widget command with the real args
+                set result [uplevel [linsert $args 0 $widget_command]]
+
+                # if the contents changed, generate an event we can bind to
+                if {([lindex $args 0] in {insert replace delete})} {
+                    event generate $widget <<Change>> -when tail
+                }
+                # return the result from the real widget command
+                return $result
+            }
+            ''')
+        self.tk.eval('''
+            rename {widget} _SCROLLEDTEXT_{widget}
+            interp alias {{}} ::{widget} {{}} widget_proxy {widget} _SCROLLEDTEXT_{widget}
+        '''.format(widget=str(self)))
+        self.bind("<<Change>>", self._on_widget_change)
+        if self._textvariable is not None:
+            self._textvariable.trace("wu", self._on_var_change)
+    def _on_var_change(self, *args):
+        text_current = self.tk.call(self._w, 'get', "1.0", "end-1c")
+        var_current = self._textvariable.get()
+        if text_current != var_current:
+            self.delete("1.0", "end")
+            self.insert("1.0", var_current)
+    def _on_widget_change(self, event=None):
+        if self._textvariable is not None:
+            self._textvariable.set(self.tk.call(self._w, 'get', "1.0", "end-1c"))

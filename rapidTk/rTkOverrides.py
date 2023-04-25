@@ -1,5 +1,8 @@
-from tkinter import Widget, Menubutton, Menu, TclError, RAISED, Misc, _setit, StringVar, Spinbox
+from tkinter import TclError, RAISED, Misc, _setit, StringVar
+from tkinter.__init__ import Pack, Place, Grid
+from rapidTk.tkoverride import Frame, Widget, Menubutton, Menu, Spinbox, Scrollbar, Text
 
+from rapidTk.rTkUtils import illigalUnicode
 class OptionMenu(Menubutton):
     """OptionMenu which allows the user to select a value from a menu."""
     def __void__(self, *args, **kwargs):
@@ -20,7 +23,7 @@ class OptionMenu(Menubutton):
         callback = kw.get('command', self.__void__)
         if 'command' in kw:
             del kw['command']
-        Widget.__init__(self, master, "menubutton", cnf, kw)
+        super(OptionMenu, self).__init__(master, cnf, **kw)
 
         self.widgetName = 'tk_optionMenu'
         menu = self.__menu = Menu(self, name="menu", tearoff=0)
@@ -78,6 +81,7 @@ class Spinbox(Spinbox):
             self.configure(value=self.next(wrap))
         else: #direction down
             self.configure(value=self.previous(wrap))
+
 
 if __name__ == "__main__":
     import tkinter as tk

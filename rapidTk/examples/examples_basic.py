@@ -3,6 +3,7 @@ from tkinter import Event
 from tkinter import Scrollbar as tkScrollbar
 from tkinter import Frame as tkFrame
 from rapidTk import *
+#from rapidTk.rTkOverrides import ScrolledText
 import logging
 rtklog = logging.getLogger('rapidTk')
 rtklog.setLevel(0)
@@ -27,6 +28,14 @@ rapdTk Log Levels:
 
 ##Functions used for examples, Do not modify! -----
 @time_it
+def example_basic_global_get(event, widget):#used as part of example_basic_global_functions()
+	print('widget get:', widget.get())
+def example_basic_global_set(event, widget):#used as part of example_basic_global_functions()
+	print(widget.set(0, 'hello'))
+def example_basic_global_insert(event, widget):#used as part of example_basic_global_functions()
+	print(widget.insert(2, 'insert test'))
+def example_basic_global_delete(event, widget):#used as part of example_basic_global_functions()
+	print(widget.delete())
 def example_basic_logging_timed_widgets(pp, master, count): ##used as part of example_basic_logging()
 	widgets = []
 	for i in range(count):
@@ -53,6 +62,11 @@ def example_spinbox_callback(widget, direction:bool):##used as part of example_s
 	print(f"value={widget.get()}")
 	print(f"stringvar={widget.var.get()}")
 	print(f"{direction=}")
+def example_text_print(event, a, b, c, sv):##used as part of example_text()
+	print(f'output: {sv.get()}')
+def example_text_checkvar(event, widget):##used as part of example_text()
+	print(widget.get())
+
 ##-------------------------------------------------
 
 
@@ -143,25 +157,16 @@ def example_no_Process():
 	cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
 	root.mainloop()
 
-
-def example_basic_global_get(event, widget):
-	print(widget.get())
-def example_basic_global_set(event, widget):
-	print(widget.set(0, 'hello'))
-def example_basic_global_insert(event, widget):
-	print(widget.insert(2, 'insert test'))
-def example_basic_global_delete(event, widget):
-	print(widget.delete())
 def example_basic_global_functions():
 	doc = """
-
+		Global functions are attatched to all rapidTk widgets. These include new version of get() set() delete() and insert()
 	"""
 	print(f"-----\n\n{doc}\n\n-----")
 
 	root = rapidTk()
 	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
 	#myEntry = cEntry(main, value="Some Default Text", side=TOP, fill=X)
-	myEntry = cScrolledText(main, value="Some Default Text", side=TOP, fill=X)
+	myEntry = cScrolledText(main, side=TOP, fill=X)
 	cButton(main, text="get", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_get(e, w))
 	cButton(main, text="set", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_set(e, w))
 	cButton(main, text="insert", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_insert(e, w))
@@ -365,16 +370,25 @@ def example_spinbox():
 	configure(**kwargs) -> calls the configure() method of the super class. if one of the keywords is `values` sets the attribute values to the keyword `values`
 	"""
 
-def example_text_print(event, a, b, c, sv):
-	print(sv.get())
+
 def example_text():
+	doc = """
+		Text and ScrolledText widgets have been remade to allow for the use of StringVar as a textvariable.
+		This puts both these objects inline with the global methods of get(), set(), insert() and delete()
+	"""
+	print(f"-----\n\n{doc}\n\n-----")
 	root = Tk()
-	sv = StringVar()
-	f = cFrame(root)
+	#sv = StringVar()
+	#sv.set('Hello World!')
+	#sv2 = StringVar()
+	#sv2.set('Hello World!')
+	f = Frame(root)
 	f.pack(side=TOP)
-	t = cText(f, textvariable=sv)
-	sv.trace('w', lambda  a, b, c, e=Event, v=sv:example_text_print(e, a, b, c, sv))
-	t.pack(side=TOP)
+	t = cScrolledText(f, side=TOP)
+	t2 = cText(f, side=TOP)
+	t.var.trace('w', lambda  a, b, c, e=Event, v=t.var:example_text_print(e, a, b, c, v))
+	t2.var.trace('w', lambda  a, b, c, e=Event, v=t2.var:example_text_print(e, a, b, c, v))
+	cButton(f, text='test', command=lambda e=Event, w=t:example_text_checkvar(e, w), side=BOTTOM)
 	root.mainloop()
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-import sys
+import sys, re
 from uuid import uuid4
 from threading import Timer
 if sys.platform == 'win32':
@@ -134,11 +134,7 @@ class widgetBase:
 	@time_it
 	def get(self, index=None, end=None) -> str:
 		print("wb get")
-		#ctype = str(type(self))[:-2].split(".")[-1]
-		print(type(self))
 		ctype = self.__widget_type
-		print(isinstance(ctype, rtktypes.singleget))
-		#if ctype in ["cLabel", "cButton"]:
 		match ctype:
 			case rtktypes.noget:
 				return None
@@ -154,7 +150,8 @@ class widgetBase:
 				else:
 					return self.__getter(self.var.get(), index, end)
 			case rtktypes.multiget:
-				return self.__getter(self.var.get(), index, end)
+				print("multiget")
+				return self.var.get()
 			case rtktypes.strget | rtktypes.intget | rtktypes.doubleget:
 				return self.var.get()
 			case rtktypes.treeget:
@@ -163,35 +160,41 @@ class widgetBase:
 				raise Exception(f'{type(self)} : {ctype} has no get() method')
 	@time_it
 	def set(self, index=0, text=""):
+		print("wb set")
 		"""
 		sets the text of a widget to the `text` value, replacing the current text starting at the `index` position
 		"""
-		print("wb set")
-		ctype = str(type(self))[:-2].split(".")[-1]
-		if ctype in ["cLabel", "cButton"]:
-			if index in ['', None, 0]:
-				self.configure(text=text)
-			else:
-				o_text = self.__getter(self.cget('text'), 0, index) or ''
-				self.configure(text=o_text+text)
-			self.update()
-		elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry", "reautoEntry"]:
-			if index in ['', None, 0]:
-				return self.var.set(text)
-			else:
-				o_text = self.__getter(self.var.get(), 0, index)
-				self.var.set(o_text+text)
-		#elif ctype in ["cCheckbutton"]:
-		#	return self.var.get()
-		#elif ctype in ["cTreeview"]:
-		#	return "This requires cusom get() method"
-		else:
-			raise Exception(f'{type(self)} : {ctype} has no set() method')
+		ctype = self.__widget_type
+		match ctype:
+			case rtktypes.noget:
+				raise OptionNotPermitted('set() is not availble for that widget')
+			case rtktypes.singleget:
+				if index > 0:
+					original = self.get()
+					print(original)
+					original=original[0:index]
+				else:
+					original = ""	
+				self.var.set(f"{original}{text}")
+			case rtktypes.multiget:
+				print('multiget')
 	def insert(self, index=0, text=""):
 		print("wb insert")
 		"""
 		inserts the `text` into the widget at the `index` position, shifting all other text by `len(text)` to the left.
 		"""
+		ctype = self.__widget_type
+		match ctype:
+			case rtktypes.noget:
+				raise OptionNotPermitted('insert() is not availble for that widget')
+			case rtktypes.singleget:
+				text = self.get()
+				self.set(0, f"{text[0:index]}{text}{text[index:]}")
+			case rtktypes.multiget:
+				print('multiget')
+				
+
+
 
 		pass
 	def delete(self, index=0, end=-1):
@@ -199,15 +202,14 @@ class widgetBase:
 		"""
 		deletes the text between `index` position and `end` position
 		"""
-		pass
-	@time_it
-	def __getter(self, text, index, end) -> str:
-		if end in ['end', '', None]:
-			end = None
-		index = 0 if not index else index
-		end = len(text) if isinstance(end, str) else end
-		end = len(text) if end >= 0 else end
-		return text[int(float(index)):int(end) if end else None]
+		ctype = self.__widget_type
+		match ctype:
+			case rtktypes.noget:
+				raise OptionNotPermitted('delete() is not availble for that widget')
+			case rtktypes.singleget:
+				self.set(0, '')
+			case rtktypes.multiget:
+				print('multiget')
 	@time_it
 	def clear(self, event=None):
 		try:
@@ -374,3 +376,23 @@ class RepeatedTimer(object):
 		self.is_running = False
 
 	
+
+class illigalUnicode:
+	def __init__(self):
+		_illegal_unichrs = [(0x00, 0x08), (0x0B, 0x0C), (0x0E, 0x1F), 
+							(0x7F, 0x84), (0x86, 0x9F), 
+							(0xFDD0, 0xFDDF), (0xFFFE, 0xFFFF)] 
+		if sys.maxunicode >= 0x10000:  # not narrow build 
+			_illegal_unichrs.extend([(0x1FFFE, 0x1FFFF), (0x2FFFE, 0x2FFFF), 
+									 (0x3FFFE, 0x3FFFF), (0x4FFFE, 0x4FFFF), 
+									 (0x5FFFE, 0x5FFFF), (0x6FFFE, 0x6FFFF), 
+									 (0x7FFFE, 0x7FFFF), (0x8FFFE, 0x8FFFF), 
+									 (0x9FFFE, 0x9FFFF), (0xAFFFE, 0xAFFFF), 
+									 (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF), 
+									 (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF), 
+									 (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)]) 
+
+		_illegal_ranges = [fr"{chr(low)}-{chr(high)}"for (low, high) in _illegal_unichrs]
+		self._illegal_xml_chars_RE = re.compile(f"[{''.join(_illegal_ranges)}]")
+	def test(self, char):
+		return self._illegal_xml_chars_RE.sub('', char)

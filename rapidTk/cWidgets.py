@@ -1,11 +1,10 @@
 import logging
 #tkinter overrides
-from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu, Text
+from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu, Text, ScrolledText
 #tkinter imports
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar, Event
 from tkinter import Menu as tkMenu
 from tkinter.ttk import Treeview, Combobox
-from tkinter.scrolledtext import ScrolledText
 from tkinter.ttk import Style
 #rapidTk imports
 from rapidTk.__main__ import rapidTk
@@ -246,11 +245,13 @@ class cScrolledText(ScrolledText, widgetBase):
 	_widgetBase__widget_type = rtktypes.multiget
 	@time_it
 	def __init__(self, master, **kwargs):
-		value = kwargs.pop('value', '')
-		self.var = kwargs.pop('textvariable', StringVar())
-		self.var.set(value)
+		value = kwargs.pop('value', None)
+		self.var = kwargs['textvariable'] = kwargs.pop('textvariable', StringVar())
+		if value:
+			self.var.set(value)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
+		print('ScrolledText', kwargs)
 		super(cScrolledText, self).__init__(master, **widget_args)
 		#self.trace('w', self.__wright)
 		if isinstance(self.get_root(), rapidTk):
@@ -530,19 +531,27 @@ class cDate(cFrame, widgetBase):
 		super(cDate, self).__init__(master, **kwargs)
 		
 	def _create_entries(self, **kwargs):
-		
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
-		
-
 		if layout.method is not None:
 			layout.inline(self)
 
 
 class cText(Text, widgetBase):
-	'''A text widget that accepts a 'textvariable' option'''
 	_widgetBase__widget_type = rtktypes.multiget
 	def __init__(self, master=None, **kwargs):
 		self.var = kwargs['textvariable'] = kwargs.pop("textvariable", StringVar())
-		super(cText, self).__init__(master, **kwargs)
+		layout = inline_layout(**kwargs)
+		widget_args = layout.filter()
+		super(cText, self).__init__(master, **widget_args)
+		if layout.method is not None:
+			layout.inline(self)
+	def get(self, *args):
+		return widgetBase.get(self, *args)
+	def set(self, *args):
+		return widgetBase.set(self, *args)
+	def insert(self, *args):
+		return widgetBase.insert(self, *args)
+	def delete(self, *args):
+		return widgetBase.delete(self, *args)
 
