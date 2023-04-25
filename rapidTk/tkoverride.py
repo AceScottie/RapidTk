@@ -156,44 +156,50 @@ def pw__init__(self, master=None, cnf={}, **kw):
 PanedWindow.__bases__ = (Widget,)
 PanedWindow.__init__ = pw__init__
 
-
-class Text(Widget, XView, YView):
+class Content(Text):
     def __init__(self, master=None, cnf={}, **kw):
-        self._textvariable = kw.pop("textvariable", None)
-        super(Text, self).__init__(master, 'text', cnf, (), **kw)
-        if self._textvariable is not None:
-            self.tk.call(self._w, 'insert', '1.0', self._textvariable.get())
-        self.tk.eval('''
-            proc widget_proxy {widget widget_command args} {
+        super(Content, self).__init__(master, cnf, **kw)
 
-                # call the real tk widget command with the real args
-                set result [uplevel [linsert $args 0 $widget_command]]
+#class Text(Widget, XView, YView):
+def text__init__(self, master=None, cnf={}, **kw):
+    self._textvariable = kw.pop("textvariable", None)
+    super(Text, self).__init__(master, 'text', cnf, (), **kw)
+    if self._textvariable is not None:
+        self.tk.call(self._w, 'insert', '1.0', self._textvariable.get())
+    self.tk.eval('''
+        proc widget_proxy {widget widget_command args} {
 
-                # if the contents changed, generate an event we can bind to
-                if {([lindex $args 0] in {insert replace delete})} {
-                    event generate $widget <<Change>> -when tail
-                }
-                # return the result from the real widget command
-                return $result
+            # call the real tk widget command with the real args
+            set result [uplevel [linsert $args 0 $widget_command]]
+
+            # if the contents changed, generate an event we can bind to
+            if {([lindex $args 0] in {insert replace delete})} {
+                event generate $widget <<Change>> -when tail
             }
-            ''')
-        self.tk.eval('''
-            rename {widget} _TEXT_{widget}
-            interp alias {{}} ::{widget} {{}} widget_proxy {widget} _TEXT_{widget}
-        '''.format(widget=str(self)))
-        self.bind("<<Change>>", self._on_widget_change)
-        if self._textvariable is not None:
-            self._textvariable.trace("wu", self._on_var_change)
-    def _on_var_change(self, *args):
-        text_current = self.tk.call(self._w, 'get', "1.0", "end-1c")
-        var_current = self._textvariable.get()
-        if text_current != var_current:
-            self.delete("1.0", "end")
-            self.insert("1.0", var_current)
-    def _on_widget_change(self, event=None):
-        if self._textvariable is not None:
-            self._textvariable.set(self.tk.call(self._w, 'get', "1.0", "end-1c"))
-
+            # return the result from the real widget command
+            return $result
+        }
+        ''')
+    self.tk.eval('''
+        rename {widget} _TEXT_{widget}
+        interp alias {{}} ::{widget} {{}} widget_proxy {widget} _TEXT_{widget}
+    '''.format(widget=str(self)))
+    self.bind("<<Change>>", self._on_widget_change)
+    if self._textvariable is not None:
+        self._textvariable.trace("wu", self._on_var_change)
+def text_on_var_change(self, *args):
+    text_current = self.tk.call(self._w, 'get', "1.0", "end-1c")
+    var_current = self._textvariable.get()
+    if text_current != var_current:
+        self.delete("1.0", "end")
+        self.insert("1.0", var_current)
+def text_on_widget_change(self, event=None):
+    if self._textvariable is not None:
+        self._textvariable.set(self.tk.call(self._w, 'get', "1.0", "end-1c"))
+Text.__bases__ = (Widget, XView, YView)
+Text.__init__ = text__init__
+Text._on_var_change = text_on_var_change
+Text._on_widget_change = text_on_widget_change
 
 class ScrolledText(Text):
     def __init__(self, master=None, **kw):

@@ -1,4 +1,5 @@
 from rapidTk.__main__ import *
+from rapidTk.tkoverride import *
 from rapidTk.rTkUtils import *
 from rapidTk.rTkUtils import _UniqueIdentifiers
 from rapidTk.cWidgets import *

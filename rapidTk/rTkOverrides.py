@@ -37,7 +37,6 @@ class OptionMenu(Menubutton):
         if name == 'menu':
             return self.__menu
         return Widget.__getitem__(self, name)
-
 class Spinbox(Spinbox):
     """
         Override of the Tk Spinbox. Adds `values` attribute along with next() and previous() methods.

@@ -1,7 +1,8 @@
 import sys
-from tkinter import Event
+from tkinter import Event, PhotoImage
 from tkinter import Scrollbar as tkScrollbar
 from tkinter import Frame as tkFrame
+import PIL
 from rapidTk import *
 #from rapidTk.rTkOverrides import ScrolledText
 import logging
@@ -370,25 +371,35 @@ def example_spinbox():
 	configure(**kwargs) -> calls the configure() method of the super class. if one of the keywords is `values` sets the attribute values to the keyword `values`
 	"""
 
-
+def example_text_add_image(event, scrolledtext, text, content):
+	img = PhotoImage(file = "../assets/example.png")
+	scrolledtext.image_create(END, image = img)
+	text.image_create(END, image = img)
+	content.window_create(END, window = cLabel(content, image = img)) # Example 2
+	content.image_create(END, image = img)
 def example_text():
 	doc = """
 		Text and ScrolledText widgets have been remade to allow for the use of StringVar as a textvariable.
 		This puts both these objects inline with the global methods of get(), set(), insert() and delete()
+
+		NOTICE: Text is compatible with tkinter.Text however a replacement of that has been included as tkoverride.Content
+				Content only contains the super() change and does not include the textvariable.
+				Text textvariable does not include images in its content.
+				I dont know why but # Example 2 only works on Content and errors on Text.
+				Too many images will cause render errors, probably a memory allocation issue. Also having all 3 adding images using image_create doesnt work?
 	"""
 	print(f"-----\n\n{doc}\n\n-----")
 	root = Tk()
-	#sv = StringVar()
-	#sv.set('Hello World!')
-	#sv2 = StringVar()
-	#sv2.set('Hello World!')
 	f = Frame(root)
 	f.pack(side=TOP)
-	t = cScrolledText(f, side=TOP)
-	t2 = cText(f, side=TOP)
+	t = cScrolledText(f, height=4, side=TOP)
+	t2 = cText(f, height=4, side=TOP)
 	t.var.trace('w', lambda  a, b, c, e=Event, v=t.var:example_text_print(e, a, b, c, v))
 	t2.var.trace('w', lambda  a, b, c, e=Event, v=t2.var:example_text_print(e, a, b, c, v))
-	cButton(f, text='test', command=lambda e=Event, w=t:example_text_checkvar(e, w), side=BOTTOM)
+	c= Content(f, height=4)
+	c.pack(side=TOP)
+	cButton(f, text='test', command=lambda e=Event, w=t2:example_text_checkvar(e, w), side=BOTTOM)
+	cButton(f, text='Add Image', command=lambda e=Event, w1=t, w2=t2, w3=c:example_text_add_image(e, w1, w2, w3), side=BOTTOM)
 	root.mainloop()
 
 if __name__ == "__main__":
