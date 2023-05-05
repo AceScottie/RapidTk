@@ -3,6 +3,19 @@ from tkinter.__init__ import Pack, Place, Grid
 from rapidTk.tkoverride import Frame, Widget, Menubutton, Menu, Spinbox, Scrollbar, Text
 
 from rapidTk.rTkUtils import illigalUnicode
+
+
+class base:
+    def __init__(self, master, *args, **kwargs):
+        super(base, self).__init__()
+
+class cMenu(Menu, base):
+    #_widgetBase__widget_type = rtktypes.noget
+    def __init__(self, master, **kwargs):
+        super(cMenu, self).__init__(master, **kwargs)
+
+
+
 class OptionMenu(Menubutton):
     """OptionMenu which allows the user to select a value from a menu."""
     def __void__(self, *args, **kwargs):
@@ -14,7 +27,7 @@ class OptionMenu(Menubutton):
         values = kw.pop('values', []) ## adds vaues kwargs
         value = kw.pop('value', None) ##adds value kwarg
         kw['borderwidth'] = kw.get('borderwidth', 2)
-        variable = kw['textvariable'] = kw.pop('variable', StringVar())
+        variable = kw['textvariable'] = kw.pop('variable', StringVar(master))
         if value is not None:variable.set(value)
         kw['indicatoron'] = kw.get('indicatoron', 1)
         kw['relief'] = kw.get('relief', RAISED)
@@ -26,7 +39,7 @@ class OptionMenu(Menubutton):
         super(OptionMenu, self).__init__(master, cnf, **kw)
 
         self.widgetName = 'tk_optionMenu'
-        menu = self.__menu = Menu(self, name="menu", tearoff=0)
+        menu = self.__menu = cMenu(self, name="menu", tearoff=0)
         self.menuname = menu._w
         
         menu.add_command(label=value, command=_setit(variable, value, callback))

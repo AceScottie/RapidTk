@@ -5,8 +5,7 @@ from tkinter import Tk
 from .rTkErrors import *
 from .rTkUtils import coord, _UniqueIdentifiers
 from .rTkManagers import _ScrollManager, _WindowManager, _PopupManager, _TabManager
-from .rTkTheme import _ThemeManager
-
+from .rTkTheme import _ThemeManager #for ttk support ##WIP
 from .rTkUtils import time_it
 
 

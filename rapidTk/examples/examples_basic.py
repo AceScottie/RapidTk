@@ -4,7 +4,6 @@ from tkinter import Scrollbar as tkScrollbar
 from tkinter import Frame as tkFrame
 import PIL
 from rapidTk import *
-#from rapidTk.rTkOverrides import ScrolledText
 import logging
 rtklog = logging.getLogger('rapidTk')
 rtklog.setLevel(0)
@@ -29,14 +28,6 @@ rapdTk Log Levels:
 
 ##Functions used for examples, Do not modify! -----
 @time_it
-def example_basic_global_get(event, widget):#used as part of example_basic_global_functions()
-	print('widget get:', widget.get())
-def example_basic_global_set(event, widget):#used as part of example_basic_global_functions()
-	print(widget.set(0, 'hello'))
-def example_basic_global_insert(event, widget):#used as part of example_basic_global_functions()
-	print(widget.insert(2, 'insert test'))
-def example_basic_global_delete(event, widget):#used as part of example_basic_global_functions()
-	print(widget.delete())
 def example_basic_logging_timed_widgets(pp, master, count): ##used as part of example_basic_logging()
 	widgets = []
 	for i in range(count):
@@ -67,7 +58,12 @@ def example_text_print(event, a, b, c, sv):##used as part of example_text()
 	print(f'output: {sv.get()}')
 def example_text_checkvar(event, widget):##used as part of example_text()
 	print(widget.get())
-
+def example_text_add_image(event, scrolledtext, text, content):##used as part of example_text()
+	img = PhotoImage(file = "../assets/example.png")
+	scrolledtext.image_create(END, image = img)
+	text.image_create(END, image = img)
+	content.window_create(END, window = cLabel(content, image = img)) # Example 2
+	content.image_create(END, image = img)
 ##-------------------------------------------------
 
 
@@ -98,7 +94,8 @@ def example_basic_objects():
 	root = rapidTk()
 	pp = PackProcess()
 	main = pp.add(cFrame(root), side=TOP, fill=BOTH, expand=1)
-	pp.add(cLabel(main, text="This is a basic rapidTk Label."), side=TOP, fill=X)
+	x = pp.add(cLabel(main, text="This is a basic rapidTk Label."), side=TOP, fill=X)
+	print(x.get())
 	pp.add(cButton(main, text="This is an Example Button"), side=TOP)
 	pp.add(cEntry(main, value="Some Default Text"), side=TOP, fill=X)
 	pp.pack()
@@ -158,20 +155,39 @@ def example_no_Process():
 	cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
 	root.mainloop()
 
+def example_basic_global_functions_test(event, root, w):
+	for widget in w:
+		print(widget)
+		widget.set(0, 'Hello')
+		widget.set('end', ' World!')
+		#widget.set(0, 'Test: ')
+		widget.update()
+
+def tester(var, index, mode, root):
+	print(var, index, mode)
+	print(root.globalgetvar(var))
 def example_basic_global_functions():
 	doc = """
-		Global functions are attatched to all rapidTk widgets. These include new version of get() set() delete() and insert()
+		Global functions are attatched to all rapidTk widgets. These include new version of get(), set(), insert() and delete()
+		All arguments are optional.
+		get(index, end) -> gets text from StringVar between index->0 and end->len(var). Gets value from Variables when not using StringVar
+		set(index, text) -> sets the Variable at insert->0 position. Delets everything past index before inserting text.
+		insert(index, text) -> sets the Variable at insert->0 position. Shifts text to make room for text.
+		delete() clears the entire content of the Variable.
 	"""
 	print(f"-----\n\n{doc}\n\n-----")
-
+	logging.getLogger('rapidTk').setLevel(90)
 	root = rapidTk()
 	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
-	#myEntry = cEntry(main, value="Some Default Text", side=TOP, fill=X)
-	myEntry = cScrolledText(main, side=TOP, fill=X)
-	cButton(main, text="get", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_get(e, w))
-	cButton(main, text="set", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_set(e, w))
-	cButton(main, text="insert", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_insert(e, w))
-	cButton(main, text="delete", side=TOP, command = lambda e=Event, w=myEntry:example_basic_global_delete(e, w))
+	w = []
+	w.append(cEntry(main, side=TOP, fill=X))
+	w.append(cScrolledText(main, height=3, side=TOP, fill=X))
+	w.append(cLabel(main, width=10, side=TOP, fill=X))
+	w.append(cText(main, height=3, side=TOP, fill=X))
+	w.append(cOptionMenu(main, width=10, options=['test', 'Hello', 'World! ', 'Test: ', 'Hello World!'], side=TOP, fill=X)) ##requires modifacations
+	w[4].var.trace('wu', lambda v, i, m, r=root:tester(v, i, m, r))
+	w[4].set('testing')
+	cButton(main, text="Test", side=TOP, command = lambda e=Event, r=root, w=w:example_basic_global_functions_test(e, r, w))
 	root.mainloop()
 
 @time_it
@@ -371,12 +387,7 @@ def example_spinbox():
 	configure(**kwargs) -> calls the configure() method of the super class. if one of the keywords is `values` sets the attribute values to the keyword `values`
 	"""
 
-def example_text_add_image(event, scrolledtext, text, content):
-	img = PhotoImage(file = "../assets/example.png")
-	scrolledtext.image_create(END, image = img)
-	text.image_create(END, image = img)
-	content.window_create(END, window = cLabel(content, image = img)) # Example 2
-	content.image_create(END, image = img)
+
 def example_text():
 	doc = """
 		Text and ScrolledText widgets have been remade to allow for the use of StringVar as a textvariable.
@@ -403,7 +414,7 @@ def example_text():
 	root.mainloop()
 
 if __name__ == "__main__":
-	#example_basic_objects()
+	example_basic_objects()
 	#example_basic_objects2()
 	#example_no_Process()
 	#example_basic_global_functions()
@@ -414,5 +425,5 @@ if __name__ == "__main__":
 	#example_baisc_language()
 	#example_uuids()
 	#example_spinbox()
-	example_text()
+	#example_text()
 	pass

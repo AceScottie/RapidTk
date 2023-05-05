@@ -1,5 +1,5 @@
 #tkinter overrides
-from rapidTk.tkoverride import Scrollbar, Misc
+from rapidTk.tkoverride import Misc
 #tkinter imports
 from tkinter import StringVar, IntVar, Event, INSERT, END, Toplevel
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, SOLID
@@ -20,7 +20,7 @@ import win32api
 
 #rtk imports
 from rapidTk.__main__ import PackProcess, GridProcess, rapidTk
-from rapidTk.cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu
+from rapidTk.cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu, cScrollbar
 from rapidTk.rTkErrors import *
 from rapidTk.rTkUtils import coord, widgetBase, widgetBase_override, simpledate, cache
 from rapidTk.rTkUtils import time_it, inline_layout
@@ -235,7 +235,7 @@ class scrollArea(cFrame, widgetBase):
 		self.sFrame = cFrame(self.sCanvas, side=LEFT, fill=BOTH, expand=1)
 		self.cw = self.sCanvas.create_window((0, 0), window=self.sFrame, anchor=NW)
 		if self.h in [1, "1", True]:
-			self.scroll_h = Scrollbar(master, orient=VERTICAL, command=self.sCanvas.yview)
+			self.scroll_h = cScrollbar(master, orient=VERTICAL, command=self.sCanvas.yview)
 			self.sCanvas.configure(yscrollcommand=self.scroll_h.set)
 			self.scroll_h.pack(side=RIGHT, fill=Y)
 		if self.v in [1, "1", True]:

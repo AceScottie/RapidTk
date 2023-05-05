@@ -1,18 +1,24 @@
 from tkinter.__init__ import Pack, Place, Grid, _cnfmerge, XView, YView
+from tkinter.__init__ import Frame as tkFrame
+from tkinter.__init__ import Scrollbar as tkScrollbar
 from tkinter.constants import RIGHT, LEFT, Y, BOTH
 from tkinter.__init__ import Frame, Button, Canvas, Checkbutton, Entry, Label, Listbox, Menu, Menubutton, Message 
 from tkinter.__init__ import Radiobutton, Scale, Scrollbar, Text, Scale, Spinbox, LabelFrame, PanedWindow
-from tkinter.__init__ import Misc as tkMisc
+from tkinter.__init__ import Misc
 
 from tkinter.scrolledtext import ScrolledText
 ##Base Classes
-def misc__init__(self, *args, **kwargs):
-    pass
-tkMisc.__init__ = misc__init__
-class Misc(tkMisc):
+def misc__init__(self, master, widgetName, cnf={}, extra=(), **kw):
+    try:
+        super(Misc, self).__init__(master, **kw)
+    except:
+        super(Misc, self).__init__()
+Misc.__bases__ = (object,)
+Misc.__init__ = misc__init__
+class cMisc(Misc):
     def __init__(self, master, widgetName, cnf={}, extra=(), **kw):
-        super(Misc, self).__init__(master, widgetName, cnf, extra, **kw)
-class BaseWidget(Misc):
+        super(cMisc, self).__init__(master, widgetName, cnf, extra, **kw)
+class BaseWidget(cMisc):
     def _setup(self, master, cnf):
         if master is None:
             master = _get_default_root()
@@ -87,7 +93,7 @@ Button.__init__ = b__init__
 
 def cv__init__(self, master=None, cnf={}, **kw):
     super(Canvas, self).__init__(master, 'canvas', cnf, (), **kw)
-Canvas.__bases__ = (Widget,)
+Canvas.__bases__ = (Widget, XView, YView)
 Canvas.__init__ = cv__init__
 
 def cb__init__(self, master=None, cnf={}, **kw):
@@ -98,7 +104,7 @@ Checkbutton.__init__ = cb__init__
 def e__init__(self, master=None, cnf={}, **kw):
     super(Entry, self).__init__(master, 'entry', cnf, (), **kw)
     Button.__bases__ = (Widget,)
-Entry.__bases__ = (Widget,)
+Entry.__bases__ = (Widget,XView)
 Entry.__init__ = e__init__
 
 def l__init__(self, master=None, cnf={}, **kw):
@@ -108,7 +114,7 @@ Label.__init__ = l__init__
 
 def lb__init__(self, master=None, cnf={}, **kw):
      super(Listbox, self).__init__(master, 'listbox', cnf, (), **kw)
-Listbox.__bases__ = (Widget,)
+Listbox.__bases__ = (Widget, XView, YView)
 Listbox.__init__ = lb__init__
 
 def m__init__(self, master=None, cnf={}, **kw):
@@ -143,7 +149,7 @@ Scrollbar.__init__ = sb__init__
 
 def sp__init__(self, master=None, cnf={}, **kw):
      super(Spinbox, self).__init__(master, 'spinbox', cnf, (), **kw)
-Spinbox.__bases__ = (Widget,)
+Spinbox.__bases__ = (Widget, XView)
 Spinbox.__init__ = sp__init__
 
 def lf__init__(self, master=None, cnf={}, **kw):
@@ -155,6 +161,11 @@ def pw__init__(self, master=None, cnf={}, **kw):
      super(PanedWindow, self).__init__(master, 'panedwindow', cnf, (), **kw)
 PanedWindow.__bases__ = (Widget,)
 PanedWindow.__init__ = pw__init__
+
+def pw__init__(self, master=None, cnf={}, **kw):
+     super(Scrollbar, self).__init__(master, 'scrollbar', cnf, (), **kw)
+Scrollbar.__bases__ = (Widget,)
+Scrollbar.__init__ = pw__init__
 
 class Content(Text):
     def __init__(self, master=None, cnf={}, **kw):
@@ -191,8 +202,8 @@ def text_on_var_change(self, *args):
     text_current = self.tk.call(self._w, 'get', "1.0", "end-1c")
     var_current = self._textvariable.get()
     if text_current != var_current:
-        self.delete("1.0", "end")
-        self.insert("1.0", var_current)
+        self.tk.call(self._w, 'delete', "1.0", "end")
+        self.tk.call(self._w, 'insert', "1.0", var_current)
 def text_on_widget_change(self, event=None):
     if self._textvariable is not None:
         self._textvariable.set(self.tk.call(self._w, 'get', "1.0", "end-1c"))
@@ -206,7 +217,7 @@ class ScrolledText(Text):
         self._textvariable = kw.get('textvariable', None)
         self.frame = Frame(master)
         self.vbar = Scrollbar(self.frame)
-        self.vbar.pack(side=RIGHT, fill=Y, expand=True)
+        self.vbar.pack(side=RIGHT, fill=Y)
         kw.update({'yscrollcommand': self.vbar.set})
         super(ScrolledText, self).__init__(self.frame, {}, **kw)
         self.pack(side=LEFT, fill=BOTH, expand=True)
@@ -238,12 +249,5 @@ class ScrolledText(Text):
         self.bind("<<Change>>", self._on_widget_change)
         if self._textvariable is not None:
             self._textvariable.trace("wu", self._on_var_change)
-    def _on_var_change(self, *args):
-        text_current = self.tk.call(self._w, 'get', "1.0", "end-1c")
-        var_current = self._textvariable.get()
-        if text_current != var_current:
-            self.delete("1.0", "end")
-            self.insert("1.0", var_current)
-    def _on_widget_change(self, event=None):
-        if self._textvariable is not None:
-            self._textvariable.set(self.tk.call(self._w, 'get', "1.0", "end-1c"))
+ScrolledText._on_var_change = text_on_var_change
+ScrolledText._on_widget_change = text_on_widget_change

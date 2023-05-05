@@ -11,6 +11,18 @@ from rapidTk.rTkErrors import *
 import rapidTk.types as rtktypes
 import logging
 
+def _text_split_index(index='1.0', text="", end='end'):
+	#linestart > figure how to handle this?
+	print(index, text, end)
+	if end in ['end', 0, 'end-1c', None]:
+		end = 0
+	if index in [None, '1.0', 0]:
+		index = 0
+	line = int(float(index))
+	column = int(float(index)*10)%10
+	print(line, column, end)
+
+
 class SingletonMeta(type):
 	_instances = {}
 	def __call__(cls, *args, **kwargs):
@@ -107,10 +119,11 @@ class clipboard(object):
 class widgetBase:
 	@time_it
 	def __init__(self, master, *args, **kwargs):
-		super().__init__()
+		super(widgetBase, self).__init__()
+		print(f"widgetBase init from {self.__widget_type}")
 		self.master = master
 		self.uid = _UniqueIdentifiers().new()
-		if kwargs.pop('rtkwb_override', 0):
+		if kwargs.pop('rtkwb_override', 0): ##overrides standard selection methods.
 			self.bind('<Button-1>', self.__focus_shift)
 			self.bind('<Button-2>', self.__focus_shift)
 			self.bind('<Escape>', self.__focus_shift)
@@ -132,111 +145,188 @@ class widgetBase:
 	def get_self(self):
 		return self
 	@time_it
-	def get(self, index=None, end=None) -> str:
-		print("wb get")
-		ctype = self.__widget_type
-		match ctype:
+	def get(self, index=None, end=None, **kwargs) -> str:
+		"""
+		Gets the text of a widget, either using the StringVar or cget('text') where applicable.
+		"""
+		match self.__widget_type:
 			case rtktypes.noget:
-				return None
+				raise OptionNotPermitted(f'get() is not availble for {self}')
 			case rtktypes.disget:
 				if index in ['', None] and end in ['', None]:
 					return self.cget("text")
 				else:
-					return self.__getter(self.cget('text'), index, end)
-			#elif ctype in ["cEntry", "cScrolledText", "reEntry", "MaxLengthEntry", "ValidatingEntry", "typedEntry", "vEntry"]:
+					if not isinstance(index, int): index = 0 # set index to 0 if index is not an int
+					if not isinstance(end, int): end = 0 ##set end to 0 if end is not an int
+					value = self.cget("text")
+					return value[index:end if end != 0 else len(value)+1] ##retuns the substring of value, if end is 0 then end is set to length of string.
 			case rtktypes.singleget:
-				if index in ['', None] and end in ['', None]:
-					return self.var.get()
+				if index is not None or end is not None: ##if index or end has been set.
+					if not isinstance(index, int): index = 0 # set index to 0 if index is not an int
+					if not isinstance(end, int): end = 0 ##set end to 0 if end is not an int
+					value = self.var.get()
+					return value[index:end if end != 0 else len(value)+1] ##retuns the substring of value, if end is 0 then end is set to length of string.
 				else:
-					return self.__getter(self.var.get(), index, end)
+					return self.var.get()
 			case rtktypes.multiget:
-				print("multiget")
-				return self.var.get()
+				if index is not None or end is not None: ##if index or end has been set.
+					if index is None: index = '1.0' ##default index to start if None
+					if end is None: end = 'end' ##defatult end to end if None
+					pp_start = self.count('1.0', index)[0] # get the amout of characters between start and index
+					pp_end = self.count(index, end)[0] ## get the amount of characters selected
+					return self.var.get()[pp_start:self.count('1.0', end)[0]-pp_end] ## return value[start+index:end-amount]
+				else:
+					return self.var.get()#or return full StringVar result.
 			case rtktypes.strget | rtktypes.intget | rtktypes.doubleget:
+				if index is not None or end is not None:
+					logging.getLogger('rapidTk').rtkwarning(f'{self} widget does not support index|end arguments.')
 				return self.var.get()
 			case rtktypes.treeget:
 				return "This requires cusom get() method"
 			case _:
-				raise Exception(f'{type(self)} : {ctype} has no get() method')
+				raise Exception(f'{type(self.__widget_type)} : {self} has no get() method')
 	@time_it
-	def set(self, index=0, text=""):
-		print("wb set")
+	def set(self, index=None, text="", **kwargs):
 		"""
 		sets the text of a widget to the `text` value, replacing the current text starting at the `index` position
 		"""
-		ctype = self.__widget_type
-		match ctype:
+		match self.__widget_type:
 			case rtktypes.noget:
-				raise OptionNotPermitted('set() is not availble for that widget')
+				raise OptionNotPermitted(f'set() is not availble for {self}')
+			case rtktypes.disget:
+				print("display get -> set")
 			case rtktypes.singleget:
-				if index > 0:
-					original = self.get()
-					print(original)
-					original=original[0:index]
+				if index is not None:
+					try:
+						if int(float(index)) > 0:
+							original = self.get()
+							logging.getLogger('rapidTk').rtklog(f'{self} is being set with {original[0:int(float(index))]+text} and index {index}')
+							self.var.set(original[0:int(float(index))]+text)
+						else:
+							logging.getLogger('rapidTk').rtklog(f'{self} is being set with {text} and index {index}')
+							self.var.set(text)
+					except:
+						if isinstance(index, str):
+							try:
+								original = self.get()
+								try:
+									index = self.index(index)
+								except:
+									if index == 'end':
+										index = len(original)
+									else:
+										raise OptionNotPermitted("")
+								original = self.get()
+								logging.getLogger('rapidTk').rtklog(f'{self} is being set with {original[:index]+text} and index {index}')
+								self.var.set(original[:index]+text)
+							except:
+								logging.getLogger('rapidTk').rtkerror(f"Index {index} cannot be used with {self} or is not supported")
+						else:
+							logging.getLogger('rapidTk').rtkerror(f"Unknown index {index}")
 				else:
-					original = ""	
-				self.var.set(f"{original}{text}")
-			case rtktypes.multiget:
-				print('multiget')
-	def insert(self, index=0, text=""):
-		print("wb insert")
+					logging.getLogger('rapidTk').rtklog(f'{self} is being set with {text} and index {index}')
+					self.var.set(text)
+			case rtktypes.multiget: ## TODO: WIP
+				if index is not None:
+					original = self.get()
+					try: 
+						index = self.count('1.0', self.index(index))[0]
+					except:
+						try:
+							index = self.count('1.0', index)
+						except:
+							index = 0
+					logging.getLogger('rapidTk').rtklog(f'{self} is being set with {original[0:index]+text} and index {index}')
+					self.var.set(original[0:index]+text)
+				else:
+					logging.getLogger('rapidTk').rtklog(f'{self} is being set with {text} and index {index}')
+					self.var.set(f"{text}")
+			case rtktypes.strget | rtktypes.intget | rtktypes.doubleget:
+				if index is not None:
+					logging.getLogger('rapidTk').rtkwarning(f'{self} widget does not support index|end arguments.')
+				self.var.set(text)
+	def insert(self, index=0, text="", **kwargs):
 		"""
-		inserts the `text` into the widget at the `index` position, shifting all other text by `len(text)` to the left.
+		sets the text of a widget to the `text` value, replacing the current text starting at the `index` position
+		"""
+		match self.__widget_type:
+			case rtktypes.noget:
+				raise OptionNotPermitted(f'insert() is not availble for {self}')
+			case rtktypes.singleget:
+				try:
+					float(index)
+				except:
+					return
+				if int(float(index)) > 0:
+					original = self.get()
+					self.var.set(original[0:int(float(index))]+text+original[int(float(index)):])
+				else:
+					self.var.set(text)
+			case rtktypes.multiget:## TODO: WIP
+				if index not in [0, '1.0']:
+					original = self.get()
+					try: 
+						index = self.count('1.0', float(index))[0]
+					except:
+						index = self.count('1.0', index)
+					self.var.set(original[0:index]+text+original[index:])
+				else:
+					self.var.set(f"{text}")
+
+	def delete(self, index=None, end=None, **kwargs):
+		"""
+		deletes the text between `index` position and `end` position if not None, otherwise deletes the 
 		"""
 		ctype = self.__widget_type
-		match ctype:
+		match self.__widget_type:
 			case rtktypes.noget:
-				raise OptionNotPermitted('insert() is not availble for that widget')
+				raise OptionNotPermitted(f'insert() is not availble for {self}')
 			case rtktypes.singleget:
-				text = self.get()
-				self.set(0, f"{text[0:index]}{text}{text[index:]}")
-			case rtktypes.multiget:
-				print('multiget')
-				
-
-
-
-		pass
-	def delete(self, index=0, end=-1):
-		print("wb delete")
-		"""
-		deletes the text between `index` position and `end` position
-		"""
-		ctype = self.__widget_type
-		match ctype:
-			case rtktypes.noget:
-				raise OptionNotPermitted('delete() is not availble for that widget')
-			case rtktypes.singleget:
-				self.set(0, '')
-			case rtktypes.multiget:
-				print('multiget')
+				try:
+					float(index)
+				except:
+					return
+				if int(float(index)) > 0:
+					original = self.get()
+					self.var.set(original[0:int(float(index))]+original[int(float(end)):])
+				else:
+					self.var.set(text)
+			case rtktypes.multiget:## TODO: WIP
+				if index is not None or end is not None:
+					original = self.get()
+					try: 
+						if index is None: index = '1.0' ##default index to start if None
+						if end is None: end = 'end' ##defatult end to end if None
+						index = self.count('1.0', index)[0] # get the amout of characters between start and index
+						end = self.count(end, 'end')[0] ## get the amount of characters selected 
+					except:
+						index = self.count('1.0', index)
+						end = len(original)
+					self.var.set(original[0:index]+original[len(original)-end:])
+				else:
+					self.var.set(f"{text}")
+			case rtktypes.strget | rtktypes.intget | rtktypes.doubleget:
+				self.set()
 	@time_it
 	def clear(self, event=None):
-		try:
-			self.var.set(text='')
-			return
-		except:
-			pass
-		try:
-			self.delete(0, 'end')
-			return
-		except:
-			pass
-		try:
-			self.configure(text='')
-			return
-		except:
-			pass
+		match self.__widget_type:
+			case rtktypes.noget:
+				raise OptionNotPermitted(f'insert() is not availble for {self}')
+			case _:
+				try:
+					self.var.set('')
+				except:
+					self.var.set(0)
 
 class widgetBase_override(widgetBase):
 	"""
 	overrides the mouse bindings to prevent issues of focus loss when focus loss is expected.
 	"""
-	def __init__(self, master, **kwargs):
+	def __init__(self, master, *args, **kwargs):
 		self.master = master
 		self.uid = _UniqueIdentifiers().new()
 		kwargs['rtkwb_override'] = 1
-		super(widgetBase_override, self).__init__(master, **kwargs)
+		super(widgetBase_override, self).__init__(master)
 
 
 def cache(func):
