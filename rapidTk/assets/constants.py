@@ -57,7 +57,7 @@ sticky=NSEW - if cell is larger on which sides will this
 _global_layout = ["in", "anchor", "ipady", "ipadx", "padx", "pady", "in_"]
 _pack_add = ["after", "before", "side", "fill", "expand"]
 _grid_add = ["column", "columnspan", "row", "rowspan", "sticky"]
-_place_add = ["x", "y", "relx", "rely", "relwidth", "relheight", "bordermode", "xsise", "ysize"]
+_place_add = ["x", "y", "relx", "rely", "relwidth", "relheight", "bordermode", "xsize", "ysize"]
 
 ##unicode constants
 UNICODE_UP = b'\xE2\x86\x91'

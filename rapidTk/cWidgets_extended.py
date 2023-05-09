@@ -247,7 +247,6 @@ class scrollArea(cFrame, widgetBase):
 		
 		if layout.method is not None:
 			layout.inline(self)
-
 	def _update_scrollregion(self, event):
 		self.sCanvas.configure(scrollregion=self.sCanvas.bbox("all"))
 	def _FrameWidth(self, event):
@@ -406,8 +405,8 @@ class Tooltip(cLabel, widgetBase):
 		kwargs["borderwidth"] = kwargs.get('borderwidth', 0)
 		kwargs["fg"] = kwargs.get('fg', '#000000')
 		kwargs["fg"] = kwargs.get('fg', '#000000')
-
 		self.kwargs = kwargs
+		super(Tooltip, self).__init__(master, **kwargs)
 		self.master.bind("<Enter>", self.onEnter)
 		self.master.bind("<Leave>", self.onLeave)
 		self.master.bind("<ButtonPress>", self.onLeave)
@@ -427,7 +426,7 @@ class Tooltip(cLabel, widgetBase):
 		id_ = self.id
 		self.id = None
 		if id_:
-			self.widget.after_cancel(id_)
+			self.after_cancel(id_)
 	def show(self):
 		def tip_pos_calculator(widget, label,*,tip_delta=(10, 5), pad=(5, 3, 5, 3)):
 			w = widget
@@ -453,19 +452,17 @@ class Tooltip(cLabel, widgetBase):
 				y1 = 0
 			return x1, y1
 		pad = self.pad
-		#widget = self.widget
-		self.tw = Toplevel(widget)
+		self.tw = Toplevel(self)
 		self.tw.wm_overrideredirect(True)
 		win = cFrame(self.tw,background=self.bg,borderwidth=0)
 		label = cLabel(win,**self.kwargs)
 		label.grid(padx=(pad[0], pad[2]),pady=(pad[1], pad[3]),sticky=NSEW)
 		win.grid()
-		x, y = tip_pos_calculator(widget, label)
+		x, y = tip_pos_calculator(self, label)
 		self.tw.wm_geometry("+%d+%d" % (x, y))
 	def hide(self):
-		tw = self.tw
-		if tw:
-			tw.destroy()
+		if self.tw:
+			self.tw.destroy()
 		self.tw = None
 class Calendar(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):

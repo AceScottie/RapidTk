@@ -362,13 +362,13 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		self.kwargs = kwargs
 		self.method = None
 		self.methods = {'pack':self.__pack, 'place':self.__place, 'grid':self.__grid}
-		self.valid = True
+		self.valid_args = {}
 		self.method_opts = {}
 		self.method = self.kwargs.pop('method', None)
 		if self.method is None:
 			self.method = self.__detect_method(**self.kwargs)
-			if self.method is not None:
-				valid_args = self.filter(**self.kwargs)
+			#if self.method is not None:
+			#	valid_args = self.filter(**self.kwargs)
 	def __detect_method(self, **kwargs):
 		method = None
 		for k, v in kwargs.items():
@@ -396,7 +396,6 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 	def __place(self, widget, **kwargs):
 		widget.place(**kwargs)
 	def filter(self, **kwargs):
-		non_opts = {}
 		for key, value in self.kwargs.items():
 			if key in self.__all+constants._global_layout:
 				if key == "ysize":## yet another dirty fix. at this point i should just re-wright the layout methods.
@@ -406,8 +405,8 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 				else:
 					self.method_opts[key] = value
 			else:
-				non_opts[key] = value
-		return non_opts
+				self.valid_args[key] = value
+		return self.valid_args
 	def inline(self, widget):
 		logging.getLogger('rapidTk').rtkverbose(f'adding inline widget {widget=}')
 		self.methods[self.method](widget, **self.method_opts)

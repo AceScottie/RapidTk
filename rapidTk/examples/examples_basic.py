@@ -430,10 +430,28 @@ def example_text():
 	cButton(f, text='Add Image', command=lambda e=Event, w1=t, w2=t2, w3=c:example_text_add_image(e, w1, w2, w3), side=BOTTOM)
 	root.mainloop()
 
+def example_tooltip():
+	doc = """
+	docstr
+	"""
+	print(f"-----\n\n{doc}\n\n-----")
+	root = Tk()
+	f = cFrame(root, method='pack', anchor="center")
+
+	l=Label(f, text="Test Label")
+	l.pack(side=TOP)
+
+	t = Tooltip(l, text="test tooltip")
+
+	root.mainloop()
+	
+
+
+
 if __name__ == "__main__":
 	#example_basic_objects()
 	#example_basic_objects2()
-	example_no_Process()
+	#example_no_Process()
 	#example_basic_global_functions()
 	#example_basic_logging()
 	#example_basic_menu()
@@ -443,4 +461,5 @@ if __name__ == "__main__":
 	#example_uuids()
 	#example_spinbox()
 	#example_text()
+	example_tooltip()
 	pass
