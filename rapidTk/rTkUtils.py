@@ -121,7 +121,6 @@ class widgetBase:
 	@time_it
 	def __init__(self, master, *args, **kwargs):
 		super(widgetBase, self).__init__()
-		print(f"widgetBase init from {self.__widget_type}")
 		self.master = master
 		self.uid = _UniqueIdentifiers().new()
 		if kwargs.pop('rtkwb_override', 0): ##overrides standard selection methods.
