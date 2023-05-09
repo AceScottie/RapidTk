@@ -9,7 +9,7 @@ rtklog = logging.getLogger('rapidTk')
 rtklog.setLevel(0)
 
 import sys
-print(sys.version)
+print(f"Python version:{sys.version}")
 
 
 """
@@ -146,12 +146,29 @@ def example_no_Process():
 	doc = """
 	PackProcess(), GridProcess() and PlaceProcess() are an optional extra, all cWidgets support inline layouts along with the standard layout methods.
 	The down side to inline packing is it creates and packs widgets 1 at a time making layouts be created in the order coded.
+
+	To use inline layouts add the layout keywords into the same string.
+	Note: 
+		keywords detected by multiple layouts: "in", "anchor", "ipady", "ipadx", "padx", "pady", "in_"
+		
+		If these are included please use the 'method' keyword as 'pack', 'place' or 'grid' to prevent issues with auto-detecting of layouts.
+		Or ensure they are at the end of the keywords as it will determin the layout from the first availbe keyword that matches.
+
+		keywords for place: 'width' and 'height' have been replace with 'xsize' and 'ysize' to avoid conflicting with the widget keywords.
+		This may be changed in the future to cover other conflictions.
+
+		layout keywords:
+			pack = "after", "before", "side", "fill", "expand"
+			grid = "column", "columnspan", "row", "rowspan", "sticky"
+			place = "x", "y", "relx", "rely", "relwidth", "relheight", "bordermode", "xsize"(width), "yzise"(height)
+
+	Standard layouts are done as normal in tkinter standard.
 	"""
 	print(f"-----\n\n{doc}\n\n-----")
 	root = rapidTk()
 	main = cFrame(root, side=TOP, fill=BOTH, expand=1)
 	cLabel(main, text="This is a basic rapidTk Label.", side=TOP, fill=X)
-	cButton(main, text="cButton", side=TOP)
+	cButton(main, text="cButton", side=TOP) ## side keyword present in pack layout so automatically packs.
 	cEntry(main, value="Some Default Text").pack(side=TOP, fill=X) ##example using the standard .pack() method
 	root.mainloop()
 
@@ -414,9 +431,9 @@ def example_text():
 	root.mainloop()
 
 if __name__ == "__main__":
-	example_basic_objects()
+	#example_basic_objects()
 	#example_basic_objects2()
-	#example_no_Process()
+	example_no_Process()
 	#example_basic_global_functions()
 	#example_basic_logging()
 	#example_basic_menu()

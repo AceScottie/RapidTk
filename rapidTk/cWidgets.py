@@ -16,7 +16,14 @@ from rapidTk.rTkUtils import clipboard, widgetBase, time_it, inline_layout, _Uni
 from rapidTk.rTkTheme import _ThemeManager, style_widget
 import rapidTk.types as rtktypes
 
+
+
 class cFrame(Frame, widgetBase):
+	"""
+	Basic Frame, Similar to tkinter.Frame.
+	Supports inline layouts using the standard layout params of Pack, Place and Grid.
+	Uses overriden tkiniter classes.
+	"""
 	_widgetBase__widget_type = rtktypes.noget
 	@time_it
 	def __init__(self, master, **kwargs):
@@ -350,7 +357,7 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 			if self._value in self.selectable_options:
 				self.selectable_options.remove(self._value)
 		
-		#nv = kwargs.pop('non_valid', []) 
+		nv = kwargs.pop('non_valid', []) 
 		
 		kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
 		kwargs['values'] = self.selectable_options

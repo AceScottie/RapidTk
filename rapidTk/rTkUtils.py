@@ -9,6 +9,7 @@ from datetime import datetime
 from time import perf_counter
 from rapidTk.rTkErrors import *
 import rapidTk.types as rtktypes
+import rapidTk.assets.constants as constants
 import logging
 
 def _text_split_index(index='1.0', text="", end='end'):
@@ -186,10 +187,13 @@ class widgetBase:
 			case _:
 				raise Exception(f'{type(self.__widget_type)} : {self} has no get() method')
 	@time_it
-	def set(self, index=None, text="", **kwargs):
+	def set(self, index:int|str|float=None, text:str="", **kwargs):
 		"""
 		sets the text of a widget to the `text` value, replacing the current text starting at the `index` position
 		"""
+		if text == "" and index is not None: ##yet another dirty fix. TODO: find a way to take the first arg as text if only 1 arg was set.
+			text = index
+			index = None
 		match self.__widget_type:
 			case rtktypes.noget:
 				raise OptionNotPermitted(f'set() is not availble for {self}')
@@ -360,63 +364,32 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		self.method = None
 		self.methods = {'pack':self.__pack, 'place':self.__place, 'grid':self.__grid}
 		self.valid = True
-		self.__global_options = ["in", "anchor", "ipady", "ipadx", "padx", "pady"]
-		self.__pack_add = ["anchor", "ipadx", "ipady","padx", "pady", "in", "side", "fill", "expand"]
-		self.__grid_add = ["ipadx", "ipady", "padx", "pady", "in"]
-		self.__place_add = ["anchor", "in"]
 		self.method_opts = {}
-		if self.kwargs.get('method', None) is not None:
-			self.method = kwargs.pop('method')
-		else:
+		self.method = self.kwargs.pop('method', None)
+		if self.method is None:
 			self.method = self.__detect_method(**self.kwargs)
 			if self.method is not None:
 				valid_args = self.filter(**self.kwargs)
-				self.valid = self.__validate(**valid_args)
 	def __detect_method(self, **kwargs):
 		method = None
 		for k, v in kwargs.items():
-			if k not in self.__global_options:
+			if k not in constants._global_layout:
 				method = self.__detect_layout(k)
 				if method != None:
 					return method
-	def __validate(self, **kwargs):
-		for k, v in kwargs.items():
-			if k not in self.__global_options:
-				v = self.__validate_method(k)
-				if not v:
-					self.method = False
-					raise ValueError(f"{k} keyword exists in multiple managers")
-					return v
-	def __validate_method(self, k):
-		methods = ['pack', 'place', 'grid']
-		methods.remove(self.method)
-		notin = self.__layout_keys[methods[0]] + self.__layout_keys[methods[1]]
-		kws_all = self.__layout_keys['pack'] + notin
-		if k in kws_all+self.__global_options:
-			return k in self.__layout_keys[self.method] and k not in notin
-		else:
-			return True
 	def __detect_layout(self, k):
 		mth = None
-		mth= 'pack' if k in self.__layout_keys['pack'] and k not in self.__layout_keys['grid']+self.__layout_keys['place'] else None
-		if mth is not None:
-			return mth
-		mth = 'grid' if k in self.__layout_keys['grid'] and k not in self.__layout_keys['pack']+self.__layout_keys['place']  else None
-		if mth is not None:
-			return mth
-		mth = 'place' if k in self.__layout_keys['place'] and k not in self.__layout_keys['grid']+self.__layout_keys['grid']  else None
-		if mth is not None:
-			return mth
-	@property
-	def __layout_keys(self):
-		return {
-		'pack':["after","before","expand","fill","padx","pady","side"],
-		'grid':["column","columnspan","ipadx","ipady","padx","pady","row","rowspan","sticky"],
-		'place':["bordermode","relheight","relwidth","relx","rely","x","y", "pl_width", "pl_height"]##width and hight both belong here but cause issues with widget width and hight, need solution for that.
-		}
+		if k in constants._pack_add and k not in constants._global_layout:
+			return 'pack'
+		elif k in constants._grid_add and k not in constants._global_layout:
+			return 'grid'
+		elif k in constants._place_add and k not in constants._global_layout:
+			return 'place'
+		else:
+			return None
 	@property
 	def __all(self):
-		return list(set(self.__layout_keys['pack']+self.__layout_keys['grid']+self.__layout_keys['place']))
+		return list(set(constants._pack_add+constants._grid_add+constants._place_add))
 	def __pack(self, widget, **kwargs):
 		widget.pack(**kwargs)
 	def __grid(self, widget, **kwargs):
@@ -426,10 +399,10 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 	def filter(self, **kwargs):
 		non_opts = {}
 		for key, value in self.kwargs.items():
-			if key in self.__all:
-				if key == "pl_height":## yet another dirty fix. at this point i should just re-wright the layout methods.
-					self.method_opts['width'] = value
-				elif key == "pl_width":
+			if key in self.__all+constants._global_layout:
+				if key == "ysize":## yet another dirty fix. at this point i should just re-wright the layout methods.
+					self.method_opts['height'] = value
+				elif key == "xsize":
 					self.method_opts['width'] = value
 				else:
 					self.method_opts[key] = value
