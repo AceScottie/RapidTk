@@ -323,8 +323,36 @@ class movableWindow(cCanvas, widgetBase):
 		elif self.winfo_y() < 0:
 			self.place(y=10)
 			self.posy = 10
+	def clone_widget(self, widget, master=None):
+		parent = master if master else widget.master
+		cls = widget.__class__
+
+		# Clone the widget configuration
+		cfg = {key: widget.cget(key) for key in widget.configure()}
+		if 'textvariable' in cfg:
+			cfg['textvariable'] = widget.var
+		elif 'variable' in cfg:
+			cfg['variable'] = widget.var
+		cloned = cls(parent, **cfg)
+		# Clone the widget's children
+		for child in widget.winfo_children():
+			print(type(child))
+			child_cloned = self.clone_widget(child, master=cloned)
+			if child.grid_info():
+				grid_info = {k: v for k, v in child.grid_info().items() if k not in {'in'}}
+				child_cloned.grid(**grid_info)
+			elif child.place_info():
+				place_info = {k: v for k, v in child.place_info().items() if k not in {'in'}}
+				child_cloned.place(**place_info)
+			else:
+				pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
+				child_cloned.pack(**pack_info)
+		return cloned
 	def _popout(self): ##pop out to a new toplevel window
-		pass
+		new_w = Toplevel()
+		new_w.geometry(f"{self.height}x{self.width}+{self.root.winfo_x()+self.posx}+{self.root.winfo_y()+self.posy}")
+		self.clone_widget(self.body, new_w).pack(side=TOP, fill=BOTH, expand=1)
+		self._close()
 	def _minimize(self):
 		if self.wm:
 			pos = self.wm._get_deactive_space()+1
@@ -734,7 +762,6 @@ class TimePicker(cFrame, widgetBase_override):
 		self.sub_can.itemconfigure(self.center, fill='#DDDDDD')
 		self.sub_can.delete(self.active_line)
 		self.active_line = None
-
 	def _set_number(self, event, cl, tx, number, tp):
 		if tp == "Hours":
 			if self.split == "pm":
@@ -745,7 +772,6 @@ class TimePicker(cFrame, widgetBase_override):
 			self.minutes.set(str(number).zfill(2))
 			self.close(event)
 			self.master.focus()
-
 	def get(self):
 		return self.hours.get(), self.minutes.get()
 	def popup(self, event):

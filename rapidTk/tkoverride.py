@@ -60,6 +60,7 @@ class BaseWidget(cMisc):
         classes = [(k, v) for k, v in cnf.items() if isinstance(k, type)]
         for k, v in classes:
             del cnf[k]
+        extra = extra if isinstance(extra, tuple) else ()
         self.tk.call((widgetName, self._w) + extra + self._options(cnf))
         for k, v in classes:
             k.configure(self, v)

@@ -64,6 +64,8 @@ class cButton(Button, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
 		kwargs['cursor'] = kwargs.pop('cursor', 'hand2')
+		self.var = kwargs['textvariable'] = kwargs.get('textvariable', StringVar())
+		self.var.set(kwargs.get('text', ''))
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cButton, self).__init__(master, **widget_args)
@@ -351,13 +353,17 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
 		self.selectable_options = [str(x) for x in self.options] ## modified options for display
 		self.var = kwargs['textvariable'] = kwargs.pop('variable', kwargs.pop('textvariable',StringVar(master)))
-		kwargs['value'] = self._value = kwargs.pop('default', None)
+		kwargs['value'] = self._value = kwargs.pop('value', None)
 		if self._value is not None:
+			print(f"setting var to {self._value}")
 			self.var.set(self._value)
 			if self._value in self.selectable_options:
 				self.selectable_options.remove(self._value)
 		
-		nv = kwargs.pop('non_valid', []) 
+		nv = kwargs.pop('non_valid', [])
+		x = kwargs.pop('default', None)
+		if x is not None:
+			raise Exception('keyword "default" has been Deprecated. Please use "value" instead')
 		
 		kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
 		kwargs['values'] = self.selectable_options
