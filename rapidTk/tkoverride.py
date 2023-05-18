@@ -70,7 +70,10 @@ class BaseWidget(cMisc):
         self.tk.call('destroy', self._w)
         if self._name in self.master.children:
             del self.master.children[self._name]
-        Misc.destroy(self)
+        try: ##hotfix
+            Misc.destroy(self)
+        except:
+            pass
 
     def _do(self, name, args=()):
         # XXX Obsolete -- better use self.tk.call directly!

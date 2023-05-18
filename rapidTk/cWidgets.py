@@ -42,6 +42,7 @@ class cLabel(Label, widgetBase):
 		self.fg = kwargs.get('fg', kwargs.get('foreground', None))
 		self.var = kwargs['textvariable'] = kwargs.get('textvariable', StringVar())
 		self.var.set(kwargs.get('text', ''))
+		self.var.trace("w", self._update)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cLabel, self).__init__(master, **widget_args)
@@ -57,6 +58,9 @@ class cLabel(Label, widgetBase):
 	def set(self, *args): return widgetBase.set(self, *args)
 	def insert(self, *args): return widgetBase.insert(self, *args)
 	def delete(self, *args): return widgetBase.delete(self, *args)
+
+	def _update(self, *args):
+		self.configure(text=self.var.get())
 
 
 class cButton(Button, widgetBase):
@@ -332,18 +336,21 @@ class cCheckbutton(Checkbutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		#self.uuid = _UniqueIdentifiers().new()
-		kwargs['variable'] = self.var = kwargs.get('variable', IntVar())
+		self.text = kwargs['textvariable'] = kwargs.pop("textvariable", StringVar()) ##text property for the lable
+		self.text.set(kwargs.get('text', ''))
+		self.text.trace("w", self._update) ##updates the label when text property updated
+		kwargs['selectcolor'] = kwargs.pop("selectcolor", master.get_root().option_get('background', '.'))
+		self.var = kwargs['variable'] = kwargs.get('variable', IntVar())
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cCheckbutton, self).__init__(master, **widget_args)
 		if layout.method is not None:
 			layout.inline(self)
-	@time_it
-	def get(self, **kwargs):
-		return self.var.get()
-	@time_it
-	def set(self, value):
-		self.var.set(value)
+	
+	def get(self, *args): return widgetBase.get(self, *args)
+	def set(self, *args): return widgetBase.set(self, *args)
+	def _update(self, *args):
+		self.configure(text=self.text.get())
 
 
 class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverrides

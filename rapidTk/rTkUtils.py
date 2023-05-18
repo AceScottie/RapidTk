@@ -145,6 +145,12 @@ class widgetBase:
 	def get_self(self):
 		return self
 	@time_it
+	def rel(self, w):
+		"""
+		returns the path relative to inputted widget
+		"""
+		return str(self)[len(str(w)):]
+	@time_it
 	def get(self, index=None, end=None, **kwargs) -> str:
 		"""
 		Gets the text of a widget, either using the StringVar or cget('text') where applicable.

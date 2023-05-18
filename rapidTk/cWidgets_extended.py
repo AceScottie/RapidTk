@@ -29,7 +29,7 @@ from rapidTk.rTkTheme import _ThemeManager
 import rapidTk.types as rtktypes
 try:
 	import tkcalendar
-	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
+	from rapidTk.rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
 except:
 	raise DateEntryNotFoundError
 	class DateEntry:
@@ -262,11 +262,18 @@ class movableWindow(cCanvas, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		self.motion = False
-		self.bg = kwargs.pop('bg', kwargs.pop('background', "#FFFFFF"))
-		self.fg = kwargs.pop('fg', kwargs.pop('foreground', "#000000"))
+		self.bg = kwargs.pop('bg', kwargs.pop('background', None))
+		self.fg = kwargs.pop('fg', kwargs.pop('foreground', None))
+		if self.bg is None:
+			x = master.get_root().option_get('background', '.')
+			self.bg = x if x != '' else '#FFFFFF'
+		if self.fg is None:
+			x = master.get_root().option_get('foreground', '.')
+			self.bg = x if x != '' else '#000000'
 		self.width = kwargs['width'] = kwargs.get('width', 400)
 		self.height = kwargs['height'] = kwargs.get('height', 400)
 		self.title = kwargs.pop('title', False)
+		self._cmd = kwargs.pop('command', None)
 		kwargs['borderwidth'] = kwargs.get('borderwidth', 1)
 		kwargs['relief'] = kwargs.get('relief', "groove")
 		layout = inline_layout(**kwargs)
@@ -279,6 +286,9 @@ class movableWindow(cCanvas, widgetBase):
 		self.posy=0
 		self.binds = {}
 		self.rootbind = None
+		self.popped = None
+		self.widgets = {}
+		self.manager = None
 		if self.wm:
 			self.wm.add_pid(self.pid, self)
 		self._create()
@@ -291,9 +301,9 @@ class movableWindow(cCanvas, widgetBase):
 			move = cLabel(self.top, text=self.title, fg=self.fg, justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		else:
 			move = cLabel(self.top, text="", justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
-		self.close = cButton(self.top, text="X", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
-		self.minimize = cButton(self.top, text="🗕", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
-		popout = cButton(self.top, text="⇱", relief="raised", borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
+		self.close = cButton(self.top, text="X", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
+		self.minimize = cButton(self.top, text="🗕", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
+		popout = cButton(self.top, text="⇱", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
 		self.binds["<Button-1>"] = move.bind("<Button-1>", self._click)
 		self.binds["<B1-Motion>"] = move.bind("<B1-Motion>", self._move)
 		self.binds["<ButtonRelease-1>"] = move.bind("<ButtonRelease-1>", self._drop)
@@ -307,9 +317,7 @@ class movableWindow(cCanvas, widgetBase):
 			#self.update()
 	@cache
 	def _calc_move(self, rx, rrx, w, ry, rry):
-		x=(rx-rrx-w/2)
-		y=ry-rry-10
-		return x, y
+		return (rx-rrx-w/2), ry-rry-10
 	def _drop(self, event):
 		if self.winfo_x() + self.winfo_width() > self.root.winfo_width():
 			self.place(x=self.root.winfo_width()-self.winfo_width())
@@ -323,36 +331,56 @@ class movableWindow(cCanvas, widgetBase):
 		elif self.winfo_y() < 0:
 			self.place(y=10)
 			self.posy = 10
-	def clone_widget(self, widget, master=None):
+	def _clone_widget(self, widget, master=None):
+		##src: https://stackoverflow.com/questions/46505982/is-there-a-way-to-clone-a-tkinter-widget/69538200#69538200
 		parent = master if master else widget.master
 		cls = widget.__class__
-
-		# Clone the widget configuration
+		print(cls)
 		cfg = {key: widget.cget(key) for key in widget.configure()}
-		if 'textvariable' in cfg:
-			cfg['textvariable'] = widget.var
-		elif 'variable' in cfg:
+		if 'textvariable' in cfg: ##dirty fix #1 variables get translated to objects so this gets the current variable and reassigns it to the new widget
+			if isinstance(widget, cCheckbutton): ##dirty fix #2: checkbuttons have a text and var variables for the label text and the item.
+				cfg['textvariable'] = widget.text
+			else:
+				cfg['textvariable'] = widget.var
+		if 'variable' in cfg:
 			cfg['variable'] = widget.var
 		cloned = cls(parent, **cfg)
-		# Clone the widget's children
-		for child in widget.winfo_children():
-			print(type(child))
-			child_cloned = self.clone_widget(child, master=cloned)
-			if child.grid_info():
-				grid_info = {k: v for k, v in child.grid_info().items() if k not in {'in'}}
-				child_cloned.grid(**grid_info)
-			elif child.place_info():
-				place_info = {k: v for k, v in child.place_info().items() if k not in {'in'}}
-				child_cloned.place(**place_info)
-			else:
-				pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
-				child_cloned.pack(**pack_info)
+		if not isinstance(widget, cDateEntry): ##dirty fix #4: cDateEntry has a bunch of custom only kword children which are created automatically.
+			for child in widget.winfo_children():
+				print(type(child))
+				child_cloned = self._clone_widget(child, master=cloned)
+				try:##dirty fix #3 right click menus are not packed so these fail and error. mayby replace else with elif on pack case
+					if child.grid_info():
+						grid_info = {k: v for k, v in child.grid_info().items() if k not in {'in'}}
+						child_cloned.grid(**grid_info)
+					elif child.place_info():
+						place_info = {k: v for k, v in child.place_info().items() if k not in {'in'}}
+						child_cloned.place(**place_info)
+					else:
+						pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
+						child_cloned.pack(**pack_info)
+				except:
+					pass
 		return cloned
-	def _popout(self): ##pop out to a new toplevel window
-		new_w = Toplevel()
-		new_w.geometry(f"{self.height}x{self.width}+{self.root.winfo_x()+self.posx}+{self.root.winfo_y()+self.posy}")
-		self.clone_widget(self.body, new_w).pack(side=TOP, fill=BOTH, expand=1)
+	def _popout(self, register=None): ##pop out to a new toplevel window
+		##register = relative path of widgets from body
+		## when cloning check if relative path matches and if so switch widget from relative dict to new path 
+		## use global popped attr to return the popped widget stuff maybe ? maybe add a create method here to keep the widgets inside this class
+		self.popped = Toplevel()
+		self.popped.geometry(f"{self.height}x{self.width}+{self.root.winfo_x()+int(self.posx)}+{self.root.winfo_y()+int(self.posy)}")
+		self._clone_widget(self.body, self.popped).pack(side=TOP, fill=BOTH, expand=1)
 		self._close()
+
+	def set_manager(self, manager):
+		self.pp = manager
+	def create(widget, master, kw, lay):
+		if self.pp is None:
+			raise Exception("Process manager is reqired for this, use widget.set_manager(type) type:PackProcess, GridProcess, PlaceProcess. (do not include ()!)")
+		p = self.pp.add(widget(master, **kw), **lay)
+		self.widgets[str(p)] = p
+	def process(self):
+		self.pp.process()
+
 	def _minimize(self):
 		if self.wm:
 			pos = self.wm._get_deactive_space()+1
