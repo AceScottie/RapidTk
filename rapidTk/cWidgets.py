@@ -319,8 +319,14 @@ class cScrolledText(ScrolledText, widgetBase):
 		except:
 			self.insert(self.index(INSERT), clipboard.paste())
 	@time_it
-	def _select_all(self):
+	def old_select_all(self):
 		self.select_range(0,END)
+	@time_it
+	def _select_all(self):
+		self.tag_add(SEL, "1.0", END)
+		self.mark_set(INSERT, "1.0")
+		self.see(INSERT)
+		return 'break'
 
 	def __wright(self, *args):
 		print(args)

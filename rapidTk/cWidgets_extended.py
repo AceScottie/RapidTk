@@ -239,7 +239,7 @@ class scrollArea(cFrame, widgetBase):
 			self.sCanvas.configure(yscrollcommand=self.scroll_h.set)
 			self.scroll_h.pack(side=RIGHT, fill=Y)
 		if self.v in [1, "1", True]:
-			self.scroll_v = Scrollbar(master, orient=HORIZONTAL, command=self.sCanvas.xview)
+			self.scroll_v = cScrollbar(master, orient=HORIZONTAL, command=self.sCanvas.xview)
 			self.sCanvas.config(xscrollcommand=self.scroll_v.set)
 			self.scroll_v.pack(side=BOTTOM, fill=X)
 		self.sFrame.bind("<Configure>", self._update_scrollregion)
@@ -303,7 +303,7 @@ class movableWindow(cCanvas, widgetBase):
 			move = cLabel(self.top, text="", justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		self.close = cButton(self.top, text="X", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
 		self.minimize = cButton(self.top, text="🗕", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
-		popout = cButton(self.top, text="⇱", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
+		#popout = cButton(self.top, text="⇱", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
 		self.binds["<Button-1>"] = move.bind("<Button-1>", self._click)
 		self.binds["<B1-Motion>"] = move.bind("<B1-Motion>", self._move)
 		self.binds["<ButtonRelease-1>"] = move.bind("<ButtonRelease-1>", self._drop)
