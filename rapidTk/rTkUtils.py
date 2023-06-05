@@ -463,3 +463,16 @@ class illigalUnicode:
 		self._illegal_xml_chars_RE = re.compile(f"[{''.join(_illegal_ranges)}]")
 	def test(self, char):
 		return self._illegal_xml_chars_RE.sub('', char)
+class cloneTree(dict):
+	def __init__(self):
+		self.__relpath = ""
+		super(cloneTree, self).__init__()
+	@property
+	def relpath(self):return self.__relpath
+	@relpath.setter
+	def relpath(self, path):self.__relpath = path
+	def get_rel(self, base, widget):return widget[len(str(base)):]
+	def __setitem__(self, at, val):super().__setitem__(at[len(str(self.__relpath)):], val)
+	def __getitem__(self, at):return super().__getitem__(at)
+	def clear(self):
+		self = {}

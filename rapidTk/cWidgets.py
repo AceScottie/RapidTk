@@ -70,6 +70,7 @@ class cButton(Button, widgetBase):
 		kwargs['cursor'] = kwargs.pop('cursor', 'hand2')
 		self.var = kwargs['textvariable'] = kwargs.get('textvariable', StringVar())
 		self.var.set(kwargs.get('text', ''))
+		self._command = kwargs.get('command', None)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cButton, self).__init__(master, **widget_args)
@@ -89,7 +90,8 @@ class cEntry(Entry, widgetBase):
 		logging.getLogger('rapidTk').rtkverbose(f"cEntry got kwargs {kwargs}")
 		value = kwargs.pop('value', '')
 		kwargs['textvariable'], self.var = (kwargs.get('textvariable', StringVar()),)*2
-		self.var.set(value)
+		if value != '':
+			self.var.set(value)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		logging.getLogger('rapidTk').rtkverbose(f"cEntry got widget_args {widget_args} and {layout.method}")

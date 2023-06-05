@@ -22,7 +22,7 @@ import win32api
 from rapidTk.__main__ import PackProcess, GridProcess, rapidTk
 from rapidTk.cWidgets import cEntry, cButton, cFrame, cLabel, cCanvas, cTreeview, cCheckbutton, cScrolledText, cMenu, cSpinbox, cOptionMenu, cScrollbar
 from rapidTk.rTkErrors import *
-from rapidTk.rTkUtils import coord, widgetBase, widgetBase_override, simpledate, cache
+from rapidTk.rTkUtils import coord, widgetBase, widgetBase_override, simpledate, cache, cloneTree
 from rapidTk.rTkUtils import time_it, inline_layout
 from rapidTk.rTkManagers import _WindowManager
 from rapidTk.rTkTheme import _ThemeManager
@@ -259,6 +259,21 @@ class scrollArea(cFrame, widgetBase):
 		elif self.h == 0:
 			self.sCanvas.itemconfig(self.cw, height=event.height)
 class movableWindow(cCanvas, widgetBase):
+	"""
+	This is the most complex widget!
+	WARNING: heavily WIP and possible it wont work.
+	WARNING: due to limitations does not support normal Tkinter Widgets. Only use rapidTk widgets if use of Popout required.
+	Creates a sub window that can be moved, minimized, maximised and closed.
+	Content goes in the moveableWindow.body cFrame.
+
+	This window can also be Popped out into a new Tk.TopLevel (rTk widgets only!) to enable this feature call moveableWindow.map() method after adding all widgets.
+	If new widgets are added or widgets deleted after calling moveableWindow.map() clear tree by moveableWindow.tree.clear() and then call the map() method again.
+	For buttons that are popped out they will need special methods for the command; callback(widget|widget_list, function, *args, **kwargs) has been created to do this.
+	e.g. command=lambda w=str(entry), c=my_func: moveableWindow.callback(w, c, t="test") -> myfunc(moveable_widget|popped_widget, t="test") 
+
+
+	This is a Work In Progress widget so all functionality may not be there,
+	"""
 	def __init__(self, master, **kwargs):
 		self.__dict__.update(kwargs)
 		self.motion = False
@@ -278,7 +293,8 @@ class movableWindow(cCanvas, widgetBase):
 		kwargs['relief'] = kwargs.get('relief', "groove")
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
-		cCanvas.__init__(*(self, master), **widget_args)
+		super(movableWindow, self).__init__(master, **widget_args)
+		self.tree = cloneTree()
 		self.root = self.get_root()
 		self.wm = self.get_root().wm
 		self.pid = self.root.uid.new()
@@ -297,13 +313,15 @@ class movableWindow(cCanvas, widgetBase):
 		self.place(x=self.root.winfo_width()/2-(self.width/2), y=(self.root.winfo_height()/2)-(self.height/4))
 		self.top = cFrame(self, borderwidth=1, relief="raised", side=TOP, fill=X)
 		self.body= cFrame(self, borderwidth=2, relief="ridge", side=TOP, fill=BOTH, expand=1)
+		self._origin = self.body
+		self.tree.relpath = str(self.body)
 		if self.title:
 			move = cLabel(self.top, text=self.title, fg=self.fg, justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		else:
 			move = cLabel(self.top, text="", justify=CENTER, font=("Helvetica", 10), cursor="fleur", side=LEFT, fill=X, expand=1)
 		self.close = cButton(self.top, text="X", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._close)
 		self.minimize = cButton(self.top, text="🗕", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._minimize)
-		#popout = cButton(self.top, text="⇱", relief="raised", width=2, borderwidth=1, fg=self.fg, side=RIGHT, command=self._popout)
+		self.popout = cButton(self.top, text="⇱", relief="raised", width=2, borderwidth=1, fg=self.fg, command=self._popout)
 		self.binds["<Button-1>"] = move.bind("<Button-1>", self._click)
 		self.binds["<B1-Motion>"] = move.bind("<B1-Motion>", self._move)
 		self.binds["<ButtonRelease-1>"] = move.bind("<ButtonRelease-1>", self._drop)
@@ -315,7 +333,6 @@ class movableWindow(cCanvas, widgetBase):
 			self.posx, self.posy = self._calc_move(self.root.winfo_pointerx(), self.root.winfo_rootx(), self.winfo_width(), self.root.winfo_pointery(), self.root.winfo_rooty())
 			self.place(x=self.posx, y=self.posy)
 			#self.update()
-	@cache
 	def _calc_move(self, rx, rrx, w, ry, rry):
 		return (rx-rrx-w/2), ry-rry-10
 	def _drop(self, event):
@@ -335,7 +352,6 @@ class movableWindow(cCanvas, widgetBase):
 		##src: https://stackoverflow.com/questions/46505982/is-there-a-way-to-clone-a-tkinter-widget/69538200#69538200
 		parent = master if master else widget.master
 		cls = widget.__class__
-		print(cls)
 		cfg = {key: widget.cget(key) for key in widget.configure()}
 		if 'textvariable' in cfg: ##dirty fix #1 variables get translated to objects so this gets the current variable and reassigns it to the new widget
 			if isinstance(widget, cCheckbutton): ##dirty fix #2: checkbuttons have a text and var variables for the label text and the item.
@@ -344,43 +360,64 @@ class movableWindow(cCanvas, widgetBase):
 				cfg['textvariable'] = widget.var
 		if 'variable' in cfg:
 			cfg['variable'] = widget.var
+		if isinstance(widget, cButton):
+			cfg['command'] = widget._command
 		cloned = cls(parent, **cfg)
-		if not isinstance(widget, cDateEntry): ##dirty fix #4: cDateEntry has a bunch of custom only kword children which are created automatically.
+		if isinstance(widget, cCanvas) or isinstance(widget, cFrame): ##dirty fix #9001 limit to only canvas and frames to prevent extended widgets being cloned incorrectly.
 			for child in widget.winfo_children():
-				print(type(child))
 				child_cloned = self._clone_widget(child, master=cloned)
-				try:##dirty fix #3 right click menus are not packed so these fail and error. mayby replace else with elif on pack case
-					if child.grid_info():
-						grid_info = {k: v for k, v in child.grid_info().items() if k not in {'in'}}
-						child_cloned.grid(**grid_info)
-					elif child.place_info():
-						place_info = {k: v for k, v in child.place_info().items() if k not in {'in'}}
-						child_cloned.place(**place_info)
-					else:
-						pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
-						child_cloned.pack(**pack_info)
-				except:
-					pass
+				if child.grid_info():
+					grid_info = {k: v for k, v in child.grid_info().items() if k not in {'in'}}
+					child_cloned.grid(**grid_info)
+				elif child.place_info():
+					place_info = {k: v for k, v in child.place_info().items() if k not in {'in'}}
+					child_cloned.place(**place_info)
+				elif child.pack_info():
+					pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
+					child_cloned.pack(**pack_info)
+		try:
+			getattr(cloned, "var")
+			cloned.var.set(widget.var.get())
+		except:
+			pass
 		return cloned
 	def _popout(self, register=None): ##pop out to a new toplevel window
-		##register = relative path of widgets from body
-		## when cloning check if relative path matches and if so switch widget from relative dict to new path 
-		## use global popped attr to return the popped widget stuff maybe ? maybe add a create method here to keep the widgets inside this class
 		self.popped = Toplevel()
 		self.popped.geometry(f"{self.height}x{self.width}+{self.root.winfo_x()+int(self.posx)}+{self.root.winfo_y()+int(self.posy)}")
-		self._clone_widget(self.body, self.popped).pack(side=TOP, fill=BOTH, expand=1)
+		cFrame(self.popped, width=0, heigh=0, side=TOP)
+		self.body = self._clone_widget(self.body, self.popped)
+		self.body.pack(side=TOP, fill=BOTH, expand=1)
+		self.__remap()
 		self._close()
-
-	def set_manager(self, manager):
-		self.pp = manager
-	def create(widget, master, kw, lay):
-		if self.pp is None:
-			raise Exception("Process manager is reqired for this, use widget.set_manager(type) type:PackProcess, GridProcess, PlaceProcess. (do not include ()!)")
-		p = self.pp.add(widget(master, **kw), **lay)
-		self.widgets[str(p)] = p
-	def process(self):
-		self.pp.process()
-
+	def __rec_map(self, w):
+		for child in w.winfo_children():
+			self.tree[str(child)] = child
+			self.__rec_map(child)
+	def map(self): ##call to enable popping out
+		self.popout.pack(side=RIGHT)
+		for child in self.body.winfo_children():
+			self.tree[str(child)] = child
+			self.__rec_map(child)
+	def __remap(self):
+		self.tree.relpath = str(self.body)
+		base = self.popped.winfo_children()[0]
+		for child in base.winfo_children():
+			self.tree[str(child)] = child
+			self.__rec_map(child)
+	def callback(self, widget:str|list, command, *args, **kwargs):
+		if isinstance(widget, str):
+			rel = self.tree.get_rel(self._origin, widget)
+			w = self.tree[rel]
+		elif isinstance(widget, list):
+			w = []
+			for i in widget:
+				print(self._origin, i)
+				rel = self.tree.get_rel(self._origin, i)
+				w.append(self.tree[rel])
+		if w is not None:
+			command(w, *args, **kwargs)
+		else:
+			raise Exception("widget must be str or list of str")
 	def _minimize(self):
 		if self.wm:
 			pos = self.wm._get_deactive_space()+1
