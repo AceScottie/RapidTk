@@ -36,6 +36,3 @@ class assertValue:
 		if not condition():
 			print("running condition")
 			raise ValueError(message)
-class OptionNotPermitted(TemplateException):
-	def __init__(self, message):
-		super().__init__(f"Error Option Not Permitted: {message}")

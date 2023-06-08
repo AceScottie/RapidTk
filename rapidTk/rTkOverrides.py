@@ -1,20 +1,4 @@
-from tkinter import TclError, RAISED, Misc, _setit, StringVar
-from tkinter.__init__ import Pack, Place, Grid
-from rapidTk.tkoverride import Frame, Widget, Menubutton, Menu, Spinbox, Scrollbar, Text
-
-from rapidTk.rTkUtils import illigalUnicode
-
-
-class base:
-    def __init__(self, master, *args, **kwargs):
-        super(base, self).__init__()
-
-class cMenu(Menu, base):
-    #_widgetBase__widget_type = rtktypes.noget
-    def __init__(self, master, **kwargs):
-        super(cMenu, self).__init__(master, **kwargs)
-
-
+from tkinter import Widget, Menubutton, Menu, TclError, RAISED, Misc, _setit, StringVar, Spinbox
 
 class OptionMenu(Menubutton):
     """OptionMenu which allows the user to select a value from a menu."""
@@ -27,7 +11,7 @@ class OptionMenu(Menubutton):
         values = kw.pop('values', []) ## adds vaues kwargs
         value = kw.pop('value', None) ##adds value kwarg
         kw['borderwidth'] = kw.get('borderwidth', 2)
-        variable = kw['textvariable'] = kw.pop('variable', StringVar(master))
+        variable = kw['textvariable'] = kw.pop('variable', StringVar())
         if value is not None:variable.set(value)
         kw['indicatoron'] = kw.get('indicatoron', 1)
         kw['relief'] = kw.get('relief', RAISED)
@@ -36,10 +20,10 @@ class OptionMenu(Menubutton):
         callback = kw.get('command', self.__void__)
         if 'command' in kw:
             del kw['command']
-        super(OptionMenu, self).__init__(master, cnf, **kw)
+        Widget.__init__(self, master, "menubutton", cnf, kw)
 
         self.widgetName = 'tk_optionMenu'
-        menu = self.__menu = cMenu(self, name="menu", tearoff=0)
+        menu = self.__menu = Menu(self, name="menu", tearoff=0)
         self.menuname = menu._w
         
         menu.add_command(label=value, command=_setit(variable, value, callback))
@@ -50,6 +34,7 @@ class OptionMenu(Menubutton):
         if name == 'menu':
             return self.__menu
         return Widget.__getitem__(self, name)
+
 class Spinbox(Spinbox):
     """
         Override of the Tk Spinbox. Adds `values` attribute along with next() and previous() methods.
@@ -93,7 +78,6 @@ class Spinbox(Spinbox):
             self.configure(value=self.next(wrap))
         else: #direction down
             self.configure(value=self.previous(wrap))
-
 
 if __name__ == "__main__":
     import tkinter as tk

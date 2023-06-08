@@ -1,5 +1,4 @@
 from rapidTk.__main__ import *
-from rapidTk.tkoverride import *
 from rapidTk.rTkUtils import *
 from rapidTk.rTkUtils import _UniqueIdentifiers
 from rapidTk.cWidgets import *
@@ -9,10 +8,9 @@ from rapidTk.rTkForm import qForm
 from rapidTk.matchart import Chart
 from rapidTk.flags import *
 from rapidTk.language import localization
-from rapidTk.assets import constants
 try:
 	import tkcalendar
-	from rapidTk.rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
+	from .rTkCalendar.rTkCalendar import DateEntry, cDateEntry, reDateEntry
 except:
 	class DateEntry:
 		def __init__(self, master, **kwargs):
@@ -24,7 +22,7 @@ except:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundException
 
-from rapidTk.rTkLogging import rTkLogger
+from .rTkLogging import rTkLogger
 
 import logging
 logging.setLoggerClass(rTkLogger)
@@ -36,4 +34,4 @@ logging.setLoggerClass(rTkLogger)
 #		version_info = (0, 0, 5)
 #		return ".".join([str(x) for x in version_info])
 #__all__ = ['.rapidTk.*', '.cWidgets.*', '.rtkUtils.*']
-__version__ = "0.8"
+__version__ = "0.5"

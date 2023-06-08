@@ -1,11 +1,11 @@
 import logging
 #tkinter overrides
-from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu, Text, ScrolledText, Scrollbar
+from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu
 #tkinter imports
-from tkinter.constants import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT
-from tkinter import StringVar, IntVar, DoubleVar, Event
-from tkinter.__init__ import Menu as tkMenu
+from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, StringVar, IntVar, DoubleVar, Event
+from tkinter import Menu as tkMenu
 from tkinter.ttk import Treeview, Combobox
+from tkinter.scrolledtext import ScrolledText
 from tkinter.ttk import Style
 #rapidTk imports
 from rapidTk.__main__ import rapidTk
@@ -16,14 +16,7 @@ from rapidTk.rTkUtils import clipboard, widgetBase, time_it, inline_layout, _Uni
 from rapidTk.rTkTheme import _ThemeManager, style_widget
 import rapidTk.types as rtktypes
 
-
-
 class cFrame(Frame, widgetBase):
-	"""
-	Basic Frame, Similar to tkinter.Frame.
-	Supports inline layouts using the standard layout params of Pack, Place and Grid.
-	Uses overriden tkiniter classes.
-	"""
 	_widgetBase__widget_type = rtktypes.noget
 	@time_it
 	def __init__(self, master, **kwargs):
@@ -35,14 +28,11 @@ class cFrame(Frame, widgetBase):
 
 
 class cLabel(Label, widgetBase):
-	_widgetBase__widget_type = rtktypes.singleget
+	_widgetBase__widget_type = rtktypes.disget
 	@time_it
-	def __init__(self, master, **kwargs):
+	def __init__(self, master,  **kwargs):
 		self.bg = kwargs.get('bg', kwargs.get('background', None))
 		self.fg = kwargs.get('fg', kwargs.get('foreground', None))
-		self.var = kwargs['textvariable'] = kwargs.get('textvariable', StringVar())
-		self.var.set(kwargs.get('text', ''))
-		self.var.trace("w", self._update)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cLabel, self).__init__(master, **widget_args)
@@ -54,13 +44,6 @@ class cLabel(Label, widgetBase):
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		if layout.method is not None:
 			layout.inline(self)
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
-
-	def _update(self, *args):
-		self.configure(text=self.var.get())
 
 
 class cButton(Button, widgetBase):
@@ -68,19 +51,12 @@ class cButton(Button, widgetBase):
 	@time_it
 	def __init__(self, master,  **kwargs):
 		kwargs['cursor'] = kwargs.pop('cursor', 'hand2')
-		self.var = kwargs['textvariable'] = kwargs.get('textvariable', StringVar())
-		self.var.set(kwargs.get('text', ''))
-		self._command = kwargs.get('command', None)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cButton, self).__init__(master, **widget_args)
 		#logging.getLogger('rapidTk').rtkverbose(f"created widget {self} with args {widget_args}")
 		if layout.method is not None:
 			layout.inline(self)
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
 
 
 class cEntry(Entry, widgetBase):
@@ -90,15 +66,14 @@ class cEntry(Entry, widgetBase):
 		logging.getLogger('rapidTk').rtkverbose(f"cEntry got kwargs {kwargs}")
 		value = kwargs.pop('value', '')
 		kwargs['textvariable'], self.var = (kwargs.get('textvariable', StringVar()),)*2
-		if value != '':
-			self.var.set(value)
+		self.var.set(value)
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		logging.getLogger('rapidTk').rtkverbose(f"cEntry got widget_args {widget_args} and {layout.method}")
 		super(cEntry, self).__init__(master, **widget_args)
 		logging.getLogger('rapidTk').rtkverbose(f"created cEntry {self} with args {widget_args}")
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
-		self.__menu = cMenu(self, tearoff=0)
+		self.__menu = tkMenu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
 		self.__menu.add_command(label="Copy", command=self._copy)
 		self.__menu.add_command(label="Paste", command=self._paste)
@@ -107,6 +82,9 @@ class cEntry(Entry, widgetBase):
 		
 		if layout.method is not None:
 			layout.inline(self)
+	@time_it
+	def get(self, *args):
+		return widgetBase.get(self, *args)
 	@time_it
 	def _do_popup(self, event):
 		try:
@@ -136,10 +114,6 @@ class cEntry(Entry, widgetBase):
 	@time_it
 	def _select_all(self):
 		self.select_range(0,END)
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
 
 
 class cCanvas(Canvas, widgetBase):
@@ -151,10 +125,7 @@ class cCanvas(Canvas, widgetBase):
 			kwargs['bd'] = -2
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
-		super(cCanvas, self).__init__(master, **widget_args)
-		print("cCanvase __init__ super() complete")
-		#self.uid = widgetBase.uid
-		print(f"cCanvas:uid {self.uid}")
+		super(cCanvas, self).__init__(master, **widget_args)		
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
 		if layout.method is not None:
 			layout.inline(self)
@@ -269,19 +240,16 @@ class cScrolledText(ScrolledText, widgetBase):
 	_widgetBase__widget_type = rtktypes.multiget
 	@time_it
 	def __init__(self, master, **kwargs):
-		value = kwargs.pop('value', None)
-		self.var = kwargs['textvariable'] = kwargs.pop('textvariable', StringVar())
-		if value:
-			self.var.set(value)
+		#self.uuid = _UniqueIdentifiers().new()
+		value = kwargs.pop('value', '')
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cScrolledText, self).__init__(master, **widget_args)
-		#self.trace('w', self.__wright)
 		if isinstance(self.get_root(), rapidTk):
 			self.get_root().sm.add_widget(self)
 		##style_widget(self, kw_style, "TFrame") ##going to be part of ttk and theme manager
-		if value != None:
-			self.insert(0, value)
+		if value != '':
+			self.insert(1.0, value)
 		#style_widget(self, kw_style, "TScrolledText")
 		self.__menu = tkMenu(self, tearoff=0)
 		self.__menu.add_command(label="Cut", command=self._cut)
@@ -321,22 +289,11 @@ class cScrolledText(ScrolledText, widgetBase):
 		except:
 			self.insert(self.index(INSERT), clipboard.paste())
 	@time_it
-	def old_select_all(self):
+	def _select_all(self):
 		self.select_range(0,END)
 	@time_it
-	def _select_all(self):
-		self.tag_add(SEL, "1.0", END)
-		self.mark_set(INSERT, "1.0")
-		self.see(INSERT)
-		return 'break'
-
-	def __wright(self, *args):
-		print(args)
-	
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
+	def get(self, **args):
+		return super().get('1.0', END)
 
 
 class cCheckbutton(Checkbutton, widgetBase):
@@ -344,41 +301,35 @@ class cCheckbutton(Checkbutton, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		#self.uuid = _UniqueIdentifiers().new()
-		self.text = kwargs['textvariable'] = kwargs.pop("textvariable", StringVar()) ##text property for the lable
-		self.text.set(kwargs.get('text', ''))
-		self.text.trace("w", self._update) ##updates the label when text property updated
-		kwargs['selectcolor'] = kwargs.pop("selectcolor", master.get_root().option_get('background', '.'))
-		self.var = kwargs['variable'] = kwargs.get('variable', IntVar())
+		kwargs['variable'] = self.var = kwargs.get('variable', IntVar())
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(cCheckbutton, self).__init__(master, **widget_args)
 		if layout.method is not None:
 			layout.inline(self)
-	
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def _update(self, *args):
-		self.configure(text=self.text.get())
+	@time_it
+	def get(self, **kwargs):
+		return self.var.get()
+	@time_it
+	def set(self, value):
+		self.var.set(value)
 
 
 class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverrides
 	_widgetBase__widget_type = rtktypes.strget
 	@time_it
 	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
+		#self.uuid = _UniqueIdentifiers().new()
 		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
 		self.selectable_options = [str(x) for x in self.options] ## modified options for display
-		self.var = kwargs['textvariable'] = kwargs.pop('variable', kwargs.pop('textvariable',StringVar(master)))
-		kwargs['value'] = self._value = kwargs.pop('value', None)
-		if self._value is not None:
-			print(f"setting var to {self._value}")
-			self.var.set(self._value)
-			if self._value in self.selectable_options:
-				self.selectable_options.remove(self._value)
+		kwargs['textvariable'] = self.var = kwargs.pop('variable', kwargs.pop('textvariable',StringVar()))
+		kwargs['value'] = self.__value = kwargs.pop('default', None) 
+		if self.__value is not None:
+			self.var.set(self.__value)
+			if self.__value in self.selectable_options:
+				self.selectable_options.remove(self.__value)
 		
-		nv = kwargs.pop('non_valid', [])
-		x = kwargs.pop('default', None)
-		if x is not None:
-			raise Exception('keyword "default" has been Deprecated. Please use "value" instead')
+		nv = kwargs.pop('non_valid', []) 
 		
 		kwargs['takefocus'] = kwargs.pop('takefocus', 1) ##allows tab selection
 		kwargs['values'] = self.selectable_options
@@ -387,36 +338,24 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 		widget_args = layout.filter()
 		super(cOptionMenu, self).__init__(master, **widget_args)
 		self['menu'].configure(activebackground="blue", activeforeground="white")
-		self.bind("<space>", self._open_option_menu)
-		self['menu'].bind("<space>", self._on_select)
-
-		if self.var is not None:
-			self.var.trace("wu", self._on_var_change)
+		self.bind("<space>", self.open_option_menu)
 
 		if layout.method is not None:
 			layout.inline(self)
-	def _on_select(self, event):
-		print(event)
-
-	def _on_var_change(self, *args):
-		print('var changed', self.var.get())
-		#self.__value = self.var.get()
-
-	def _on_widget_change(self, event=None):
-		print('widget changed', self.__value, self.var.get())
-		if self.var is not None:
-			self.var.set(self.tk.call(self._w, 'get', 0, "end"))
 	@time_it
-	def _open_option_menu(self, event):
+	def set(self, value):
+		self.var.set(value)
+	@time_it
+	def get(self, **kwargs):
+		return self.var.get()
+	@time_it
+	def open_option_menu(self, event):
 		obj = event.widget
 		x = obj.winfo_rootx()
 		y = obj.winfo_rooty() + obj.winfo_height()
 		obj["menu"].post(x, y)
 		return "break"
-	def get(self, *args): return widgetBase.get(self, *args)
-	#def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
+
 
 class cCombobox(Combobox, widgetBase):
 	_widgetBase__widget_type = rtktypes.strget
@@ -445,21 +384,22 @@ class cCombobox(Combobox, widgetBase):
 		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', background=[('readonly', 'red')])
 		self.style.map(f'{str(self.__repr__())}.Fail.TCombobox', foreground=[('readonly', 'white')])
 		self.configure(style=kwargs.pop('style', f'{str(self.__repr__())}.Main.TCombobox'))
+
+		
+
 		self.bind("<FocusIn>", self.unselect)
 		self.var.trace("w", self.unselect)
 		if layout.method is not None:
 			layout.inline(self)
+	@time_it
+	def get(self):
+		return self.var.get()
 	@time_it
 	def unselect(self, a=None, b=None, c=None, e=None):
 		self.selection_clear()
 	@time_it
 	def __repr__(self):
 		return "<%s instance at %s>" % (self.__class__.__name__, id(self))
-
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
 
 #TODO: add option for MenuButton
 
@@ -573,29 +513,10 @@ class cDate(cFrame, widgetBase):
 		super(cDate, self).__init__(master, **kwargs)
 		
 	def _create_entries(self, **kwargs):
+		
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
+		
+
 		if layout.method is not None:
 			layout.inline(self)
-
-
-class cText(Text, widgetBase):
-	_widgetBase__widget_type = rtktypes.multiget
-	def __init__(self, master=None, **kwargs):
-		self.var = kwargs['textvariable'] = kwargs.pop("textvariable", StringVar())
-		layout = inline_layout(**kwargs)
-		widget_args = layout.filter()
-		super(cText, self).__init__(master, **widget_args)
-		if layout.method is not None:
-			layout.inline(self)
-	def get(self, *args): return widgetBase.get(self, *args)
-	def set(self, *args): return widgetBase.set(self, *args)
-	def insert(self, *args): return widgetBase.insert(self, *args)
-	def delete(self, *args): return widgetBase.delete(self, *args)
-
-
-
-class cScrollbar(Scrollbar, widgetBase):
-	_widgetBase__widget_type = rtktypes.noget
-	def __init__(self, master, **kwargs):
-		super(cScrollbar, self).__init__(master, **kwargs)

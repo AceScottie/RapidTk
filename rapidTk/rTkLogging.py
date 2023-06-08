@@ -24,7 +24,7 @@ class rTkLogger(logging.Logger):
         super(rTkLogger, self).__init__(name)
         self.logLevel = 0
         self.handler = logging.NullHandler()
-        self.fmat = logging.Formatter('%(levelname)s: %(asctime)s \n\t %(filename)s(%(lineno)d) \n\t\t>%(message)s')
+        self.fmat = logging.Formatter('%(asctime)s %(levelname)s %(filename)s(%(lineno)d) - %(message)s')
         self.handler.setFormatter(self.fmat)
         self.hndlr = self.addHandler(self.handler)
 
