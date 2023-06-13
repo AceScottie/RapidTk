@@ -198,5 +198,26 @@ def example_scroll_manager():
 	root.mainloop()
 
 
+def printWidget(widget, **kwargs):
+	print("Got widget text:", widget.get())
+	print("got text kwargs as", kwargs['text'])
+
+def example_moveableWindow():
+	"""
+	! WIP !
+	This is how to use moveable windows.
+	Some creativity of methods and functions will be required if commands are linked in to the popped out UI.
+	"""
+	root = rapidTk()
+	root.geometry('800x800+200+100')
+	f = cFrame(root, side=TOP, fill=BOTH)
+	mW = movableWindow(root, height=300, width=300, title="test popout") ##creates a moveable window.
+	##mW.body is the frame you want to put things in. is set this way to give you access to the main canvas (mW), top bar (mW.head) and body (mW.body)
+	entry = cEntry(mW.body, value="test", width=10, side=TOP, fill=X) ##only cWidgets are supported due to issues with Tk.cget
+	b=cButton(mW.body, text="test", command=lambda e=str(entry), c=printWidget:mW.callback(e, c, text="Hello World"), side=BOTTOM) ##using mW.callback(widget(s), command, *args, **kwargs) to call command(widget(s), *args, **kwargs)
+	mW.map() ## this is require to enable popout.
+	root.mainloop()
+
+
 if __name__ == "__main__":
-	example_TimePicker()
+	example_moveableWindow()

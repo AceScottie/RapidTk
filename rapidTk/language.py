@@ -21,6 +21,8 @@ class localization(object):
 		self.set_language = lang
 	def set_local(self, lang="en_gb"):
 		self.set_language = lang
+	def get_local(self):
+		return self.set_language
 	def __getattr__(self, at):
 		return getattr(getattr(self.languages, self.set_language), at)
 

@@ -2,7 +2,7 @@ import logging
 from .cWidgets import cEntry, cLabel, cScrolledText, cOptionMenu, cCombobox
 from .cWidgets_extended import autoEntry
 from .rTkUtils import widgetBase
-from .flags import __ttk_enabled__
+import rapidTk.types as rtktypes
 
 from tkinter import StringVar
 import re
@@ -121,6 +121,7 @@ class reLabel(cLabel, widgetBase):
 	def set(self, text:str):
 		self.configure(text=text)
 class reOptionMenu(cOptionMenu, widgetBase):
+	_widgetBase__widget_type = rtktypes.strget
 	def __init__(self, master, **kwargs):
 		self.nv_options = kwargs.pop('non_valid', [])
 		super(reOptionMenu, self).__init__(master, **kwargs)

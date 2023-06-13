@@ -21,7 +21,10 @@ class _ScrollManager(object, metaclass=SingletonMeta):
 		else: ## run bind to the overridden command
 			self._current.bind_all('<MouseWheel>', override)
 	def __unset_current(self, event, widget):
-		self._current.unbind_all('<MouseWheel>')
+		try: ##this sometimes fails, needs to be fixed at some point.
+			self._current.unbind_all('<MouseWheel>')
+		except:
+			pass
 		if not self.q.empty(): ##if there are widgets in the queue that have not been left with <Leave> event.
 			self._current = self.q.get() ##get the widget from the queue
 			override = self.q_o.get() ##with its override (function or None)
