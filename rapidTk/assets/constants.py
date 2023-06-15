@@ -64,3 +64,8 @@ UNICODE_UP = b'\xE2\x86\x91'
 UNICODE_DOWN = b'\xE2\x86\x93'
 UNICODE_LEFT = b'\xE2\x86\x90'
 UNICODE_RIGHT = b'\xE2\x86\x92'
+UNICODE_HELP = b'\xF0\x9F\x9B\x88'
+
+if __name__ == "__main__":
+    print(UNICODE_UP.decode('utf-8'))
+    print(UNICODE_HELP.decode('utf-8'))

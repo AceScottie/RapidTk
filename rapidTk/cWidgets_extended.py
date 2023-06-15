@@ -217,8 +217,7 @@ class iButton(cButton, widgetBase):
 		return self.image ##TODO: complete image button for layouts
 class scrollArea(cFrame, widgetBase):
 	def __init__(self, master, **kwargs):
-		self.__dict__.update(kwargs)
-		#kw_wid, kw_pak, kw_style = pack_opts(**kwargs)
+		#self.__dict__.update(kwargs)
 		self.scroll_v = None
 		self.scroll_h = None
 		self.h = kwargs.pop('h', 0)
@@ -227,18 +226,18 @@ class scrollArea(cFrame, widgetBase):
 		layout = inline_layout(**kwargs)
 		widget_args = layout.filter()
 		super(scrollArea, self).__init__(master, **widget_args)
-		
-		self.sCanvas = cCanvas(self, side=TOP, fill=BOTH, expand=1)
+
+		self.sCanvas = cCanvas(self, side=LEFT, fill=BOTH, expand=1)
 		if isinstance(self.get_root(), rapidTk):
 			self.get_root().sm.add_widget(self.sCanvas)
 		self.sFrame = cFrame(self.sCanvas, side=LEFT, fill=BOTH, expand=1)
 		self.cw = self.sCanvas.create_window((0, 0), window=self.sFrame, anchor=NW)
 		if self.h in [1, "1", True]:
-			self.scroll_h = cScrollbar(master, orient=VERTICAL, command=self.sCanvas.yview)
+			self.scroll_h = cScrollbar(self, orient=VERTICAL, command=self.sCanvas.yview)
 			self.sCanvas.configure(yscrollcommand=self.scroll_h.set)
 			self.scroll_h.pack(side=RIGHT, fill=Y)
 		if self.v in [1, "1", True]:
-			self.scroll_v = cScrollbar(master, orient=HORIZONTAL, command=self.sCanvas.xview)
+			self.scroll_v = cScrollbar(self, orient=HORIZONTAL, command=self.sCanvas.xview)
 			self.sCanvas.config(xscrollcommand=self.scroll_v.set)
 			self.scroll_v.pack(side=BOTTOM, fill=X)
 		self.sFrame.bind("<Configure>", self._update_scrollregion)
@@ -364,10 +363,9 @@ class movableWindow(cCanvas, widgetBase):
 		cloned = cls(parent, **cfg)
 		if isinstance(widget, cCanvas) or isinstance(widget, cFrame): ##dirty fix #9001 limit to only canvas and frames to prevent extended widgets being cloned incorrectly.
 			for child in widget.winfo_children():
-				print(f"cloning {str(child)} from {str(widget)} into {str(cloned)}")
-				if child.__class__ == scrollArea:
+				if child.__class__ == scrollArea: ##dirty fix #9,000,002 Added exception for scrollArea as that widget is a combination of widgets which end up duplicated.
 					clonedbase = scrollArea(parent, v=child.v, h=child.h)
-					pack_info = {k: v for k, v in widget.pack_info().items() if k not in {'in'}}
+					pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
 					clonedbase.pack(**pack_info)
 					child_cloned = self._clone_widget(child.sFrame, master=clonedbase.sFrame)
 				else:
