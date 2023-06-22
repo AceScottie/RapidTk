@@ -1,9 +1,16 @@
 import sys, re
 from uuid import uuid4
 from threading import Timer
-if sys.platform == 'win32':
+import platform
+if platform.system() == 'Windows':
 	from win32clipboard import OpenClipboard, EmptyClipboard, SetClipboardText, GetClipboardData, CloseClipboard
 	from win32con import CF_TEXT, CF_UNICODETEXT
+elif platform.system() == "Linux":
+	pass
+
+elif platform.system() == "macOS":
+	import subprocess
+
 from functools import wraps, singledispatchmethod
 from datetime import datetime
 from time import perf_counter
@@ -92,7 +99,7 @@ class coord(object):
 			self.z = z
 		return self.vec3()
 
-class clipboard(object):
+class clipboard_WIN(object):
 	def __new__(self):
 		if sys.platform != "win32":
 			raise PlatformError
@@ -112,6 +119,51 @@ class clipboard(object):
 		try:
 			OpenClipboard()
 			data = GetClipboardData(CF_UNICODETEXT)
+			CloseClipboard()
+			return data
+		except:
+			return ""
+class clipboard_LINUX(object):
+	def __new__(self):
+		if sys.platform != "win32":
+			raise PlatformError
+		return object.__new__(self)
+	@staticmethod
+	def copy(text):
+		try:
+			OpenClipboard() 
+			EmptyClipboard()
+			SetClipboardText(text, CF_UNICODETEXT) # set clipboard data
+			CloseClipboard()
+			return True
+		except:
+			return False
+	@staticmethod
+	def paste():
+		try:
+			OpenClipboard()
+			data = GetClipboardData(CF_UNICODETEXT)
+			CloseClipboard()
+			return data
+		except:
+			return ""
+class clipboard_mac(object):
+	def __new__(self):
+		if sys.platform != "win32":
+			raise PlatformError
+		return object.__new__(self)
+	@staticmethod
+	def copy(text):
+		try:
+			subprocess.run("pbcopy", text=True, input=text)
+			return True
+		except:
+			return False
+	@staticmethod
+	def paste():
+		try:
+			OpenClipboard()
+			data = subprocess.run("pbpaste")
 			CloseClipboard()
 			return data
 		except:

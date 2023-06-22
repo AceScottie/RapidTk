@@ -14,9 +14,11 @@ from datetime import datetime, date
 from collections.abc import Callable
 from dateutil.relativedelta import relativedelta
 from math import sin, cos, pi
-import win32gui
-import win32con
-import win32api
+import platform
+if platform.system() == "Windows":
+	import win32gui
+	import win32con
+	import win32api
 
 #rtk imports
 from rapidTk.__main__ import PackProcess, GridProcess, rapidTk
@@ -732,12 +734,15 @@ class TimePicker(cFrame, widgetBase_override):
 		
 		self.sub_can = cCanvas(self.get_root(), bg=tp_bg, width=self.width+5, height=self.height+5, highlightbackground="#010101", highlightthickness=0)
 		self.sub_can.bind("<FocusIn>", self.popup)
-		hwnd = self.sub_can.winfo_id()
-		colorkey = win32api.RGB(1,1,1) #full black in COLORREF structure
-		wnd_exstyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
-		new_exstyle = wnd_exstyle | win32con.WS_EX_LAYERED
-		win32gui.SetWindowLong(hwnd,win32con.GWL_EXSTYLE,new_exstyle)
-		win32gui.SetLayeredWindowAttributes(hwnd, colorkey,255,win32con.LWA_COLORKEY)
+		if platform.system() != "Windows": ##possibly remove this feature and create something closer to JS clock picker with title and cloned widgets into the title bar ?
+			hwnd = self.sub_can.winfo_id()
+			colorkey = win32api.RGB(1,1,1) #nearly full black in COLORREF structure, avoiding full black as its a common colour.
+			wnd_exstyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
+			new_exstyle = wnd_exstyle | win32con.WS_EX_LAYERED
+			win32gui.SetWindowLong(hwnd,win32con.GWL_EXSTYLE,new_exstyle)
+			win32gui.SetLayeredWindowAttributes(hwnd, colorkey,255,win32con.LWA_COLORKEY)
+		else:
+			self.sub_can.configure(background="white", borderwidth=3, highlightbackground="white", relief="ridge", highlightthickness=0)
 
 		self.active_line = None
 		self._main = self.create_center_circle(self.width/2, self.height/2, self.radious*2, fill="#DDDDDD", outline="#000", width=0)
