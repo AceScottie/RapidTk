@@ -12,9 +12,17 @@ from rapidTk.__main__ import rapidTk
 from rapidTk.rTkOverrides import OptionMenu, Spinbox
 from rapidTk.flags import __ttk_enabled__
 from rapidTk.rTkErrors import *
-from rapidTk.rTkUtils import clipboard, widgetBase, time_it, inline_layout, _UniqueIdentifiers
+from rapidTk.rTkUtils import widgetBase, time_it, inline_layout, _UniqueIdentifiers
 from rapidTk.rTkTheme import _ThemeManager, style_widget
 import rapidTk.types as rtktypes
+import sys
+##platform specific
+if sys.platform == "windows":
+	from rapidTk.rTkUtils import clipboard_WIN as clipboard
+elif sys.platform == "linux":
+	from rapidTk.rTkUtils import clipboard_LINUX as clipboard
+elif sys.platform == "mac":
+	from rapidTk.rTkUtils import clipboard_MAC as clipboard
 
 
 
