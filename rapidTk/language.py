@@ -1,6 +1,7 @@
 from pathlib import Path
 from types import SimpleNamespace
 from xml.etree import cElementTree as ElementTree
+import os
 class languages(SimpleNamespace):
 	def __init__(self, lang="en_gb", localpath='./assets/local/'):
 		langs = {}
@@ -17,8 +18,11 @@ class languages(SimpleNamespace):
 		super().__init__(**langs)
 class localization(object):
 	def __init__(self, lang="en_gb", localpath='./assets/local/'):
-		self.languages = languages(lang=lang, localpath=localpath)
-		self.set_language = lang
+		if os.path.isfile(f"{localpath}{lang}.xml"):
+			self.languages = languages(lang=lang, localpath=localpath)
+			self.set_language = lang
+		else:
+			raise Exception(f"{localpath}{lang}.xml is not a valid file")
 	def set_local(self, lang="en_gb"):
 		self.set_language = lang
 	def get_local(self):
@@ -29,7 +33,7 @@ class localization(object):
 
 if __name__ == "__main__":
 	language = localization()
-	print(language.base.hello)
-	language.set_local("ru")
-	print(language.base.hello)
+	print(language.section1.hello)
+	language.set_local("fr")
+	print(language.section1.hello)
 
