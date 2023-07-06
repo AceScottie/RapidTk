@@ -14,8 +14,8 @@ from datetime import datetime, date
 from collections.abc import Callable
 from dateutil.relativedelta import relativedelta
 from math import sin, cos, pi
-import platform
-if platform.system() == "Windows":
+import sys
+if sys.platform == "win32":
 	import win32gui
 	import win32con
 	import win32api
@@ -734,7 +734,7 @@ class TimePicker(cFrame, widgetBase_override):
 		
 		self.sub_can = cCanvas(self.get_root(), bg=tp_bg, width=self.width+5, height=self.height+5, highlightbackground="#010101", highlightthickness=0)
 		self.sub_can.bind("<FocusIn>", self.popup)
-		if platform.system() != "Windows": ##possibly remove this feature and create something closer to JS clock picker with title and cloned widgets into the title bar ?
+		if sys.platform == "win32": ##possibly remove this feature and create something closer to JS clock picker with title and cloned widgets into the title bar ?
 			hwnd = self.sub_can.winfo_id()
 			colorkey = win32api.RGB(1,1,1) #nearly full black in COLORREF structure, avoiding full black as its a common colour.
 			wnd_exstyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)

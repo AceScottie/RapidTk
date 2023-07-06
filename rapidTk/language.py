@@ -7,7 +7,7 @@ class languages(SimpleNamespace):
 		langs = {}
 		for language in list(Path(localpath).glob('*.xml')):
 			l_name = Path(language).stem
-			tree = ElementTree.parse(f"{localpath}{l_name}.xml")
+			tree = ElementTree.parse(os.path.join(localpath, f"{l_name}.xml"))
 			d = {}
 			for child in tree.getroot():
 				tmp = {}
@@ -18,11 +18,11 @@ class languages(SimpleNamespace):
 		super().__init__(**langs)
 class localization(object):
 	def __init__(self, lang="en_gb", localpath='./assets/local/'):
-		if os.path.isfile(f"{localpath}{lang}.xml"):
+		if os.path.isfile(os.path.join(localpath, f"{lang}.xml")):
 			self.languages = languages(lang=lang, localpath=localpath)
 			self.set_language = lang
 		else:
-			raise Exception(f"{localpath}{lang}.xml is not a valid file")
+			raise Exception(f"{os.path.join(localpath, f'{lang}.xml')} is not a valid file")
 	def set_local(self, lang="en_gb"):
 		self.set_language = lang
 	def get_local(self):

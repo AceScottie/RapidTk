@@ -17,11 +17,11 @@ from rapidTk.rTkTheme import _ThemeManager, style_widget
 import rapidTk.types as rtktypes
 import sys
 ##platform specific
-if sys.platform == "windows":
+if sys.platform == "win32":
 	from rapidTk.rTkUtils import clipboard_WIN as clipboard
 elif sys.platform == "linux":
 	from rapidTk.rTkUtils import clipboard_LINUX as clipboard
-elif sys.platform == "mac":
+elif sys.platform == "macos":
 	from rapidTk.rTkUtils import clipboard_MAC as clipboard
 
 

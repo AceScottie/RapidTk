@@ -66,6 +66,29 @@ UNICODE_LEFT = b'\xE2\x86\x90'
 UNICODE_RIGHT = b'\xE2\x86\x92'
 UNICODE_HELP = b'\xF0\x9F\x9B\x88'
 
+
+LINK='#0000EE'
+LINKVISIT='#551A8B'
+IELINK='#0066CC'
+IELINKVISIT='#800080'
+GOOGLELINK= "#6eb4f8"
+GOOGLELINKVISIT = '#c58af9'
+GOOGLE_DARKMODE_BG = '#202124'
+
 if __name__ == "__main__":
     print(UNICODE_UP.decode('utf-8'))
     print(UNICODE_HELP.decode('utf-8'))
+
+    from tkinter import *
+    root = Tk()
+    fontsize='15'
+    font_special='underline'
+    root.tk_setPalette(background=GOOGLE_DARKMODE_BG)
+    Label(root, text="Link", font=(f'Helvetica {fontsize} {font_special}'), fg = LINK).pack(side=TOP)
+    Label(root, text="Link_Visited", font=(f'Helvetica {fontsize} {font_special}'), fg = LINKVISIT).pack(side=TOP)
+    Label(root, text="IE Link", font=(f'Helvetica {fontsize} {font_special}'), fg = IELINK).pack(side=TOP)
+    Label(root, text="IE Link_Visited", font=(f'Helvetica {fontsize} {font_special}'), fg = IELINKVISIT).pack(side=TOP)
+    Label(root, text="Get a PCR test to check if you have COVID-19", font=(f'Helvetica {fontsize} {font_special}'), fg = GOOGLELINK).pack(side=TOP)
+    Label(root, text="Testing for COVID-19", font=(f'Helvetica {fontsize} {font_special}'), fg = GOOGLELINKVISIT).pack(side=TOP)
+
+    root.mainloop()
