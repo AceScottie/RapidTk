@@ -28,6 +28,7 @@ from rapidTk.rTkUtils import coord, widgetBase, widgetBase_override, simpledate,
 from rapidTk.rTkUtils import time_it, inline_layout
 from rapidTk.rTkManagers import _WindowManager
 from rapidTk.rTkTheme import _ThemeManager
+import rapidTk.assets.constants as constants
 import rapidTk.types as rtktypes
 try:
 	import tkcalendar
@@ -43,6 +44,25 @@ except:
 	class reDateEntry:
 		def __init__(self, master, **kwargs):
 			raise DateEntryNotFoundError
+
+class aLabel(cLabel, widgetBase):
+	"""
+	aLabel is similar to a <a> widget from HTML.
+	It underlines on hover and has a default cursor and colour which can be overridden by the user.
+	"""
+	def __init__(self, master, **kwargs):
+		kwargs['fg'] = fg = kwargs.pop("fg", kwargs.pop("foreground", constants.GOOGLELINK))
+		cursor = kwargs.pop("cursor", "hand2")
+		kwargs['font'] = self.font = kwargs.pop("font", ('Helvetica 13'))
+		super(aLabel, self).__init__(master, **kwargs)
+		self.bind('<Enter>', self._hover)
+		self.bind('<Leave>', self._dehover)
+	def _hover(self, *args):
+		self.configure(font=(f'{self.font} underline'))
+	def _dehover(self, *args):
+		self.configure(font=self.font)
+
+
 
 
 class autoEntry(cEntry, widgetBase):
