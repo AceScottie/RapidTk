@@ -475,7 +475,7 @@ class movableWindow(cCanvas, widgetBase):
 		self.configure(height=self.height)
 		self.place(x=self.posx, y=self.posy)
 		self.minimize.configure(text="🗕", command=self._minimize)
-	def _close(self):
+	def _close(self, *args, **kwargs):
 		if self.wm and self.pid in self.wm.pids:
 			self.wm.remove(self.pid)
 		#for k, v in self.binds.items(): ##this causes an error. Something with the way unbind doesnt delete the tcl entry so it is attempted to be removed twice
