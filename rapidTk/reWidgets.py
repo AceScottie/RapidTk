@@ -97,6 +97,9 @@ class reEntry(cEntry, widgetBase):
 	#@override
 	def get(self):
 		return super().get(), self._isvalid()
+	def set(self, text=""):
+		super().set(text)
+		self._isvalid()
 	
 
 class reLabel(cLabel, widgetBase):

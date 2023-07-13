@@ -201,6 +201,7 @@ class reDateEntry(cDateEntry, widgetBase): ## TODO: move most of this code to cD
 		try:
 			if self.var.get() not in ['', None]:
 				match = re.match(self.regex, self.var.get())
+				print(self.var.get())
 				if not match or self.parse_date(self.var.get()) > datetime.now().date():
 					self.style.configure(self._mystyle_name, fieldbackground="red", foreground="white")
 					return False
@@ -212,6 +213,8 @@ class reDateEntry(cDateEntry, widgetBase): ## TODO: move most of this code to cD
 		except:
 			raise
 			return False
+	def set(self, date):
+		self.var.set(date)
 
 if __name__ == "__main__":
 	from rapidTk import *

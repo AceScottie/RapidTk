@@ -52,15 +52,24 @@ class aLabel(cLabel, widgetBase):
 	"""
 	def __init__(self, master, **kwargs):
 		kwargs['fg'] = fg = kwargs.pop("fg", kwargs.pop("foreground", constants.GOOGLELINK))
+		command = kwargs.pop('command', None)
 		cursor = kwargs.pop("cursor", "hand2")
 		kwargs['font'] = self.font = kwargs.pop("font", ('Helvetica 13'))
 		super(aLabel, self).__init__(master, **kwargs)
 		self.bind('<Enter>', self._hover)
 		self.bind('<Leave>', self._dehover)
+		if command is not None:
+			self.bind('<Button-1>', command)
 	def _hover(self, *args):
 		self.configure(font=(f'{self.font} underline'))
 	def _dehover(self, *args):
 		self.configure(font=self.font)
+	def configure(self, **kwargs):
+		if 'command' in kwargs:
+			self.bind('<Button-1>', kwargs.pop('command'))
+		super().configure(**kwargs)
+	config = configure
+
 
 
 
