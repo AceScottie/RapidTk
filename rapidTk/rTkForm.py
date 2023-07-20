@@ -42,14 +42,14 @@ class qForm:
 				self.questions[name]["object"] = pp.add(reEntry(f, **opts), side=RIGHT, **p_opts)
 				try:
 					if insert != None:
-						self.questions[name]['object'].insert(INSERT, insert)
+						self.questions[name]['object'].set(insert)
 				except:
 					print("Exception: %s Entry %s"%(name, insert))
 			case "autoEntry":
 				self.questions[name]["object"] = pp.add(reautoEntry(f, **opts), side=RIGHT, **p_opts)
 				try:
 					if insert != None:
-						self.questions[name]['object'].insert(INSERT, insert)
+						self.questions[name]['object'].set(insert)
 				except:
 					print("Exception: %s autoEntry %s"%(name, insert))
 			case "Label":
@@ -59,7 +59,7 @@ class qForm:
 				self.questions[name]["object"] = pp.add(reDateEntry(f, **opts), side=RIGHT, **p_opts)
 				try:
 					if insert != None:
-						self.questions[name]['object'].insert(INSERT, insert)
+						self.questions[name]['object'].set(insert)
 				except:
 					print("Exception: %s DateEntry %s"%(name, insert))
 			case "Checkbutton":
@@ -73,7 +73,7 @@ class qForm:
 				self.questions[name]["object"] = pp.add(cScrolledText(f, **opts), side=RIGHT, **p_opts) ##TODO: create reScrolledText
 				try:
 					if insert != None:
-						self.questions[name]['object'].insert(INSERT, insert)
+						self.questions[name]['object'].set(insert)
 				except:
 					print("Exception: %s ScrollText %s"%(name, insert))
 			case "Option":

@@ -220,4 +220,4 @@ def example_moveableWindow():
 
 
 if __name__ == "__main__":
-	example_moveableWindow()
+	example_form()

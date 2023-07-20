@@ -407,7 +407,7 @@ class simpledate(datetime):
 		[kwargs.pop(key, None) for key in ['hour', 'minute', 'second', 'microsecond']]
 		return super().replace(**kwargs, hour=0, minute=0, second=0, microsecond=0)
 	def replace(self, **kwargs):
-		return self.simplify(**kwargs)		
+		return self.simplify(**kwargs)      
 	@classmethod
 	def now(cls, tz=None):
 		return super().now(tz=tz).simplify()
@@ -426,7 +426,7 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 		if self.method is None:
 			self.method = self.__detect_method(**self.kwargs)
 			#if self.method is not None:
-			#	valid_args = self.filter(**self.kwargs)
+			#   valid_args = self.filter(**self.kwargs)
 	def __detect_method(self, **kwargs):
 		method = None
 		for k, v in kwargs.items():
@@ -471,11 +471,11 @@ class inline_layout: ##TODO: fix this unholy mess and make it actuall readable!!
 
 class RepeatedTimer(object):
 	def __init__(self, interval, function, *args, **kwargs):
-		self._timer		= None
-		self.interval	= interval
-		self.function	= function
-		self.args		= args
-		self.kwargs		= kwargs
+		self._timer     = None
+		self.interval   = interval
+		self.function   = function
+		self.args       = args
+		self.kwargs     = kwargs
 		self.is_running = False
 		self.start()
 
@@ -528,3 +528,64 @@ class cloneTree(dict):
 	def __getitem__(self, at):return super().__getitem__(at)
 	def clear(self):
 		self = {}
+
+
+class iList(dict):
+	def __init__(self, lst:list=[]):
+		super(iList, self).__init__()
+		self._i = 0
+		for l in lst:
+			self.append(l)
+			self._i +=1
+	def _inc(self):
+		self._i += 1
+	def append(self, item):
+		self[self._i] = item
+		self._inc()
+
+	def __setitem__(self, index, item):
+		#self.set(index, item)
+		super().__setitem__(index, item)
+
+	def insert(self, index, item):
+		#super().insert(index, str(item))
+		if index in self:
+			raise Exception(f"index {index} is already in use. Please use the set() method to overwrite")
+		self[index] = item
+	def set(self, index, item):
+		self[index] = item
+
+	#def __getitem__(self, index):
+	#	return self[index]
+
+	def get(self):
+		l = max(list(self.keys()))+1
+		tmp = [None]*l
+		for k, v in self.items():
+			tmp[k] = v
+		return tmp
+
+	def index(self, item):
+		for k, v in self:
+			if v == item:
+				return k
+
+	def extend(self, other):
+		raise Exception("extend(other) Not implemented with iList")
+
+	def __contains__(self, item):
+		print("in", item)
+		
+	def __iter__(self):
+		rows = self.get()
+		for r in rows:
+			yield r
+
+if __name__ == "__main__":
+	l = iList()
+	for i in range(6):
+		l.append(["tmp", "tmp2"])
+	print("test")
+	for x in l:
+		print(x)
+	

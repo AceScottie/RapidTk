@@ -78,6 +78,7 @@ class reEntry(cEntry, widgetBase):
 		super(reEntry, self).__init__(master, **kwargs)
 		self.bg = self.cget('background')
 		self.fg = self.cget('foreground')
+		self.var.trace('w', self._check_valid)
 	def _isvalid(self):
 		try:
 			match = re.match(self.regex, self.var.get())
@@ -90,6 +91,8 @@ class reEntry(cEntry, widgetBase):
 		except:
 			raise
 			return False
+	def _check_valid(self, *args):
+		self._isvalid()
 	#@override
 	def insert(self, pos, text=""):
 		super().insert(pos, text)

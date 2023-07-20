@@ -12,7 +12,7 @@ from rapidTk.__main__ import rapidTk
 from rapidTk.rTkOverrides import OptionMenu, Spinbox
 from rapidTk.flags import __ttk_enabled__
 from rapidTk.rTkErrors import *
-from rapidTk.rTkUtils import widgetBase, time_it, inline_layout, _UniqueIdentifiers
+from rapidTk.rTkUtils import widgetBase, time_it, inline_layout, _UniqueIdentifiers, iList
 from rapidTk.rTkTheme import _ThemeManager, style_widget
 import rapidTk.types as rtktypes
 import sys
@@ -174,6 +174,7 @@ class cTreeview(Treeview, widgetBase):
 		self.detached_data = []
 		bg = kwargs.pop('bg', '#FFFFFF')
 		fg = kwargs.pop('fg', '#000000')
+		self.values = iList()
 
 		rgb = [int(bg.replace("#","")[i:i+2], 16) for i in (0, 2, 4)]
 		rgbt1 = []
@@ -253,9 +254,13 @@ class cTreeview(Treeview, widgetBase):
 		self.i += 1
 		if iid == None:
 			iid = self.i
+		self.values[iid] = (values)
 		super().insert(parent=parent, index=index, iid=iid, tags=tags+(self.i,), text=text, values=values)
 		self.tag_bind(self.i, '<Motion>', self._highlight_row)
 		return iid
+	@time_it
+	def get_rows(self):
+		return self.values.get()
 	@time_it
 	def _highlight_row(self, event): #hover event to hightlight the row under the cursor 
 		self.tk.call(self, "tag", "remove", "highlight")
