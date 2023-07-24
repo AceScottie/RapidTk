@@ -147,6 +147,8 @@ class reOptionMenu(cOptionMenu, widgetBase):
 	#@override
 	def get(self):
 		return self.var.get(), self._isvalid()
+	def set(self, *args):
+		super().set(*args)
 class reCombobox(cCombobox, widgetBase):
 	def __init__(self, master, **kwargs):
 		super(reCombobox, self).__init__(master, **kwargs)

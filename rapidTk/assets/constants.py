@@ -75,6 +75,16 @@ GOOGLELINK= "#6eb4f8" #1a0dab
 GOOGLELINKVISIT = '#c58af9' 
 GOOGLE_DARKMODE_BG = '#202124'
 
+
+DEFAULT_LIST = [
+["dress", "smart", "paddle", "doubt", "ban", "volleyball", "day", "vegetable", "playground", "abaft"],
+["ashamed", "pizzas", "drunk", "gentle", "hesitant", "chew", "minute", "educated", "pass", "blush"],
+["fair", "lucky", "correct", "married", "long", "roasted", "jealous", "fallacious", "plucky", "insect"],
+["cub", "position", "skin", "interrupt", "pink", "shoe", "well-to-do", "cluttered", "moon", "ill-informed"],
+["0123456789", "breezy", "tough", "holiday", "mountainous", "rate", "kindly", "fork", "free", "sweet"]
+]
+
+
 if __name__ == "__main__":
     print(UNICODE_UP.decode('utf-8'))
     print(UNICODE_HELP.decode('utf-8'))

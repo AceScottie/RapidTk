@@ -170,7 +170,7 @@ class cTreeview(Treeview, widgetBase):
 	@time_it
 	def __init__(self, master, **kwargs):
 		self.master = master
-		self.i = 0
+		self.iid = 0
 		self.detached_data = []
 		bg = kwargs.pop('bg', '#FFFFFF')
 		fg = kwargs.pop('fg', '#000000')
@@ -220,6 +220,8 @@ class cTreeview(Treeview, widgetBase):
 			return 0
 		else:
 			return 1
+	def columns(self):
+		return self['columns']
 	@time_it
 	def _treeview_sort_column(self, col, rv):
 		dirs = [True, False, None]
@@ -251,16 +253,30 @@ class cTreeview(Treeview, widgetBase):
 				super().detach(a)
 	@time_it
 	def insert(self, parent='', index='end', iid=None, tags=(), text="", values=[]):##adds new row 
-		self.i += 1
 		if iid == None:
-			iid = self.i
+			iid = self.iid
+		self.iid += 1
 		self.values[iid] = (values)
-		super().insert(parent=parent, index=index, iid=iid, tags=tags+(self.i,), text=text, values=values)
-		self.tag_bind(self.i, '<Motion>', self._highlight_row)
+		super().insert(parent=parent, index=index, iid=iid, tags=tags+(self.iid,), text=text, values=values)
+		self.tag_bind(self.iid, '<Motion>', self._highlight_row)
+
 		return iid
 	@time_it
 	def get_rows(self):
 		return self.values.get()
+	def get_row(self, index):
+		try:
+			int(index)
+			return self.values[int(index)]
+		except:
+			raise Exception("index must be `int` and must be in the iList")
+	@time_it
+	def item(self, index, **kwargs):
+		vals = kwargs.get('values', None)
+		row = self.values[int(index)]
+		for i in range(len(row)):
+			pass ##TODO: implement this
+		return super().item(index, **kwargs)
 	@time_it
 	def _highlight_row(self, event): #hover event to hightlight the row under the cursor 
 		self.tk.call(self, "tag", "remove", "highlight")
@@ -377,17 +393,19 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
 		print(f"cOptionMenu.__init({master}, {kwargs})")
 		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
-		self.selectable_options = kwargs['values'] = [str(x) for x in self.options] ## modified options for display
-		self.var = kwargs['textvariable'] = kwargs.pop('variable', kwargs.pop('textvariable',StringVar(master)))
 		kwargs['value'] = self._value = kwargs.pop('value', None)
+		self.selectable_options = kwargs['values'] = [str(x) for x in self.options if x != self._value] ## modified options for display
+		self.var = kwargs['textvariable'] = kwargs.pop('variable', kwargs.pop('textvariable',StringVar(master)))
+		
 		if self._value is not None:
 			self.var.set(self._value)
 		else:
 			self._value = self.options[0]
 			self.var.set(self.options[0])
-		if self._value in self.selectable_options:
-			self.selectable_options.remove(self._value)
-		
+			del kwargs['values'][0]
+		#if self._value in self.selectable_options:
+		#	self.selectable_options.remove(self._value)
+		kwargs['show_cur'] = kwargs.pop('show_cur', False)
 		nv = kwargs.pop('non_valid', [])
 		x = kwargs.pop('default', None)
 		if x is not None:
@@ -412,9 +430,8 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 	#	print("item selected")
 
 	def _on_var_change(self, *args):
-		print(f"var changed to {self.var.get()}")
-		print(*args)
-		#self.__value = self.var.get()
+		val = self.var.get()
+		self.reset_values(value=val, values=[str(x) for x in self.options if str(x) != str(val)])
 
 	def _on_widget_change(self, event=None):
 		if self.var is not None:
@@ -427,7 +444,10 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 		obj["menu"].post(x, y)
 		return "break"
 	def get(self, *args): return widgetBase.get(self, *args)
-	#def set(self, *args): return widgetBase.set(self, *args)
+	def set(self, *args):
+		print("cOpt setter")
+		widgetBase.set(self, *args)
+		self._on_var_change()
 	def insert(self, *args): return widgetBase.insert(self, *args)
 	def delete(self, *args): return widgetBase.delete(self, *args)
 

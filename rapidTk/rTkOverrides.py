@@ -27,7 +27,7 @@ class OptionMenu(Menubutton):
         values = kw.pop('values', []) ## adds values kwargs
         value = kw.pop('value', None) ##adds value kwarg
         kw['borderwidth'] = kw.get('borderwidth', 2)
-        variable = kw['textvariable'] = kw.pop('textvariable', StringVar(master))
+        self.var = variable = kw['textvariable'] = kw.pop('textvariable', StringVar(master))
         print(f"OptionMenu {value}:{values}:{variable.get()}")
         if value is not None:
             variable.set(value)
@@ -35,7 +35,8 @@ class OptionMenu(Menubutton):
         kw['relief'] = kw.get('relief', RAISED)
         kw['anchor'] = kw.get('anchor', "c")
         kw['highlightthickness'] = kw.get('highlightthickness', 2)
-        callback = kw.get('command', self.__void__)
+        self.show_cur = kw.pop("show_cur", True)
+        self.callback = kw.get('command', self.__void__)
         if 'command' in kw:
             del kw['command']
         super(OptionMenu, self).__init__(master, cnf, **kw)
@@ -43,15 +44,22 @@ class OptionMenu(Menubutton):
         self.widgetName = 'tk_optionMenu'
         menu = self.__menu = cMenu(self, name="menu", tearoff=0)
         self.menuname = menu._w
-        menu.add_command(label=value, command=_setit(variable, value, callback))
+        if self.show_cur:
+            menu.add_command(label=value, command=_setit(variable, value, self.callback))
         for v in values:
-            menu.add_command(label=v, command=_setit(variable, v, callback))
+            menu.add_command(label=v, command=_setit(variable, v, self.callback ))
         self['menu'] = menu
         self.update()
     def __getitem__(self, name):
         if name == 'menu':
             return self.__menu
         return super().__getitem__(self, name)
+    def reset_values(self, value, values):
+        self['menu'].delete(0, "end")
+        if self.show_cur:
+            self['menu'].add_command(label=value, command=_setit(self.var , value, self.callback ))
+        for v in values:
+            self['menu'].add_command(label=v, command=_setit(self.var , v, self.callback ))
     def destroy(self):
         """Destroy this widget and the associated menu."""
         super().destroy()
