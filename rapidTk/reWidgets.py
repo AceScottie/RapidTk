@@ -20,19 +20,24 @@ class vEntry(cEntry, widgetBase):
 		if v2:
 			self.var.set(v2)
 		else:
-			self.var.set(self._buffer)
+			self.var.set(v[:-1])
 	def validate(self, v):
 		return v
 class typedEntry(vEntry, widgetBase):
 	def __init__(self, master, **kwargs):
 		self.maxlength = kwargs.pop('max', None)
 		self.vtype = kwargs.pop('type', None)
-		
 		super(typedEntry, self).__init__(master, **kwargs)
 		logging.getLogger('rapidTk').rtkdebug(f"created typedEntry {self} with args {kwargs}")
-	def __cast_int(v):
+	def __cast_int(self, v):
 		try:
 			x=int(v)
+			return True
+		except:
+			return False
+	def __cast_float(self, v):
+		try:
+			x=float(v)
 			return True
 		except:
 			return False
@@ -42,26 +47,27 @@ class typedEntry(vEntry, widgetBase):
 			_con = False
 		match self.vtype:
 			case "int":
-				if not isinstance(v, int):
+				if not self.__cast_int(v):
 					_con = False
 			case "int/12":
-				if not isinstance(v, int) and not 1 <= v <= 12:
+				if not self.__cast_int(v) and not 1 <= v <= 12:
 					_con = False
 			case "int/24":
-				if not isinstance(v, int) and not 1 <= v <= 24:
+				if not self.__cast_int(v) and not 1 <= v <= 24:
 					_con = False
 			case "int/60":
-				if not isinstance(v, int) and not 1 <= v <= 60:
+				if not self.__cast_int(v) and not 1 <= v <= 60:
 					_con = False
 			case "float":
-				if not isinstance(v, float):
+				if not self.__cast_float(v):
 					_con = False
 			case "str":
 				pass
 
 		if _con:
 			return v
-		return ""
+		else:
+			return False
 
 class MaxLengthEntry(typedEntry, widgetBase): ##entry with a max length flag ##TODO: convert this to re-wiget
 	def __init__(self, master, **kwargs):

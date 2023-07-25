@@ -129,7 +129,7 @@ class autoEntry(cEntry, widgetBase):
 					if(opt[0:len(intxt)].lower() == intxt.lower()):
 						valid.append(opt)
 				else:
-					print(opt)
+					#print(opt)
 					if intxt.lower() in opt.lower():
 						valid.append(opt)
 			if len(valid) > 0:
