@@ -2,7 +2,7 @@ import logging
 #tkinter overrides
 from rapidTk.tkoverride import Frame, Label, Button, Entry, Checkbutton, Radiobutton, Listbox, Scale, Canvas, Menu, Text, ScrolledText, Scrollbar
 #tkinter imports
-from tkinter.constants import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT
+from tkinter.constants import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, END, INSERT, SEL
 from tkinter import StringVar, IntVar, DoubleVar, Event
 from tkinter.__init__ import Menu as tkMenu
 from tkinter.ttk import Treeview, Combobox
@@ -23,6 +23,22 @@ elif sys.platform == "linux":
 	from rapidTk.rTkUtils import clipboard_LINUX as clipboard
 elif sys.platform == "macos":
 	from rapidTk.rTkUtils import clipboard_MAC as clipboard
+
+try:
+	import tkcalendar
+	from spellchecker import SpellChecker
+except:
+	class SpellChecker:
+		def __init__(self, *args, **kwargs):
+			pass
+		def languages(self):
+			return []
+		def unknown(self, *args):
+			return None
+		def condidates(self, *args):
+			return []
+	##https://stackoverflow.com/questions/67101887/underline-only-selected-words-in-tkinter
+	##https://pypi.org/project/pyspellchecker/
 
 
 
@@ -300,8 +316,15 @@ class cScrolledText(ScrolledText, widgetBase):
 		if value:
 			self.var.set(value)
 		layout = inline_layout(**kwargs)
+		self._spell = SpellChecker()
+
 		widget_args = layout.filter()
 		super(cScrolledText, self).__init__(master, **widget_args)
+
+		#self.tag_add("wrong_spelling", "1.0", "1.0")
+		self.tag_config("wrong_spelling", foreground="red", underline=1)
+		self.tag_bind("wrong_spelling", "<Button-3>", self._popup_add_spell)
+
 		#self.trace('w', self.__wright)
 		if isinstance(self.get_root(), rapidTk):
 			self.get_root().sm.add_widget(self)
@@ -314,7 +337,12 @@ class cScrolledText(ScrolledText, widgetBase):
 		self.__menu.add_command(label="Copy", command=self._copy)
 		self.__menu.add_command(label="Paste", command=self._paste)
 		self.__menu.add_command(label="Select All", command=self._select_all)
+		self.__spell_menu = tkMenu(self.__menu, tearoff=0)
+		self.__menu.add_cascade(label="Spelling:", menu=self.__spell_menu)
 		self.bind("<Button-3>", self._do_popup)
+		#self.var.trace("w", self._spellcheck)
+		self.bind("<space>", self._spellcheck)
+		print("word checked")
 		if layout.method is not None:
 			layout.inline(self)
 	@time_it
@@ -326,6 +354,23 @@ class cScrolledText(ScrolledText, widgetBase):
 			self.__menu.tk_popup(event.x_root, event.y_root)
 		finally:
 			self.__menu.grab_release()
+
+	def _apply_correction(self, index, end_index, correction):
+		print(f"appling word {correction} to index {index},{end_index}")
+
+	def _popup_add_spell(self, event):
+		print("adding spellchecker")
+		self.__spell_menu.delete(0, "end")
+		w_index = self.index(f"@{event.x}, {event.y} wordstart")
+		we_index = self.index(f"@{event.x}, {event.y} wordend")
+		last_word = super().get(w_index,we_index)
+		print(w_index, we_index)
+		print(last_word)
+		cand = self._spell.candidates(last_word)
+		for c in cand:
+			self.__spell_menu.add_command(label=c, command=lambda i=w_index, e=we_index, c=c:self._apply_correction(i, e, c))
+
+
 	@time_it
 	def _cut(self):
 		try:
@@ -355,6 +400,24 @@ class cScrolledText(ScrolledText, widgetBase):
 		self.mark_set(INSERT, "1.0")
 		self.see(INSERT)
 		return 'break'
+
+	def _mark_word(self, index, word):
+		print(f"_mark_word: {word}, {index}")
+		print(word)
+		end_index = self.index(f"{index} + {len(word)} chars")
+		print(f"index:{index},{end_index}")
+		self.tag_add('wrong_spelling', index, end_index)
+		self.update()
+
+	def _spellcheck(self, *args):
+		index = self.index('current -1c wordstart')
+		last_word = super().get(index, f"{index} wordend")
+		print(f"last_word: {last_word}")
+		if last_word != '':
+			if self._spell.unknown_word(last_word):
+					self._mark_word(index, last_word)
+
+
 
 	def __wright(self, *args):
 		print(args)

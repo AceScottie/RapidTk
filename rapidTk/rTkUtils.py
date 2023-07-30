@@ -230,7 +230,10 @@ class widgetBase:
 				if index is not None or end is not None: ##if index or end has been set.
 					if index is None: index = '1.0' ##default index to start if None
 					if end is None: end = 'end' ##defatult end to end if None
-					pp_start = self.count('1.0', index)[0] # get the amout of characters between start and index
+					if index not in ["1.0", 1.0]:
+						pp_start = self.count('1.0', index)[0] # get the amout of characters between start and index
+					else:
+						pp_start = 0
 					pp_end = self.count(index, end)[0] ## get the amount of characters selected
 					return self.var.get()[pp_start:self.count('1.0', end)[0]-pp_end] ## return value[start+index:end-amount]
 				else:
