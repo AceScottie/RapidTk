@@ -972,6 +972,7 @@ class LoadingBar(cFrame, widgetBase):
 		self._xpos = 0
 		self._destroyed = False
 		self._flow_count = 0
+		self._flow_target = 0
 
 		self._setup_mode()
 
@@ -1033,22 +1034,23 @@ class LoadingBar(cFrame, widgetBase):
 
 
 	def _normalize(self, x, y):
-		return (x/100)*y
+		return int((x/100)*y)
 
 	def _determinate(self, count:int):
 		if count > 100:
 			raise Exception("set(%) must be between 0 and 100 (% of bar full)")
 		if self._mode != "determinate":
 			raise Exception("set() can only be used in 'indeterminate' mode")
-		for i in range(self._normalize(count, int((self._max_pos)/self._determinate_config['increment']))):
+		for i in range(self._normalize(count, round((self._max_pos)/self._determinate_config['increment']))):
 			self._clones[i].place(in_=self, relx=0, x=(self._determinate_config['increment']*i)+1, rely=0)
 	
 	def _flow_thread(self):
 		cur = int(self.bar.cget('width'))
+		print(cur, self._flow_target)
 		if cur != self._flow_target:
-			if cur < self._flow_target:
+			if cur+self._flow_config['increment'] < self._flow_target:
 				self._flow_count += self._flow_config['increment']
-			elif cur > self._flow_target:
+			elif cur-self._flow_config['increment'] > self._flow_target:
 				self._flow_count -= self._flow_config['increment']
 			self.bar.configure(width=self._flow_count)
 		self._thread = Timer(self._flow_config['delay'], self._flow_thread)
