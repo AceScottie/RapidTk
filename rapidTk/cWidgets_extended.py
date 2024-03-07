@@ -15,6 +15,7 @@ from collections.abc import Callable
 from dateutil.relativedelta import relativedelta
 from math import sin, cos, pi
 import sys
+from threading import Timer
 if sys.platform == "win32":
 	import win32gui
 	import win32con
@@ -534,17 +535,16 @@ class Tooltip(cLabel, widgetBase):
 	def __init__(self, master,**kwargs):
 		self.master = master
 		self.waittime = kwargs.pop('waittime', 400)
-		self.wraplength = kwargs.pop('wraplength', 250)
 		self.pad = kwargs.pop('pad', (5, 3, 5, 3))
 		kwargs["text"] = kwargs.get('text', "")
-		kwargs["wraplength"] = kwargs.get('wraplength', 400)
+		self.wraplength = kwargs["wraplength"] = kwargs.get('wraplength', 400)
 		kwargs["background"] = kwargs.get('bg', '#FFFFEA')
 		kwargs["foreground"] = kwargs.get('fg', '#000000')
 		kwargs["relief"] = kwargs.get('relief', SOLID)
 		kwargs["borderwidth"] = kwargs.get('borderwidth', 0)
 		kwargs["fg"] = kwargs.get('fg', '#000000')
 		kwargs["fg"] = kwargs.get('fg', '#000000')
-		self.kwargs = kwargs
+		self.lable_kwargs = kwargs.pop('label_kwargs', {})
 		super(Tooltip, self).__init__(master, **kwargs)
 		self.master.bind("<Enter>", self.onEnter)
 		self.master.bind("<Leave>", self.onLeave)
@@ -594,7 +594,8 @@ class Tooltip(cLabel, widgetBase):
 		self.tw = Toplevel(self)
 		self.tw.wm_overrideredirect(True)
 		win = cFrame(self.tw,background=self.bg,borderwidth=0)
-		label = cLabel(win,**self.kwargs)
+		label = cLabel(win, **self.lable_kwargs)
+		#label.grid()
 		label.grid(padx=(pad[0], pad[2]),pady=(pad[1], pad[3]),sticky=NSEW)
 		win.grid()
 		x, y = tip_pos_calculator(self, label)
@@ -949,3 +950,166 @@ class ContexMenu(cMenu, widgetBase):
 			self.tk_popup(event.x_root, event.y_root)
 		finally:
 			self.grab_release()
+
+class LoadingBar(cFrame, widgetBase):
+	def __init__(self, master=None, **kwargs):
+		if master is None:
+			self.help()
+			raise ValueError("Required Argument 'master' is missing, showing help instead. use LoadingBar(master).help() to show help")
+		self._height = kwargs['height'] = kwargs.get('height', 10)
+		self._max_pos = kwargs['width'] = kwargs.get('width', 100)
+		self._mode = kwargs.pop('mode', 'indeterminate')
+
+		self._flow_config = {'increment':kwargs.get('increment',2), 'delay':kwargs.get('delay',0.1)}
+		self._indeterminate_config = {'increment':kwargs.get('increment',2), 'delay':kwargs.get('delay',0.1)}
+		self._determinate_config = {'increment':kwargs.get('increment',2)}
+		kwargs.pop('increment', kwargs.pop('delay', None))
+
+		kwargs['background'] = kwargs.get('background', "white")
+		super(LoadingBar, self).__init__(master, **kwargs)
+		self._clones = []
+		self._thread = Timer(1,None)
+		self._xpos = 0
+		self._destroyed = False
+		self._flow_count = 0
+
+		self._setup_mode()
+
+	def help(self):
+		print("""
+			useage LoadingBar(**kwags) -> Frame (cFrame) **kwargs
+			additional args:
+			mode: required: indeterminate, determinate, flow
+			increment: default 2, (int) -> the step size of width / number of bars depending on mode
+			delay: default 0.1 (float) time in seconds betweern updates.
+
+			modes:
+			- indetermitate: 
+				Creates a loading bar that slides to maximum in steps of (increment) and at a delay of (delay). once full it resets to 0 and starts again endlessly.
+				methods: start(), stop() -> starts or stops the increments. does not delete current progress.
+						 indetermitate_configure(increment, delay) -> sets the increment and delay variables
+				WARNING: its best to configure bar_config() with the width you want the bar to be.
+			- determinate:
+				Creates a Progress bar and fills it with blocks of (increment) size.
+				methods: set(count) sets the bar fill rate to (count) percent (%). (count) must be between 0 and 100 (inclusive).
+						 determinate_configure(increment, count) -> sets the increment and count options.
+				WARNING: determinate_configure(increment, count): cannot change increment once initilized and chanign this may break stuff.
+			- flow:
+				Creates a Progress bar and smoothly fills it with a single bar.
+				methods: set(count) -> increments the bar smoothly at a rate of (increment) every (delay) seconds until (count) is achieved.
+						 flow_configure(increment, delay) -> sets the increment and delay variables
+
+			methods:
+			- bar_config(**kwargs) -> configures the loading bar/progress bar. 
+			- destroy() -> destroys the object and cancels Timer threads.
+			- set(mode) -> changes mode to (mode).
+			""")
+
+	def _setup_mode(self): ##sets up the different types of loading bars based on `mode`
+		__height_offset = 5
+		match self._mode:
+			case "indeterminate": # mode to start at the start and reset once at the end with no other options.
+				self.bar = cFrame(self, height=self._height-__height_offset)
+			case "determinate":
+				for i in range(int((self._max_pos)/self._determinate_config['increment'])):
+					self._clones.append(cFrame(self, height=self._height-__height_offset, width=self._determinate_config['increment']-1))
+			case "flow":
+				self.bar = cFrame(self, height=self._height-__height_offset)
+				self._thread = Timer(self._flow_config['delay'], self._flow_thread)
+				self._thread.start()
+
+
+
+
+	def _indeterminate(self):
+		if not self._destroyed:
+			self._xpos += self._indeterminate_config['increment']
+			if self._xpos > self._max_pos+self._indeterminate_config['increment']: self._xpos=0
+			self.bar.place(in_=self, relx=0, x=self._xpos, rely=0, y=0)
+			if not self._destroyed:
+				self._thread = Timer(self._indeterminate_config['delay'], self._indeterminate)
+				self._thread.start()
+
+
+
+	def _normalize(self, x, y):
+		return (x/100)*y
+
+	def _determinate(self, count:int):
+		if count > 100:
+			raise Exception("set(%) must be between 0 and 100 (% of bar full)")
+		if self._mode != "determinate":
+			raise Exception("set() can only be used in 'indeterminate' mode")
+		for i in range(self._normalize(count, int((self._max_pos)/self._determinate_config['increment']))):
+			self._clones[i].place(in_=self, relx=0, x=(self._determinate_config['increment']*i)+1, rely=0)
+	
+	def _flow_thread(self):
+		cur = int(self.bar.cget('width'))
+		if cur != self._flow_target:
+			if cur < self._flow_target:
+				self._flow_count += self._flow_config['increment']
+			elif cur > self._flow_target:
+				self._flow_count -= self._flow_config['increment']
+			self.bar.configure(width=self._flow_count)
+		self._thread = Timer(self._flow_config['delay'], self._flow_thread)
+		if not self._destroyed:
+			self._thread.start()
+	def _flow(self, count:int):
+		self.bar.place(in_=self, relx=0, x=0, rely=0, y=0)
+		self._flow_target = int(self._normalize(count, int(self._max_pos)))
+		
+
+	def flow_config(self, increment, delay):
+		## Configuration options for 'flow' mode
+		self._flow_config['increment'] = increment
+		self._flow_config['delay'] = delay
+	
+	def indeterminate_config(self, increment=1, delay=1):
+		## Configuration options for 'indeterminate' mode
+		self._indeterminate_config['increment'] = increment
+		self._indeterminate_config['delay'] = delay
+
+	def determinate_config(self, increment):
+		self._determinate_config['increment'] = increment
+	
+	def bar_config(self, **kwargs):
+		## Configuration options for the loading bar
+		match self._mode:
+			case "indeterminate":
+				self.bar.configure(**kwargs)
+			case "determinate":
+				for item in self._clones:
+					item.configure(**kwargs)
+				last_bar = int(self._max_pos-(self._determinate_config['increment']*(len(self._clones)-1)))
+				self._clones[-1].configure(width=last_bar)
+			case "flow":
+				self.bar.configure(**kwargs)
+
+	def start(self):
+		if self._mode != "indeterminate":
+			raise Exception("start() can only be used in 'indeterminate' mode")
+		if self._thread.is_alive():
+			self._thread.cancel()
+		self._thread = Timer(self._indeterminate_config['delay'],self._indeterminate)
+		self.bar.place(in_=self, relx=0, x=0, rely=0, y=0)
+		if not self._destroyed:
+			self._thread.start()
+	def stop(self):
+		self._thread.cancel()
+	def set(self, count:int):
+		match self._mode:
+			case "determinate":
+				self._determinate(count)
+			case "flow":
+				self._flow(count)
+			case _:
+				raise Exception("Mode was not set. modes: determinate, indeterminate, flow")
+
+	def destroy(self):
+		self._destroyed = True
+		try:
+			if self._thread.is_alive():
+				self.stop()
+		except:
+			pass
+		super().destroy()
