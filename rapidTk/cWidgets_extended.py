@@ -1,7 +1,7 @@
 #tkinter overrides
 from rapidTk.tkoverride import Misc
 #tkinter imports
-from tkinter import StringVar, IntVar, Event, INSERT, END, Toplevel
+from tkinter import StringVar, IntVar, Event, INSERT, END, Toplevel, font
 from tkinter import TOP, LEFT, RIGHT, BOTTOM, CENTER, X, Y, BOTH, SOLID
 from tkinter import N, E, S, W, NW, NE, SE, SW, NSEW
 from tkinter import VERTICAL, HORIZONTAL 
@@ -55,16 +55,19 @@ class aLabel(cLabel, widgetBase):
 		kwargs['fg'] = fg = kwargs.pop("fg", kwargs.pop("foreground", constants.GOOGLELINK))
 		command = kwargs.pop('command', None)
 		cursor = kwargs.pop("cursor", "hand2")
-		kwargs['font'] = self.font = kwargs.pop("font", ('Helvetica 13'))
+		kwargs['font'] = self.font = kwargs.pop("font", ('Sergo UI', 9, 'normal'))
+		self.font = list(self.font)
 		super(aLabel, self).__init__(master, **kwargs)
 		self.bind('<Enter>', self._hover)
 		self.bind('<Leave>', self._dehover)
 		if command is not None:
 			self.bind('<Button-1>', command)
 	def _hover(self, *args):
-		self.configure(font=(f'{self.font} underline'))
+		self.font[2] = 'underline'
+		self.configure(font=tuple(self.font))
 	def _dehover(self, *args):
-		self.configure(font=self.font)
+		self.font[2] = 'normal'
+		self.configure(font=tuple(self.font))
 	def configure(self, **kwargs):
 		if 'command' in kwargs:
 			self.bind('<Button-1>', kwargs.pop('command'))

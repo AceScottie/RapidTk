@@ -454,7 +454,7 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 	_widgetBase__widget_type = rtktypes.strget
 	@time_it
 	def __init__(self, master, **kwargs): ##TODO: fix removing invalid options from this and add to reOptionMenu
-		print(f"cOptionMenu.__init({master}, {kwargs})")
+		#print(f"cOptionMenu.__init({master}, {kwargs})")
 		self.options = kwargs.pop('options', kwargs.pop('values', [])) ##this will be the full list of options used for validation
 		kwargs['value'] = self._value = kwargs.pop('value', None)
 		self.selectable_options = kwargs['values'] = [str(x) for x in self.options if x != self._value] ## modified options for display
@@ -508,7 +508,7 @@ class cOptionMenu(OptionMenu, widgetBase): ##OptionMenu overrideen from rTkOverr
 		return "break"
 	def get(self, *args): return widgetBase.get(self, *args)
 	def set(self, *args):
-		print("cOpt setter")
+		#print("cOpt setter")
 		widgetBase.set(self, *args)
 		self._on_var_change()
 	def insert(self, *args): return widgetBase.insert(self, *args)

@@ -28,7 +28,7 @@ class OptionMenu(Menubutton):
         value = kw.pop('value', None) ##adds value kwarg
         kw['borderwidth'] = kw.get('borderwidth', 2)
         self.var = variable = kw['textvariable'] = kw.pop('textvariable', StringVar(master))
-        print(f"OptionMenu {value}:{values}:{variable.get()}")
+        #print(f"OptionMenu {value}:{values}:{variable.get()}")
         if value is not None:
             variable.set(value)
         kw['indicatoron'] = kw.get('indicatoron', 1)
