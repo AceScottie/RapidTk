@@ -959,6 +959,7 @@ class LoadingBar(cFrame, widgetBase):
 		self._height = kwargs['height'] = kwargs.get('height', 10)
 		self._max_pos = kwargs['width'] = kwargs.get('width', 100)
 		self._mode = kwargs.pop('mode', 'indeterminate')
+		self.mode = self._mode
 
 		self._flow_config = {'increment':kwargs.get('increment',2), 'delay':kwargs.get('delay',0.1)}
 		self._indeterminate_config = {'increment':kwargs.get('increment',2), 'delay':kwargs.get('delay',0.1)}
@@ -973,6 +974,7 @@ class LoadingBar(cFrame, widgetBase):
 		self._destroyed = False
 		self._flow_count = 0
 		self._flow_target = 0
+		self._stop = True
 
 		self._setup_mode()
 
@@ -1023,7 +1025,7 @@ class LoadingBar(cFrame, widgetBase):
 
 
 	def _indeterminate(self):
-		if not self._destroyed:
+		if not self._destroyed and not self._stop:
 			self._xpos += self._indeterminate_config['increment']
 			if self._xpos > self._max_pos+self._indeterminate_config['increment']: self._xpos=0
 			self.bar.place(in_=self, relx=0, x=self._xpos, rely=0, y=0)
@@ -1092,12 +1094,14 @@ class LoadingBar(cFrame, widgetBase):
 			raise Exception("start() can only be used in 'indeterminate' mode")
 		if self._thread.is_alive():
 			self._thread.cancel()
+		self._stop = False
 		self._thread = Timer(self._indeterminate_config['delay'],self._indeterminate)
 		self.bar.place(in_=self, relx=0, x=0, rely=0, y=0)
 		if not self._destroyed:
 			self._thread.start()
 	def stop(self):
 		self._thread.cancel()
+		self._stop = True
 	def set(self, count:int):
 		match self._mode:
 			case "determinate":
