@@ -1,3 +1,33 @@
+import ctypes, inspect
+class __get_traceback(int):
+	def __call__(self):
+		previous_frame = inspect.currentframe().f_back
+		(filename,line_number,function_name,lines,index) = inspect.getframeinfo(previous_frame)
+		tb = f"Traceback (most recent call last):\n  File {filename}, line {line_number}, in {function_name}\n\n  {'\n  '.join([item.replace('\t', '') for item in lines])}"
+		return tb
+rtk_traceback = __get_traceback()
+class _ExceptionWindow(Exception):
+	def __init__(self, message, tb):
+		super().__init__(message)
+		self.message, self.tb = message, tb
+		self.show_message_box()
+	def show_message_box(self):
+		error_message = f"Exception: {self.message}\n{self.tb}"
+		ctypes.windll.user32.MessageBoxW(0, error_message, "Error", 0x10)
+		exit(1)
+class GUIException:
+	def __init__(self, message, tb):
+		try:
+			raise Exception(message)
+		except Exception as err:
+			raise _ExceptionWindow(message, tb)
+
+# Example usage:
+if __name__ == "__main__":
+	raise GUIException("This is a normal exception",rtk_traceback())
+
+
+
 class TemplateException(Exception):
 	def __init__(self, message):
 		super().__init__(message)
@@ -39,3 +69,5 @@ class assertValue:
 class OptionNotPermitted(TemplateException):
 	def __init__(self, message):
 		super().__init__(f"Error Option Not Permitted: {message}")
+
+
